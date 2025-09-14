@@ -1,0 +1,413 @@
+1. Question: How do you handle JSON data in Python using the built-in module?
+Expected answer by interviewer: Use the json module to serialize (convert Python objects to JSON) and deserialize (convert JSON to Python objects). json.dumps() for strings, json.dump() for files, json.loads() for strings, json.load() for files.
+Sample code:
+```python
+import json
+
+# Serialize Python dict to JSON string
+data = {'name': 'John', 'age': 30}
+json_string = json.dumps(data, indent=4)
+print(json_string)
+
+# Deserialize JSON string to Python dict
+parsed_data = json.loads(json_string)
+print(parsed_data)
+
+# Write to file
+with open('data.json', 'w') as f:
+    json.dump(data, f, indent=4)
+
+# Read from file
+with open('data.json', 'r') as f:
+    loaded_data = json.load(f)
+print(loaded_data)
+```
+Layman term: JSON is like a lightweight way to store and share data, similar to a dictionary in Python. The json module helps convert between Python's data structures and this text format, making it easy to save or send data over the web.
+
+2. Question: What is the difference between json.dumps() and json.dump()?
+Expected answer by interviewer: json.dumps() converts a Python object to a JSON string, while json.dump() writes the JSON directly to a file object.
+Sample code:
+```python
+import json
+data = {'key': 'value'}
+# dumps to string
+json_str = json.dumps(data)
+# dump to file
+with open('file.json', 'w') as f:
+    json.dump(data, f)
+```
+Layman term: Think of dumps as creating a string version of your data for immediate use, like printing, while dump saves it straight to a file, like exporting a document.
+
+3. Question: How would you handle large JSON files efficiently in Python?
+Expected answer by interviewer: Use streaming parsing with libraries like ijson to process the file in chunks without loading everything into memory, or use json.load() with file streaming for moderate sizes.
+Sample code:
+```python
+import ijson
+
+with open('large.json', 'r') as f:
+    items = ijson.items(f, 'item')
+    for item in items:
+        print(item)  # Process each item one by one
+```
+Layman term: Large JSON files are like huge books; instead of reading the whole thing at once, you read page by page to avoid overwhelming your memory.
+
+4. Question: How do you implement robust error handling when working with JSON data?
+Expected answer by interviewer: Use try-except blocks to catch JSONDecodeError for parsing issues, validate with jsonschema, and log errors.
+Sample code:
+```python
+import json
+from jsonschema import validate
+
+try:
+    data = json.loads('{"key": "value"}')
+    schema = {"type": "object", "properties": {"key": {"type": "string"}}}
+    validate(instance=data, schema=schema)
+except json.JSONDecodeError as e:
+    print(f"Invalid JSON: {e}")
+except Exception as e:
+    print(f"Validation error: {e}")
+```
+Layman term: Error handling is like having safety nets; if the JSON is malformed (like a typo in a recipe), you catch it early to prevent crashes.
+
+5. Question: What strategies would you use to optimize JSON parsing performance?
+Expected answer by interviewer: Use faster libraries like ujson, stream large files, avoid unnecessary deserialization, and benchmark with time module.
+Sample code:
+```python
+import ujson
+import time
+
+start = time.time()
+data = ujson.loads('{"large": "data"}')  # Faster than json.loads
+end = time.time()
+print(f"Time taken: {end - start}")
+```
+Layman term: Optimization is speeding up a slow car; use a turbo library like ujson instead of the standard one for quicker data processing.
+
+6. Question: How do you prettify JSON output for readability?
+Expected answer by interviewer: Use the indent parameter in json.dumps() or json.dump() to add spaces and new lines.
+Sample code:
+```python
+import json
+data = {'name': 'Alice', 'age': 25}
+pretty_json = json.dumps(data, indent=2)
+print(pretty_json)
+```
+Layman term: Prettifying is like formatting a messy note into bullet points, making it easier for humans to read without changing the meaning.
+
+7. Question: How do you validate JSON data in Python?
+Expected answer by interviewer: Use json.tool in terminal for syntax, or libraries like jsonschema for schema validation.
+Sample code:
+```python
+# Terminal: python -m json.tool data.json
+# In code:
+import jsonschema
+instance = {"name": "Bob"}
+schema = {"type": "object", "required": ["name"]}
+jsonschema.validate(instance, schema)
+```
+Layman term: Validation checks if your data follows the rules, like verifying a form is filled correctly before submission.
+
+8. Question: What are common libraries for advanced JSON parsing in Python?
+Expected answer by interviewer: Built-in json for basics, ujson for speed, ijson for streaming large files, jsonschema for validation.
+Sample code:
+```python
+import ujson
+data = ujson.dumps({'fast': True})
+```
+Layman term: These are tools in your toolbox; json is the hammer for everyday, ujson is the power drill for heavy jobs.
+
+9. Question: How do you ensure security when parsing JSON?
+Expected answer by interviewer: Avoid eval(), use trusted sources, validate input, update libraries to patch vulnerabilities.
+Sample code:
+```python
+import json
+try:
+    data = json.loads(user_input)  # Safe, unlike eval
+except json.JSONDecodeError:
+    print("Invalid input")
+```
+Layman term: Security is locking your door; don't use unsafe methods like eval() that could let in bad data like a virus.
+
+10. Question: Explain the process of parsing JSON from a file end-to-end.
+Expected answer by interviewer: Open file, use json.load() to parse into dict/list, process data, handle errors.
+Sample code:
+```python
+import json
+try:
+    with open('file.json', 'r') as f:
+        data = json.load(f)
+    # Process data
+    print(data['key'])
+except FileNotFoundError:
+    print("File not found")
+except json.JSONDecodeError:
+    print("Invalid JSON")
+```
+Layman term: Parsing is translating foreign text; open the book, convert to your language, then read and use the info.
+
+11. Question: How do you read a CSV file using Python's csv module?
+Expected answer by interviewer: Use csv.reader() for lists or csv.DictReader() for dictionaries, handling headers and dialects.
+Sample code:
+```python
+import csv
+with open('data.csv', 'r') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        print(row['column_name'])
+```
+Layman term: CSV is like a simple table in a text file; the csv module reads it row by row, like scanning a spreadsheet.
+
+12. Question: How do you write data to a CSV file?
+Expected answer by interviewer: Use csv.writer() or csv.DictWriter(), specify fieldnames for headers.
+Sample code:
+```python
+import csv
+data = [{'name': 'John', 'age': 30}]
+with open('output.csv', 'w', newline='') as f:
+    writer = csv.DictWriter(f, fieldnames=['name', 'age'])
+    writer.writeheader()
+    writer.writerows(data)
+```
+Layman term: Writing is exporting your list to a table format, like saving contacts to a file for import elsewhere.
+
+13. Question: How do you handle large CSV files without loading into memory?
+Expected answer by interviewer: Read in chunks using csv.reader() in a loop, process line by line.
+Sample code:
+```python
+import csv
+with open('large.csv', 'r') as f:
+    reader = csv.reader(f)
+    next(reader)  # Skip header
+    for row in reader:
+        # Process row
+        print(row[0])
+```
+Layman term: Like eating a big meal bite by bite instead of all at once to avoid indigestion.
+
+14. Question: What is csv.DictReader and when to use it?
+Expected answer by interviewer: It reads CSV into ordered dictionaries using the first row as keys, useful for named access.
+Sample code:
+```python
+import csv
+with open('data.csv', 'r') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        print(row['name'])
+```
+Layman term: Instead of numbered columns like "column 1", it gives names like "name" for easier reference, like labeled folders.
+
+15. Question: How do you handle different CSV dialects?
+Expected answer by interviewer: Specify dialect parameter or use Sniffer to detect, handling quotes, delimiters.
+Sample code:
+```python
+import csv
+with open('data.csv', 'r') as f:
+    dialect = csv.Sniffer().sniff(f.read(1024))
+    f.seek(0)
+    reader = csv.reader(f, dialect)
+    for row in reader:
+        print(row)
+```
+Layman term: Dialects are regional accents in data; sniffer figures out if it's comma or semicolon separated.
+
+16. Question: How to compute min difference from CSV data (e.g., goal differential)?
+Expected answer by interviewer: Parse with DictReader, calculate abs difference, find min using loop or min().
+Sample code:
+```python
+import csv
+def get_min_diff(filename):
+    with open(filename, 'r') as f:
+        reader = csv.DictReader(f)
+        min_diff = float('inf')
+        min_team = None
+        for row in reader:
+            diff = abs(int(row['Goals For']) - int(row['Goals Against']))
+            if diff < min_diff:
+                min_diff = diff
+                min_team = row['Team']
+        return min_team, min_diff
+```
+Layman term: Like finding the closest scores in a sports table by subtracting and picking the smallest gap.
+
+17. Question: How to handle errors in CSV parsing, like malformed rows?
+Expected answer by interviewer: Use try-except in loop, skip invalid rows, or validate before processing.
+Sample code:
+```python
+import csv
+with open('data.csv', 'r') as f:
+    reader = csv.reader(f)
+    for row in reader:
+        try:
+            value = int(row[1])  # Potential error
+        except ValueError:
+            print("Invalid row, skipping")
+            continue
+```
+Layman term: If a row is messed up, like a letter where a number should be, skip it to keep going.
+
+18. Question: How do you append to an existing CSV file?
+Expected answer by interviewer: Open in 'a' mode, use writer, but match headers if needed.
+Sample code:
+```python
+import csv
+new_row = ['John', 30]
+with open('data.csv', 'a', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(new_row)
+```
+Layman term: Appending is adding a new line to the end of a list, like updating a log without rewriting everything.
+
+19. Question: Explain csv.writerows() vs writerow().
+Expected answer by interviewer: writerow() for single row, writerows() for list of rows.
+Sample code:
+```python
+import csv
+rows = [['a',1], ['b',2]]
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerows(rows)
+```
+Layman term: One adds a single item, the other dumps a whole batch at once for efficiency.
+
+20. Question: How to read CSV from string instead of file?
+Expected answer by interviewer: Use io.StringIO to treat string as file-like object.
+Sample code:
+```python
+import csv
+import io
+csv_string = 'name,age\nJohn,30'
+with io.StringIO(csv_string) as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        print(row)
+```
+Layman term: Like reading from memory instead of disk, useful for data from web or variables.
+
+21. Question: How do you read data from a specific cell in an Excel spreadsheet using OpenPyXL?
+Expected answer by interviewer: Load workbook, select sheet, access cell by coordinate and get .value.
+Sample code:
+```python
+from openpyxl import load_workbook
+wb = load_workbook('sample.xlsx')
+sheet = wb.active
+value = sheet['A1'].value
+print(value)
+```
+Layman term: Excel cells are like grid squares; specify row and column to peek inside one.
+
+22. Question: How do you iterate through rows in a column range with OpenPyXL?
+Expected answer by interviewer: Use iter_rows() with min/max col/row, values_only=True for data.
+Sample code:
+```python
+from openpyxl import load_workbook
+wb = load_workbook('sample.xlsx')
+sheet = wb.active
+for row in sheet.iter_rows(min_row=1, max_row=5, min_col=1, max_col=3, values_only=True):
+    print(row)
+```
+Layman term: Iterating is walking through the table row by row, grabbing values without extras.
+
+23. Question: How do you append new data to an existing Excel file with OpenPyXL?
+Expected answer by interviewer: Load workbook, write to cell or use append(), save with new name if needed.
+Sample code:
+```python
+from openpyxl import load_workbook
+wb = load_workbook('hello.xlsx')
+sheet = wb.active
+sheet.append(['new', 'data'])
+wb.save('hello_updated.xlsx')
+```
+Layman term: Appending adds to the bottom, like extending a list in a notebook.
+
+24. Question: How do you create a new Excel spreadsheet and add data?
+Expected answer by interviewer: Use Workbook(), active sheet, assign to cells, save.
+Sample code:
+```python
+from openpyxl import Workbook
+wb = Workbook()
+sheet = wb.active
+sheet['A1'] = 'Hello'
+wb.save('new.xlsx')
+```
+Layman term: Starting fresh is creating a blank page and writing on it.
+
+25. Question: How do you add a formula like AVERAGE to an Excel cell?
+Expected answer by interviewer: Assign string starting with '=' to cell.
+Sample code:
+```python
+from openpyxl import load_workbook
+wb = load_workbook('sample.xlsx')
+sheet = wb.active
+sheet['A10'] = '=AVERAGE(A1:A9)'
+wb.save('sample.xlsx')
+```
+Layman term: Formulas are auto-calculations; tell Excel to sum or average a range.
+
+26. Question: How do you apply conditional formatting in OpenPyXL?
+Expected answer by interviewer: Create DifferentialStyle, Rule, add to sheet's conditional_formatting.
+Sample code:
+```python
+from openpyxl import load_workbook
+from openpyxl.styles import PatternFill
+from openpyxl.styles.differential import DifferentialStyle
+from openpyxl.formatting.rule import Rule
+wb = load_workbook('sample.xlsx')
+sheet = wb.active
+red_fill = PatternFill(start_color='EE1111', end_color='EE1111', fill_type='solid')
+dxf = DifferentialStyle(fill=red_fill)
+rule = Rule(type='cellIs', operator='lessThan', formula=['10'], dxf=dxf)
+sheet.conditional_formatting.add('B2:B100', rule)
+wb.save('sample.xlsx')
+```
+Layman term: Conditional formatting colors cells based on rules, like highlighting low scores in red.
+
+27. Question: How do you adjust row height and column width in OpenPyXL?
+Expected answer by interviewer: Use row_dimensions and column_dimensions.
+Sample code:
+```python
+from openpyxl import Workbook
+wb = Workbook()
+sheet = wb.active
+sheet.row_dimensions[1].height = 50
+sheet.column_dimensions['A'].width = 20
+wb.save('adjusted.xlsx')
+```
+Layman term: Adjusting sizes makes the table look better, like resizing columns in a document.
+
+28. Question: How do you merge cells in an Excel sheet using OpenPyXL?
+Expected answer by interviewer: Use sheet.merge_cells() with range string.
+Sample code:
+```python
+from openpyxl import Workbook
+wb = Workbook()
+sheet = wb.active
+sheet.merge_cells('A1:B2')
+wb.save('merged.xlsx')
+```
+Layman term: Merging combines cells into one big one, like spanning a header over columns.
+
+29. Question: How do you add arithmetic operations like SUM in OpenPyXL?
+Expected answer by interviewer: Assign formula to cell, e.g., '=SUM(A1:A5)'.
+Sample code:
+```python
+from openpyxl import Workbook
+wb = Workbook()
+sheet = wb.active
+sheet['A1'] = 1
+sheet['A2'] = 2
+sheet['A3'] = '=SUM(A1:A2)'
+wb.save('sum.xlsx')
+```
+Layman term: It's embedding math directly in the sheet for automatic updates.
+
+30. Question: How do you handle reading multiple sheets in an Excel file?
+Expected answer by interviewer: Load workbook, access by name or index, iterate if needed.
+Sample code:
+```python
+from openpyxl import load_workbook
+wb = load_workbook('multi.xlsx')
+for sheet_name in wb.sheetnames:
+    sheet = wb[sheet_name]
+    print(sheet['A1'].value)
+```
+Layman term: Sheets are like tabs in a browser; switch between them to access different data sets.
