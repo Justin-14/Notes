@@ -1,0 +1,583 @@
+### Part 1: Theory of Regular Expressions (Regex) in Python
+
+#### What is Regex in Python?
+Regular expressions (regex) in Python are powerful tools for pattern matching and text manipulation, implemented primarily through the `re` module. Regex allows developers to search, match, extract, or replace strings based on specific patterns, such as email addresses, phone numbers, or specific formats. In 2025, regex remains essential for tasks like data validation, text parsing, and web scraping, especially in frameworks like FastAPI, Django, and data processing pipelines with pandas or web scraping with BeautifulSoup.
+
+#### Key Components
+1. **re Module**:
+   - The `re` module provides functions like `re.match()`, `re.search()`, `re.findall()`, and `re.sub()` for regex operations.
+   - Example: `import re; re.search(r'\d+', 'abc123')` finds the first sequence of digits (`123`).
+
+2. **Regex Patterns**:
+   - Patterns are strings defining the rules for matching text, using special characters (metacharacters) and syntax.
+   - Common metacharacters:
+     - `.`: Matches any single character except newline.
+     - `*`: Matches 0 or more repetitions.
+     - `+`: Matches 1 or more repetitions.
+     - `?`: Matches 0 or 1 occurrence.
+     - `[]`: Matches any character in the set (e.g., `[a-z]` for lowercase letters).
+     - `^`: Matches the start of a string.
+     - `$`: Matches the end of a string.
+     - `\`: Escapes special characters or denotes special sequences (e.g., `\d` for digits).
+   - Example: `r'\d{2}-\d{2}-\d{4}'` matches a date like `12-31-2025`.
+
+3. **Common Functions**:
+   - `re.match()`: Checks for a match only at the string’s start.
+   - `re.search()`: Finds the first match anywhere in the string.
+   - `re.findall()`: Returns all non-overlapping matches as a list.
+   - `re.sub()`: Replaces matches with a specified string.
+   - `re.compile()`: Compiles a pattern for reuse, improving performance.
+   - Example: `re.sub(r'\d+', 'X', 'abc123def')` replaces digits with `X`, yielding `abcXdef`.
+
+4. **Special Sequences**:
+   - `\d`: Digit (0-9).
+   - `\w`: Word character (a-z, A-Z, 0-9, _).
+   - `\s`: Whitespace (space, tab, newline).
+   - `\D`, `\W`, `\S`: Negations of the above.
+   - Example: `r'\w+@\w+\.\w+'` matches an email like `user@domain.com`.
+
+5. **Flags**:
+   - Modify regex behavior, e.g., `re.IGNORECASE` for case-insensitive matching.
+   - Example: `re.search(r'hello', 'HELLO', re.IGNORECASE)` matches `HELLO`.
+
+6. **Groups and Capturing**:
+   - Use `()` to group parts of a pattern and capture matched substrings.
+   - Example: `r'(\d+)-(\d+)'` captures `12` and `31` from `12-31`.
+
+#### How Regex Works
+- **Pattern Matching**:
+  - Regex scans a string to find substrings matching the defined pattern.
+  - Example: `re.search(r'\d+', 'abc123def')` finds `123`.
+- **Greedy vs. Non-Greedy**:
+  - By default, regex is greedy (matches as much as possible).
+  - Use `?` for non-greedy matching (minimal match).
+  - Example: `r'<.*>'` (greedy) matches `<a><b>`; `r'<.*?>'` (non-greedy) matches `<a>` and `<b>` separately.
+- **Compilation**:
+  - `re.compile()` creates a reusable pattern object for efficiency.
+  - Example: `pattern = re.compile(r'\d+'); pattern.search('abc123')` finds `123`.
+- **Error Handling**:
+  - Invalid patterns raise `re.error`.
+  - Example: `re.compile(r'[')` raises an error due to an unclosed bracket.
+
+#### Key Features
+- **Flexibility**:
+  - Regex supports complex patterns for diverse text-processing needs.
+- **Performance**:
+  - Compiled patterns and optimized regex improve speed for large datasets.
+- **Portability**:
+  - Regex syntax is similar across languages, with minor Python-specific nuances.
+- **Extensibility**:
+  - Combine regex with libraries like `pandas` or `BeautifulSoup` for advanced parsing.
+- **Case Sensitivity**:
+  - Use flags like `re.IGNORECASE` for flexible matching.
+
+#### Use Cases
+- **Data Validation**:
+  - Validate emails, phone numbers, or dates in FastAPI/Django.
+  - Example: Validate `user@domain.com` with `r'[\w\.-]+@[\w\.-]+\.\w+'`.
+- **Text Parsing**:
+  - Extract data from logs, CSVs, or web pages.
+  - Example: Extract dates from logs using `r'\d{2}-\d{2}-\d{4}'`.
+- **Web Scraping**:
+  - Use with `BeautifulSoup` to parse HTML content.
+  - Example: Extract URLs with `r'https?://[^\s]+'`.
+- **Data Science**:
+  - Clean text data in `pandas` DataFrames.
+  - Example: `df['column'].str.extract(r'(\d+)')` extracts numbers.
+- **Search and Replace**:
+  - Replace sensitive data (e.g., mask credit card numbers).
+  - Example: `re.sub(r'\d{4}-\d{4}-\d{4}-\d{4}', 'XXXX-XXXX-XXXX-XXXX', text)`.
+- **Frameworks in 2025**:
+  - **FastAPI**: Validate query parameters or JSON payloads.
+  - **Django**: Parse form inputs or URLs.
+  - **Pydantic**: Combine regex with model validation.
+  - **Streamlit/Dash**: Process user input for dashboards.
+
+#### Advanced Concepts
+- **Lookaheads and Lookbehinds**:
+  - Positive lookahead (`(?=...)`): Match if followed by a pattern.
+  - Negative lookahead (`(?!...)`): Match if not followed by a pattern.
+  - Example: `r'\w+(?=\.)'` matches words before a period (e.g., `domain` in `domain.com`).
+- **Named Groups**:
+  - Use `(?P<name>...)` to name captured groups.
+  - Example: `r'(?P<year>\d{4})-(?P<month>\d{2})'` captures `year` and `month`.
+- **Performance Optimization**:
+  - Use `re.compile()` for repeated patterns.
+  - Avoid overly complex regex for large texts to reduce time complexity.
+  - **Time Complexity**:
+    - Simple matches: O(n) for string length n.
+    - Complex patterns with backtracking: O(2^n) in worst cases.
+  - **Space Complexity**: O(n) for storing matches or groups.
+- **Unicode Support**:
+  - Use `re.UNICODE` or `re.ASCII` flags for Unicode or ASCII matching.
+  - Example: `r'\w+'` with `re.UNICODE` matches non-ASCII letters.
+- **Integration with Async**:
+  - Use regex in async applications (e.g., FastAPI) for real-time parsing.
+  - Example:
+    ```python
+    import asyncio
+    import re
+    async def parse():
+        return re.search(r'\d+', 'abc123').group()
+    ```
+- **Type Hints**:
+  - Use `re.Pattern` for compiled patterns or `str` for matches.
+  - Example: `from typing import Optional; def find(pattern: re.Pattern, text: str) -> Optional[str]`.
+
+#### Best Practices
+- Use raw strings (`r'pattern'`) to avoid escaping issues.
+- Compile patterns with `re.compile()` for repeated use.
+- Test regex with tools like `regex101.com` or `re.DEBUG` for clarity.
+- Keep patterns simple to avoid performance issues.
+- Use named groups for readability in complex patterns.
+- Handle invalid patterns with `try-except` for `re.error`.
+- In 2025, integrate regex with Pydantic for validation or pandas for data cleaning.
+- Document regex patterns with comments for maintainability.
+- Validate regex inputs in production to avoid security issues (e.g., ReDoS).
+
+#### Layman’s Explanation of Regex
+Regex is like a search tool that looks for specific patterns in text, like finding all phone numbers or emails in a document. Imagine you’re searching for a specific type of puzzle piece in a big box of text—regex helps you describe what that piece looks like (e.g., “starts with a number, ends with a letter”). It’s like giving your computer a treasure map to find or replace exactly what you want in a string.
+
+---
+
+### Part 2: Top 30 Interview Questions for a 4-Year Experienced Python Developer (Focused on Regex)
+
+Below are 30 interview questions tailored for a Python developer with 4 years of experience, focusing on regex. Each question includes the expected answer, sample code (provided inline as requested), and a layman’s explanation, designed to be relevant for 2025.
+
+#### Question 1
+**Question**: What is the `re` module in Python?  
+**Expected Answer**: The `re` module provides functions for regular expression operations like matching, searching, and replacing patterns in strings.  
+**Sample Code**:
+```python
+import re
+print(re.search(r'\d+', 'abc123').group())  # Output: 123
+```
+**Layman’s Explanation**: The `re` module is like a search tool that finds specific patterns, like numbers, in a piece of text.
+
+---
+
+#### Question 2
+**Question**: What is the difference between `re.match()` and `re.search()`?  
+**Expected Answer**: `re.match()` checks for a match only at the string’s start, while `re.search()` looks anywhere in the string.  
+**Sample Code**:
+```python
+import re
+print(re.match(r'\d+', 'abc123'))  # Output: None
+print(re.search(r'\d+', 'abc123').group())  # Output: 123
+```
+**Layman’s Explanation**: `match` is like checking if a sentence starts with a number; `search` looks for a number anywhere in the sentence.
+
+---
+
+#### Question 3
+**Question**: How do you use `re.findall()` in Python?  
+**Expected Answer**: `re.findall()` returns a list of all non-overlapping matches of a pattern in a string.  
+**Sample Code**:
+```python
+import re
+print(re.findall(r'\w+', 'hello world'))  # Output: ['hello', 'world']
+```
+**Layman’s Explanation**: `findall` is like finding all the words in a sentence that match a specific pattern, like all words with letters.
+
+---
+
+#### Question 4
+**Question**: How do you replace text using regex in Python?  
+**Expected Answer**: Use `re.sub()` to replace matches with a specified string.  
+**Sample Code**:
+```python
+import re
+print(re.sub(r'\d+', 'X', 'abc123def'))  # Output: abcXdef
+```
+**Layman’s Explanation**: `sub` is like using a find-and-replace tool to swap numbers with something else, like an X.
+
+---
+
+#### Question 5
+**Question**: How do you compile a regex pattern for reuse?  
+**Expected Answer**: Use `re.compile()` to create a reusable pattern object for efficiency.  
+**Sample Code**:
+```python
+import re
+pattern = re.compile(r'\d+')
+print(pattern.search('abc123').group())  # Output: 123
+```
+**Layman’s Explanation**: Compiling is like saving a search pattern in your toolbox so you can use it multiple times faster.
+
+---
+
+#### Question 6
+**Question**: How do you use groups in regex patterns?  
+**Expected Answer**: Use `()` to group parts of a pattern and capture matched substrings.  
+**Sample Code**:
+```python
+import re
+match = re.search(r'(\d+)-(\d+)', '12-31')
+print(match.groups())  # Output: ('12', '31')
+```
+**Layman’s Explanation**: Groups are like putting parts of a pattern in boxes to grab specific pieces, like the month and day in a date.
+
+---
+
+#### Question 7
+**Question**: How do you make regex case-insensitive?  
+**Expected Answer**: Use the `re.IGNORECASE` flag to ignore case in matching.  
+**Sample Code**:
+```python
+import re
+print(re.search(r'hello', 'HELLO', re.IGNORECASE).group())  # Output: HELLO
+```
+**Layman’s Explanation**: Case-insensitive matching is like searching for “hello” and finding “HELLO” or “hElLo” too.
+
+---
+
+#### Question 8
+**Question**: How do you validate an email address using regex?  
+**Expected Answer**: Use a pattern like `r'[\w\.-]+@[\w\.-]+\.\w+'` to match email formats.  
+**Sample Code**:
+```python
+import re
+email = 'user@domain.com'
+print(bool(re.match(r'[\w\.-]+@[\w\.-]+\.\w+', email)))  # Output: True
+```
+**Layman’s Explanation**: Validating an email is like checking if a string looks like `name@website.com` using a pattern.
+
+---
+
+#### Question 9
+**Question**: How do you use regex to match a phone number?  
+**Expected Answer**: Use a pattern like `r'\d{3}-\d{3}-\d{4}'` for a US phone number format.  
+**Sample Code**:
+```python
+import re
+phone = '123-456-7890'
+print(bool(re.match(r'\d{3}-\d{3}-\d{4}', phone)))  # Output: True
+```
+**Layman’s Explanation**: Matching a phone number is like checking if a string fits a pattern like `123-456-7890`.
+
+---
+
+#### Question 10
+**Question**: How do you use regex in FastAPI in 2025?  
+**Expected Answer**: Use regex to validate query parameters or JSON fields in FastAPI endpoints.  
+**Sample Code**:
+```python
+from fastapi import FastAPI
+import re
+app = FastAPI()
+@app.get("/validate")
+async def validate(text: str):
+    return {"valid": bool(re.match(r'\d+', text))}
+# Run: uvicorn script:app --reload
+# Test: curl http://127.0.0.1:8000/validate?text=123
+# Output: {"valid": true}
+```
+**Layman’s Explanation**: In FastAPI, regex is like checking if user input on a website matches a pattern, like only numbers.
+
+---
+
+#### Question 11
+**Question**: How do you use regex in Django in 2025?  
+**Expected Answer**: Use regex in URL patterns or form validation to process user input.  
+**Sample Code**:
+```python
+from django.urls import path, re_path
+urlpatterns = [
+    re_path(r'^item/(\d+)$', lambda r, id: HttpResponse(f'ID: {id}'))
+]
+# Test: Access /item/123
+# Output: ID: 123
+```
+**Layman’s Explanation**: In Django, regex is like making sure a website URL, like `/item/123`, has a number.
+
+---
+
+#### Question 12
+**Question**: How do you use regex with pandas in 2025?  
+**Expected Answer**: Use `str.extract()` or `str.contains()` to apply regex on DataFrame columns.  
+**Sample Code**:
+```python
+import pandas as pd
+df = pd.DataFrame({'text': ['abc123', 'def456']})
+df['numbers'] = df['text'].str.extract(r'(\d+)')
+print(df['numbers'])  # Output: 0    123
+                     #         1    456
+```
+**Layman’s Explanation**: In pandas, regex is like searching for numbers in a spreadsheet column.
+
+---
+
+#### Question 13
+**Question**: How do you handle greedy vs. non-greedy matching?  
+**Expected Answer**: Use `?` for non-greedy matching to match the smallest possible string.  
+**Sample Code**:
+```python
+import re
+print(re.findall(r'<.*>', '<a><b>'))  # Output: ['<a><b>']
+print(re.findall(r'<.*?>', '<a><b>'))  # Output: ['<a>', '<b>']
+```
+**Layman’s Explanation**: Greedy matching grabs as much as it can, like taking a big bite; non-greedy takes small bites.
+
+---
+
+#### Question 14
+**Question**: How do you use named groups in regex?  
+**Expected Answer**: Use `(?P<name>...)` to name groups and access them with `groupdict()`.  
+**Sample Code**:
+```python
+import re
+match = re.search(r'(?P<year>\d{4})-(?P<month>\d{2})', '2025-09')
+print(match.groupdict())  # Output: {'year': '2025', 'month': '09'}
+```
+**Layman’s Explanation**: Named groups are like labeling boxes for parts of a pattern, like “year” and “month” in a date.
+
+---
+
+#### Question 15
+**Question**: How do you use lookaheads in regex?  
+**Expected Answer**: Use `(?=...)` for positive lookaheads or `(?!...)` for negative lookaheads to check what follows a match.  
+**Sample Code**:
+```python
+import re
+print(re.findall(r'\w+(?=\.)', 'domain.com'))  # Output: ['domain']
+```
+**Layman’s Explanation**: Lookaheads are like peeking ahead to see if a pattern is followed by something, like a period.
+
+---
+
+#### Question 16
+**Question**: How do you use regex with Pydantic in 2025?  
+**Expected Answer**: Use Pydantic’s `constr` with `regex` to validate model fields.  
+**Sample Code**:
+```python
+from pydantic import BaseModel, constr
+class User(BaseModel):
+    email: constr(pattern=r'[\w\.-]+@[\w\.-]+\.\w+')
+user = User(email='user@domain.com')
+print(user.email)  # Output: user@domain.com
+```
+**Layman’s Explanation**: In Pydantic, regex is like checking if a form input, like an email, follows the right format.
+
+---
+
+#### Question 17
+**Question**: How do you debug regex patterns in Python?  
+**Expected Answer**: Use `re.DEBUG` flag or tools like `regex101.com` to understand pattern behavior.  
+**Sample Code**:
+```python
+import re
+pattern = re.compile(r'\d+', re.DEBUG)  # Prints pattern structure
+print(pattern.search('abc123').group())  # Output: 123
+```
+**Layman’s Explanation**: Debugging regex is like testing a treasure map to make sure it finds the right treasure.
+
+---
+
+#### Question 18
+**Question**: How do you use regex to extract URLs from text?  
+**Expected Answer**: Use a pattern like `r'https?://[^\s]+'` to match URLs.  
+**Sample Code**:
+```python
+import re
+text = 'Visit https://example.com for more.'
+print(re.findall(r'https?://[^\s]+', text))  # Output: ['https://example.com']
+```
+**Layman’s Explanation**: Extracting URLs is like finding web addresses in a paragraph using a pattern.
+
+---
+
+#### Question 19
+**Question**: How do you handle Unicode in regex?  
+**Expected Answer**: Use `re.UNICODE` or patterns like `\w` to match Unicode characters.  
+**Sample Code**:
+```python
+import re
+print(re.findall(r'\w+', 'café123', re.UNICODE))  # Output: ['café123']
+```
+**Layman’s Explanation**: Unicode in regex is like searching for special letters (like é) in text from different languages.
+
+---
+
+#### Question 20
+**Question**: How do you use regex for splitting strings?  
+**Expected Answer**: Use `re.split()` to split a string based on a pattern.  
+**Sample Code**:
+```python
+import re
+print(re.split(r'\s+', 'hello   world'))  # Output: ['hello', 'world']
+```
+**Layman’s Explanation**: Splitting with regex is like cutting a sentence into pieces wherever there’s a space.
+
+---
+
+#### Question 21
+**Question**: How do you use regex in web scraping with BeautifulSoup?  
+**Expected Answer**: Use regex with `BeautifulSoup` to find tags or attributes matching patterns.  
+**Sample Code**:
+```python
+from bs4 import BeautifulSoup
+import re
+html = '<a href="page1.html">Link</a>'
+soup = BeautifulSoup(html, 'html.parser')
+print(soup.find_all('a', href=re.compile(r'page\d+\.html')))  # Output: [<a href="page1.html">Link</a>]
+```
+**Layman’s Explanation**: In web scraping, regex is like searching a webpage for links that match a pattern.
+
+---
+
+#### Question 22
+**Question**: How do you handle regex errors in Python?  
+**Expected Answer**: Catch `re.error` for invalid patterns using `try-except`.  
+**Sample Code**:
+```python
+import re
+try:
+    re.compile(r'[')
+except re.error:
+    print("Invalid regex")  # Output: Invalid regex
+```
+**Layman’s Explanation**: Regex errors are like typos in a search pattern; catch them to avoid crashes.
+
+---
+
+#### Question 23
+**Question**: How do you use regex with SQLAlchemy in 2025?  
+**Expected Answer**: Use regex in database queries with `like()` or `op('REGEXP')` for pattern matching.  
+**Sample Code**:
+```python
+from sqlalchemy import Column, String
+from sqlalchemy.ext.declarative import declarative_base
+Base = declarative_base()
+class User(Base):
+    __tablename__ = 'users'
+    name = Column(String)
+# Query: SELECT * FROM users WHERE name REGEXP '\d+'
+```
+**Layman’s Explanation**: In SQLAlchemy, regex is like searching a database for names with numbers in them.
+
+---
+
+#### Question 24
+**Question**: How do you optimize regex performance?  
+**Expected Answer**: Use `re.compile()`, avoid backtracking, and keep patterns simple.  
+**Sample Code**:
+```python
+import re
+pattern = re.compile(r'\d+')
+print([pattern.search(text).group() for text in ['abc123', 'def456']])  # Output: ['123', '456']
+```
+**Layman’s Explanation**: Optimizing regex is like making your search tool faster by saving the pattern and keeping it simple.
+
+---
+
+#### Question 25
+**Question**: How do you use regex for date validation?  
+**Expected Answer**: Use a pattern like `r'\d{2}-\d{2}-\d{4}'` to validate dates.  
+**Sample Code**:
+```python
+import re
+date = '09-15-2025'
+print(bool(re.match(r'\d{2}-\d{2}-\d{4}', date)))  # Output: True
+```
+**Layman’s Explanation**: Validating dates is like checking if a string looks like a proper date, like `09-15-2025`.
+
+---
+
+#### Question 26
+**Question**: How do you use regex in async applications in 2025?  
+**Expected Answer**: Use regex in async functions (e.g., FastAPI) for real-time text processing.  
+**Sample Code**:
+```python
+import asyncio
+import re
+async def parse_text(text):
+    return re.search(r'\d+', text).group()
+print(asyncio.run(parse_text('abc123')))  # Output: 123
+```
+**Layman’s Explanation**: In async apps, regex is like a fast search tool that works while handling other tasks, like in a busy website.
+
+---
+
+#### Question 27
+**Question**: How do you use regex with type hints in Python?  
+**Expected Answer**: Use `re.Pattern` for compiled patterns and `Optional[str]` for matches.  
+**Sample Code**:
+```python
+from typing import Optional
+import re
+def find_number(text: str, pattern: re.Pattern) -> Optional[str]:
+    match = pattern.search(text)
+    return match.group() if match else None
+p = re.compile(r'\d+')
+print(find_number('abc123', p))  # Output: 123
+```
+**Layman’s Explanation**: Type hints with regex are like labeling your search tool to ensure it returns the right kind of result.
+
+---
+
+#### Question 28
+**Question**: How do you test regex patterns with `pytest`?  
+**Expected Answer**: Use `pytest` to assert regex matches, handling edge cases.  
+**Sample Code**:
+```python
+import pytest
+import re
+def test_email():
+    pattern = re.compile(r'[\w\.-]+@[\w\.-]+\.\w+')
+    assert pattern.match('user@domain.com')
+# Run: pytest script.py
+# Output: Test passes
+```
+**Layman’s Explanation**: Testing regex is like checking if your search tool finds the right patterns in text.
+
+---
+
+#### Question 29
+**Question**: How do you use regex to mask sensitive data?  
+**Expected Answer**: Use `re.sub()` to replace sensitive data like credit card numbers with placeholders.  
+**Sample Code**:
+```python
+import re
+text = 'Card: 1234-5678-9012-3456'
+print(re.sub(r'\d{4}-\d{4}-\d{4}-\d{4}', 'XXXX-XXXX-XXXX-XXXX', text))  # Output: Card: XXXX-XXXX-XXXX-XXXX
+```
+**Layman’s Explanation**: Masking is like hiding a credit card number by replacing it with Xs for privacy.
+
+---
+
+#### Question 30
+**Question**: What are common regex pitfalls, and how can you avoid them?  
+**Expected Answer**: Pitfalls include ReDoS (slow patterns), invalid syntax, and overcomplexity. Avoid with simple patterns, testing, and `try-except`.  
+**Sample Code**:
+```python
+import re
+try:
+    re.compile(r'(a+)+')  # Potentially slow pattern
+except re.error:
+    print("Invalid regex")  # Avoids crash
+```
+**Layman’s Explanation**: Regex pitfalls are like making a search pattern too complicated, slowing things down; keep it simple and test it.
+
+---
+
+This comprehensive guide covers the theory of regex in Python and provides 30 interview questions with detailed answers, inline code samples, and layman’s explanations tailored for a 4-year experienced developer in 2025. Let me know if you need further clarification or additional topics!
+
+<xaiArtifact artifact_id="2494df7f-7ee7-4034-a0ba-744f670d3efc" artifact_version_id="6da31ec3-9772-4b88-a7b1-161e375f4a81" title="regex_examples.py" contentType="text/python">
+# Example 1: Basic regex search
+import re
+print(re.search(r'\d+', 'abc123').group())  # Output: 123
+
+# Example 2: Replace with re.sub
+import re
+print(re.sub(r'\w+', 'X', 'hello world'))  # Output: X X
+
+# Example 3: Compiled pattern
+import re
+pattern = re.compile(r'[a-z]+')
+print(pattern.findall('hello123world'))  # Output: ['hello', 'world']
+
+# Example 4: Named groups
+import re
+match = re.search(r'(?P<year>\d{4})-(?P<month>\d{2})', '2025-09')
+print(match.groupdict())  # Output: {'year': '2025', 'month': '09'}
+</xaiArtifact>

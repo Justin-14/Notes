@@ -1,0 +1,730 @@
+### Part 1: Theory of Logging in Python
+
+#### What is Logging in Python?
+Logging in Python is a mechanism to record events, errors, and operational information during program execution. It is handled by the built-in `logging` module, which provides a flexible and standardized way to log messages at different severity levels (e.g., DEBUG, INFO, WARNING, ERROR, CRITICAL). Logging is essential for debugging, monitoring, and auditing applications, offering more control and configurability than using `print()` statements. In 2025, logging remains critical for debugging complex systems, monitoring microservices, and ensuring observability in production environments, especially with frameworks like FastAPI, Flask, and cloud-based deployments.
+
+#### Key Components
+1. **Log Levels**:
+   - **DEBUG**: Detailed information for debugging (e.g., variable values).
+   - **INFO**: General operational information (e.g., program started).
+   - **WARNING**: Potential issues that don’t stop execution (e.g., deprecated feature used).
+   - **ERROR**: Serious issues causing failures (e.g., file not found).
+   - **CRITICAL**: Fatal errors stopping the program (e.g., database connection lost).
+   - Default level is `WARNING`; messages below the set level are ignored.
+
+2. **Logger**:
+   - A `Logger` object is the primary interface for logging, created via `logging.getLogger(name)`.
+   - Named loggers allow hierarchical organization (e.g., `app.module`).
+   - Example: `logger = logging.getLogger("my_app")`.
+
+3. **Handlers**:
+   - Handlers define where log messages go (e.g., console, file, network).
+   - Common handlers:
+     - `StreamHandler`: Outputs to console (`sys.stdout` or `sys.stderr`).
+     - `FileHandler`: Writes to a file.
+     - `RotatingFileHandler`: Rotates logs based on size.
+     - `TimedRotatingFileHandler`: Rotates logs based on time.
+   - Example: `logging.StreamHandler()`.
+
+4. **Formatters**:
+   - Define the format of log messages (e.g., timestamp, level, message).
+   - Example: `logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")`.
+
+5. **Filters**:
+   - Restrict log messages based on criteria (e.g., module or custom logic).
+   - Example: Filter logs from a specific module.
+
+6. **Configuration**:
+   - Configure via code (e.g., `logging.basicConfig`) or configuration files (e.g., JSON, YAML).
+   - Example: `logging.basicConfig(level=logging.DEBUG, filename="app.log")`.
+
+#### How Logging Works
+- **Message Flow**:
+  - A log message is created using methods like `logger.debug("message")`.
+  - The logger checks if the message’s level meets the configured threshold.
+  - If allowed, the message is passed to handlers, which apply formatters and filters before outputting to destinations (e.g., console, file).
+- **Hierarchy**:
+  - Loggers are hierarchical (e.g., `app.module` inherits from `app`).
+  - The root logger (`logging.getLogger("")`) is the default parent.
+- **Propagation**:
+  - By default, loggers propagate messages to parent loggers unless disabled (`logger.propagate = False`).
+- **Thread Safety**:
+  - The `logging` module is thread-safe, suitable for multithreaded applications.
+  - For async applications (e.g., FastAPI), use `logging` with care to avoid blocking.
+
+#### Key Features
+- **Severity Levels**: Allow prioritization of messages based on importance.
+- **Multiple Destinations**: Log to console, files, or remote servers simultaneously.
+- **Customizable Formatting**: Control message appearance (e.g., include timestamps, module names).
+- **Contextual Information**: Add extra data via `extra` parameter or custom filters.
+- **Integration with Frameworks**:
+  - **FastAPI**: Log API requests/responses or errors.
+  - **Flask**: Log route handling or middleware events.
+  - **Pandas/NumPy**: Log data processing steps or errors.
+  - **Pydantic**: Log validation failures or custom logic.
+- **Third-Party Libraries**:
+  - **structlog**: Structured logging for JSON output, popular in 2025 for observability.
+  - **loguru**: Simplified logging with colorful output and easy configuration.
+  - **sentry-sdk**: For error tracking and monitoring in production.
+
+#### Use Cases
+- **Debugging**: Log variable states or execution flow during development.
+- **Monitoring**: Track application health in production (e.g., API uptime).
+- **Auditing**: Record user actions or security events (e.g., login attempts).
+- **Error Tracking**: Log exceptions for post-mortem analysis.
+- **Performance Analysis**: Log execution times for profiling.
+- **Microservices**: Centralized logging for distributed systems (e.g., with ELK stack or cloud logging like AWS CloudWatch).
+
+#### Advanced Concepts
+- **Structured Logging**:
+  - Log data in machine-readable formats (e.g., JSON) for analysis with tools like Elasticsearch.
+  - Example: `structlog` for key-value pair logging.
+- **Asynchronous Logging**:
+  - Use async handlers (e.g., `QueueHandler`) for non-blocking logging in async applications like FastAPI.
+  - Example: 
+    ```python
+    import logging.handlers
+    queue_handler = logging.handlers.QueueHandler(queue)
+    ```
+- **Context Managers**:
+  - Use `logging` with context managers to add temporary context (e.g., request IDs).
+  - Example: `logging.LoggerAdapter` for adding contextual data.
+- **Log Rotation**:
+  - Use `RotatingFileHandler` or `TimedRotatingFileHandler` to manage log file size or age.
+  - Example: Rotate logs daily or after reaching 1MB.
+- **Cloud Integration**:
+  - In 2025, integrate with cloud platforms (e.g., AWS CloudWatch, Google Cloud Logging) for centralized logging.
+  - Example: Use `watchtower` for AWS CloudWatch integration.
+- **Performance**:
+  - **Overhead**: Logging adds minimal overhead, but excessive DEBUG logging or I/O-bound handlers (e.g., file writes) can slow performance.
+  - Optimize by filtering low-level logs in production or using async handlers.
+- **Security**:
+  - Avoid logging sensitive data (e.g., passwords, tokens).
+  - Sanitize logs using custom filters or libraries like `structlog`.
+
+#### Best Practices
+- Use named loggers (`logging.getLogger(__name__)`) for modularity.
+- Set appropriate log levels (e.g., `DEBUG` for development, `INFO` or higher for production).
+- Use formatters to include timestamps, levels, and module names.
+- Avoid logging sensitive information; use filters to sanitize data.
+- Use `logging.basicConfig` for simple setups, but prefer configuration files for complex applications.
+- Enable log rotation to prevent disk space issues.
+- Use structured logging (e.g., `structlog`) for modern observability needs.
+- Test logging behavior with unit tests (e.g., `pytest` with `caplog`).
+- In async applications, use non-blocking handlers to avoid performance bottlenecks.
+- Integrate with monitoring tools (e.g., Sentry, CloudWatch) for production systems.
+
+#### Layman’s Explanation of Logging
+Logging is like keeping a diary for your program. Instead of just printing messages to the screen, you write notes about what’s happening—like “started the app” or “found an error”—to a file or console. You can choose how important a note is (like “urgent” or “just for debugging”) and where it goes (like a file or a remote server). It’s like having a security camera that records everything your program does, so you can check later if something went wrong.
+
+---
+
+### Part 2: Top 30 Interview Questions for a 4-Year Experienced Python Developer (Focused on Logging)
+
+Below are 30 interview questions tailored for a Python developer with 4 years of experience, focusing on logging and related concepts. Each question includes the expected answer, sample code (provided inline as requested), and a layman’s explanation, designed to be relevant for 2025.
+
+#### Question 1
+**Question**: What is the purpose of the `logging` module in Python?  
+**Expected Answer**: The `logging` module records events, errors, and operational details during program execution, offering more control than `print()` for debugging and monitoring.  
+**Sample Code**:
+```python
+import logging
+logging.basicConfig(level=logging.INFO)
+logging.info("Program started")
+# Output: INFO:root:Program started
+```
+**Layman’s Explanation**: Logging is like writing a note in a diary about what your program is doing, so you can look back and see what happened.
+
+---
+
+#### Question 2
+**Question**: What are the default log levels in Python’s `logging` module?  
+**Expected Answer**: The levels are DEBUG (10), INFO (20), WARNING (30), ERROR (40), and CRITICAL (50), determining message severity.  
+**Sample Code**:
+```python
+import logging
+logging.basicConfig(level=logging.DEBUG)
+logging.debug("Debug message")
+logging.info("Info message")
+logging.warning("Warning message")
+# Output: DEBUG:root:Debug message
+#         INFO:root:Info message
+#         WARNING:root:Warning message
+```
+**Layman’s Explanation**: Log levels are like priority tags—DEBUG for small details, INFO for normal updates, and so on, up to CRITICAL for major problems.
+
+---
+
+#### Question 3
+**Question**: How do you configure basic logging in Python?  
+**Expected Answer**: Use `logging.basicConfig` to set level, format, and output (e.g., console or file).  
+**Sample Code**:
+```python
+import logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.info("App started")
+# Output: 2025-09-15 22:27:45,123 - INFO - App started
+```
+**Layman’s Explanation**: `basicConfig` is like setting up a diary’s format, deciding what details (like time) to include and where to write (console or file).
+
+---
+
+#### Question 4
+**Question**: How do you create a named logger?  
+**Expected Answer**: Use `logging.getLogger(name)` to create a logger with a specific name, typically `__name__` for module-level logging.  
+**Sample Code**:
+```python
+import logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+logger.info("Module started")
+# Output: INFO:__main__:Module started
+```
+**Layman’s Explanation**: A named logger is like labeling a diary with your project’s name, so you know which part of the program wrote the note.
+
+---
+
+#### Question 5
+**Question**: How do you log to a file instead of the console?  
+**Expected Answer**: Use `logging.basicConfig` with `filename` or add a `FileHandler` to a logger.  
+**Sample Code**:
+```python
+import logging
+logging.basicConfig(filename="app.log", level=logging.INFO)
+logging.info("Logged to file")
+# Output (in app.log): INFO:root:Logged to file
+```
+**Layman’s Explanation**: Logging to a file is like saving your diary entries to a notebook instead of shouting them out loud.
+
+---
+
+#### Question 6
+**Question**: How do you use a `FileHandler` for logging?  
+**Expected Answer**: Create a `FileHandler`, set a formatter, and add it to a logger to write logs to a file.  
+**Sample Code**:
+```python
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler("app.log")
+handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+logger.addHandler(handler)
+logger.info("File logging")
+# Output (in app.log): 2025-09-15 22:27:45,123 - INFO - File logging
+```
+**Layman’s Explanation**: A `FileHandler` is like choosing a specific notebook to write your diary entries in, with a format you like.
+
+---
+
+#### Question 7
+**Question**: How do you format log messages?  
+**Expected Answer**: Use a `Formatter` to define the structure of log messages, including attributes like timestamp, level, or module.  
+**Sample Code**:
+```python
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+logger.addHandler(handler)
+logger.info("Formatted log")
+# Output: 2025-09-15 22:27:45,123 - __main__ - INFO - Formatted log
+```
+**Layman’s Explanation**: Formatting logs is like choosing how to write diary entries, like adding the date, time, and topic for clarity.
+
+---
+
+#### Question 8
+**Question**: How do you log exceptions?  
+**Expected Answer**: Use `logger.exception()` to log exceptions with stack traces, typically within a `try-except` block.  
+**Sample Code**:
+```python
+import logging
+logging.basicConfig(level=logging.ERROR)
+try:
+    1 / 0
+except ZeroDivisionError:
+    logging.exception("An error occurred")
+# Output: ERROR:root:An error occurred
+#         Traceback (most recent call last):
+#         ...
+#         ZeroDivisionError: division by zero
+```
+**Layman’s Explanation**: Logging exceptions is like writing a detailed note about a mistake, including exactly where and why it happened.
+
+---
+
+#### Question 9
+**Question**: How does logger hierarchy work?  
+**Expected Answer**: Loggers are hierarchical; child loggers (e.g., `app.module`) inherit settings from parent loggers (e.g., `app`) unless overridden.  
+**Sample Code**:
+```python
+import logging
+logging.basicConfig(level=logging.INFO)
+parent = logging.getLogger("app")
+child = logging.getLogger("app.module")
+child.info("Child log")
+# Output: INFO:app.module:Child log
+```
+**Layman’s Explanation**: Logger hierarchy is like a family tree—child diaries (loggers) follow the rules of parent diaries unless they set their own.
+
+---
+
+#### Question 10
+**Question**: How do you disable log propagation?  
+**Expected Answer**: Set `logger.propagate = False` to prevent a logger from passing messages to its parent loggers.  
+**Sample Code**:
+```python
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("app.module")
+logger.propagate = False
+handler = logging.StreamHandler()
+logger.addHandler(handler)
+logger.info("No propagation")
+# Output: INFO:app.module:No propagation (only from logger, not root)
+```
+**Layman’s Explanation**: Disabling propagation is like telling a diary not to share its notes with the family diary, keeping them private.
+
+---
+
+#### Question 11
+**Question**: How do you use `RotatingFileHandler` for log rotation?  
+**Expected Answer**: Use `RotatingFileHandler` to rotate log files based on size, creating backups when a file reaches a limit.  
+**Sample Code**:
+```python
+import logging.handlers
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.handlers.RotatingFileHandler("app.log", maxBytes=100, backupCount=3)
+handler.setFormatter(logging.Formatter("%(message)s"))
+logger.addHandler(handler)
+for i in range(5):
+    logger.info("Log " * 10)
+# Output: Creates app.log, app.log.1, etc., when size exceeds 100 bytes
+```
+**Layman’s Explanation**: Log rotation is like starting a new notebook when the old one’s full, keeping a few old ones as backups.
+
+---
+
+#### Question 12
+**Question**: How do you use `TimedRotatingFileHandler`?  
+**Expected Answer**: Use `TimedRotatingFileHandler` to rotate logs based on time (e.g., daily), appending timestamps to filenames.  
+**Sample Code**:
+```python
+import logging.handlers
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.handlers.TimedRotatingFileHandler("app.log", when="s", interval=1, backupCount=3)
+handler.setFormatter(logging.Formatter("%(message)s"))
+logger.addHandler(handler)
+logger.info("Timed log")
+# Output: Creates app.log, app.log.2025-09-15_22-27-45, etc., per second
+```
+**Layman’s Explanation**: Timed rotation is like starting a new diary every day, naming old ones with the date to keep track.
+
+---
+
+#### Question 13
+**Question**: How do you log to multiple destinations?  
+**Expected Answer**: Add multiple handlers (e.g., `StreamHandler`, `FileHandler`) to a logger.  
+**Sample Code**:
+```python
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+console = logging.StreamHandler()
+file = logging.FileHandler("app.log")
+console.setFormatter(logging.Formatter("%(message)s"))
+file.setFormatter(logging.Formatter("%(asctime)s - %(message)s"))
+logger.addHandler(console)
+logger.addHandler(file)
+logger.info("Multi-destination")
+# Output (console): Multi-destination
+# Output (app.log): 2025-09-15 22:27:45,123 - Multi-destination
+```
+**Layman’s Explanation**: Logging to multiple places is like writing notes in both a diary and a public board, so everyone can see.
+
+---
+
+#### Question 14
+**Question**: How do you use filters in logging?  
+**Expected Answer**: Create a `logging.Filter` subclass or function to restrict logs based on criteria (e.g., module or content).  
+**Sample Code**:
+```python
+import logging
+class MyFilter(logging.Filter):
+    def filter(self, record):
+        return "important" in record.msg.lower()
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+handler.addFilter(MyFilter())
+logger.addHandler(handler)
+logger.info("Important message")
+logger.info("Regular message")
+# Output: Important message
+```
+**Layman’s Explanation**: A filter is like a gatekeeper who only lets diary entries with certain words, like “important,” through.
+
+---
+
+#### Question 15
+**Question**: How do you log contextual information?  
+**Expected Answer**: Use the `extra` parameter or `LoggerAdapter` to add custom data to log messages.  
+**Sample Code**:
+```python
+import logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format="%(user)s - %(message)s")
+logger.info("User action", extra={"user": "Alice"})
+# Output: Alice - User action
+```
+**Layman’s Explanation**: Contextual logging is like adding a “who did it” note to your diary, like saying “Alice did this.”
+
+---
+
+#### Question 16
+**Question**: How do you use `LoggerAdapter` for logging?  
+**Expected Answer**: `LoggerAdapter` wraps a logger to add contextual data to every log message without `extra`.  
+**Sample Code**:
+```python
+import logging
+class CustomAdapter(logging.LoggerAdapter):
+    def process(self, msg, kwargs):
+        return f"[User: {self.extra['user']}] {msg}", kwargs
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+adapter = CustomAdapter(logger, {"user": "Alice"})
+adapter.info("Action")
+# Output: INFO:__main__:[User: Alice] Action
+```
+**Layman’s Explanation**: `LoggerAdapter` is like a diary that automatically adds “by Alice” to every entry, saving you from writing it each time.
+
+---
+
+#### Question 17
+**Question**: How do you configure logging using a configuration file?  
+**Expected Answer**: Use a dictionary or file (e.g., JSON, YAML) with `logging.config` to define loggers, handlers, and formatters.  
+**Sample Code**:
+```python
+import logging.config
+config = {
+    "version": 1,
+    "formatters": {"simple": {"format": "%(levelname)s: %(message)s"}},
+    "handlers": {"console": {"class": "logging.StreamHandler", "formatter": "simple"}},
+    "loggers": {"my_app": {"level": "INFO", "handlers": ["console"]}}
+}
+logging.config.dictConfig(config)
+logger = logging.getLogger("my_app")
+logger.info("Configured")
+# Output: INFO: Configured
+```
+**Layman’s Explanation**: A config file is like a rulebook for your diary, telling it how to format entries and where to store them.
+
+---
+
+#### Question 18
+**Question**: How do you use logging in FastAPI in 2025?  
+**Expected Answer**: Use `logging` to log API requests, responses, or errors, often with custom middleware or decorators.  
+**Sample Code**:
+```python
+from fastapi import FastAPI
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+app = FastAPI()
+@app.get("/items")
+async def get_items():
+    logger.info("Fetching items")
+    return {"items": [1, 2, 3]}
+# Run: uvicorn script:app --reload
+# Output: INFO:__main__:Fetching items
+```
+**Layman’s Explanation**: In FastAPI, logging is like keeping a log of every customer order at a restaurant, noting what they asked for.
+
+---
+
+#### Question 19
+**Question**: How do you use logging with Pydantic in 2025?  
+**Expected Answer**: Log validation errors or data processing steps in Pydantic models using `@validator` or custom logic.  
+**Sample Code**:
+```python
+from pydantic import BaseModel, validator
+import logging
+logging.basicConfig(level=logging.ERROR)
+logger = logging.getLogger(__name__)
+class Item(BaseModel):
+    value: int
+    @validator("value")
+    def check_positive(cls, v):
+        if v <= 0:
+            logger.error(f"Invalid value: {v}")
+            raise ValueError("Must be positive")
+        return v
+try:
+    Item(value=-1)
+except ValueError:
+    pass
+# Output: ERROR:__main__:Invalid value: -1
+```
+**Layman’s Explanation**: In Pydantic, logging is like noting when a form has a wrong answer, like a negative number, before rejecting it.
+
+---
+
+#### Question 20
+**Question**: How do you use structured logging with `structlog` in 2025?  
+**Expected Answer**: Use `structlog` for JSON-formatted logs, enabling machine-readable output for observability tools.  
+**Sample Code**:
+```python
+import structlog
+structlog.configure(processors=[structlog.processors.JSONRenderer()])
+logger = structlog.get_logger()
+logger.info("App started", user="Alice")
+# Output: {"event": "App started", "user": "Alice"}
+```
+**Layman’s Explanation**: Structured logging is like writing diary entries as neat key-value pairs, like a database, so computers can read them easily.
+
+---
+
+#### Question 21
+**Question**: How do you use `loguru` for simplified logging?  
+**Expected Answer**: `loguru` provides a simpler API than `logging`, with colorful output and easy configuration.  
+**Sample Code**:
+```python
+from loguru import logger
+logger.info("App started")
+# Output: 2025-09-15 22:27:45.123 | INFO     | __main__:<module>:2 - App started
+```
+**Layman’s Explanation**: `loguru` is like a fancy diary that’s easy to write in and adds colors to make notes stand out.
+
+---
+
+#### Question 22
+**Question**: How do you log to a remote server (e.g., AWS CloudWatch)?  
+**Expected Answer**: Use a library like `watchtower` to send logs to a remote service like CloudWatch, integrating with cloud platforms.  
+**Sample Code**:
+```python
+import logging
+import watchtower
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+handler = watchtower.CloudWatchLogHandler(log_group="my-app")
+logger.addHandler(handler)
+logger.info("Cloud log")
+# Output: Sent to AWS CloudWatch log group "my-app"
+```
+**Layman’s Explanation**: Remote logging is like sending your diary entries to a cloud server, so you can check them from anywhere.
+
+---
+
+#### Question 23
+**Question**: How do you handle sensitive data in logs?  
+**Expected Answer**: Use filters or custom processors to redact or exclude sensitive data (e.g., passwords) from logs.  
+**Sample Code**:
+```python
+import logging
+class NoPasswordFilter(logging.Filter):
+    def filter(self, record):
+        record.msg = record.msg.replace("password", "[REDACTED]")
+        return True
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+handler.addFilter(NoPasswordFilter())
+logger.addHandler(handler)
+logger.info("User password: secret")
+# Output: INFO:__main__:User [REDACTED]: secret
+```
+**Layman’s Explanation**: Handling sensitive data is like blacking out private info in a diary before sharing it, keeping secrets safe.
+
+---
+
+#### Question 24
+**Question**: How do you use logging in a multithreaded application?  
+**Expected Answer**: The `logging` module is thread-safe; use `QueueHandler` for additional safety in high-concurrency scenarios.  
+**Sample Code**:
+```python
+import logging
+import threading
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+def worker(n):
+    logger.info(f"Thread {n} running")
+threads = [threading.Thread(target=worker, args=(i,)) for i in range(3)]
+for t in threads:
+    t.start()
+for t in threads:
+    t.join()
+# Output: INFO:__main__:Thread 0 running
+#         INFO:__main__:Thread 1 running
+#         INFO:__main__:Thread 2 running
+```
+**Layman’s Explanation**: Logging in threads is like multiple workers writing to the same diary without messing up each other’s notes.
+
+---
+
+#### Question 25
+**Question**: How do you use logging in async applications like FastAPI?  
+**Expected Answer**: Use `QueueHandler` or async-compatible handlers to avoid blocking; ensure non-blocking I/O for performance.  
+**Sample Code**:
+```python
+from fastapi import FastAPI
+import logging.handlers
+import queue
+app = FastAPI()
+logger = logging.getLogger(__name__)
+q = queue.Queue()
+handler = logging.handlers.QueueHandler(q)
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
+@app.get("/items")
+async def get_items():
+    logger.info("Async log")
+    return {"items": [1, 2, 3]}
+# Run: uvicorn script:app --reload
+# Output: INFO:__main__:Async log
+```
+**Layman’s Explanation**: Async logging is like writing notes without pausing a busy restaurant, using a queue to handle orders smoothly.
+
+---
+
+#### Question 26
+**Question**: How do you test logging output in Python?  
+**Expected Answer**: Use `pytest` with `caplog` to capture and verify log messages in unit tests.  
+**Sample Code**:
+```python
+import logging
+import pytest
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+def test_logging(caplog):
+    caplog.set_level(logging.INFO)
+    logger.info("Test message")
+    assert "Test message" in caplog.text
+# Run: pytest script.py
+# Output: Test passes if "Test message" is logged
+```
+**Layman’s Explanation**: Testing logs is like checking your diary to ensure the right notes were written during a task.
+
+---
+
+#### Question 27
+**Question**: How do you integrate logging with Sentry in 2025?  
+**Expected Answer**: Use `sentry-sdk` to capture errors and logs, sending them to Sentry for monitoring.  
+**Sample Code**:
+```python
+import sentry_sdk
+import logging
+sentry_sdk.init(dsn="your-dsn")
+logging.basicConfig(level=logging.ERROR)
+logger = logging.getLogger(__name__)
+try:
+    1 / 0
+except ZeroDivisionError:
+    logger.exception("Sentry error")
+# Output: Error sent to Sentry dashboard
+```
+**Layman’s Explanation**: Sentry logging is like sending your diary’s error pages to a control room for someone to monitor and fix issues.
+
+---
+
+#### Question 28
+**Question**: How do you use logging for performance profiling?  
+**Expected Answer**: Log execution times of functions or operations to identify bottlenecks.  
+**Sample Code**:
+```python
+import logging
+import time
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+def slow_function():
+    start = time.time()
+    time.sleep(1)
+    logger.info(f"Slow function took {time.time() - start} seconds")
+slow_function()
+# Output: INFO:__main__:Slow function took 1.00... seconds
+```
+**Layman’s Explanation**: Performance logging is like timing how long each task takes in your diary, so you know what’s slowing you down.
+
+---
+
+#### Question 29
+**Question**: How do you handle log levels in production vs. development?  
+**Expected Answer**: Use `DEBUG` in development for detailed logs; use `INFO` or higher in production to reduce noise and improve performance.  
+**Sample Code**:
+```python
+import logging
+import os
+level = logging.DEBUG if os.getenv("ENV") == "dev" else logging.INFO
+logging.basicConfig(level=level)
+logger = logging.getLogger(__name__)
+logger.debug("Debug message")
+logger.info("Info message")
+# Output (dev): DEBUG:__main__:Debug message
+#              INFO:__main__:Info message
+# Output (prod): INFO:__main__:Info message
+```
+**Layman’s Explanation**: Log levels in production are like writing only important notes in a diary for work, but adding all details when practicing at home.
+
+---
+
+#### Question 30
+**Question**: What are common pitfalls with logging, and how can you avoid them?  
+**Expected Answer**: Pitfalls include excessive logging, sensitive data exposure, and blocking I/O. Avoid by using appropriate levels, sanitizing data, and using async handlers.  
+**Sample Code**:
+```python
+import logging
+class SanitizeFilter(logging.Filter):
+    def filter(self, record):
+        record.msg = record.msg.replace("secret", "[REDACTED]")
+        return True
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+handler.addFilter(SanitizeFilter())
+logger.addHandler(handler)
+logger.info("User secret: 123")
+# Output: INFO:__main__:User [REDACTED]: 123
+```
+**Layman’s Explanation**: Pitfalls are like writing too much or private info in a diary; avoid by being selective and hiding sensitive details.
+
+---
+
+This comprehensive guide covers the theory of logging in Python and provides 30 interview questions with detailed answers, inline code samples, and layman’s explanations tailored for a 4-year experienced developer in 2025. Let me know if you need further clarification or additional topics!
+
+<xaiArtifact artifact_id="560e6394-5744-458c-89d9-e3836c3782bf" artifact_version_id="2a6115b8-6dcd-4657-b5f8-d4075ec247ea" title="logging_examples.py" contentType="text/python">
+import logging
+
+# Example 1: Basic logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.info("Basic logging")
+# Output: 2025-09-15 22:27:45,123 - INFO - Basic logging
+
+# Example 2: Named logger with FileHandler
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler("app.log")
+handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(message)s"))
+logger.addHandler(handler)
+logger.info("File logging")
+# Output (in app.log): 2025-09-15 22:27:45,123 - __main__ - File logging
+
+# Example 3: Exception logging
+logging.basicConfig(level=logging.ERROR)
+try:
+    1 / 0
+except ZeroDivisionError:
+    logging.exception("Exception occurred")
+# Output: ERROR:root:Exception occurred
+#         Traceback (most recent call last):
+#         ...
+#         ZeroDivisionError: division by zero
+
+# Example 4: Structured logging with structlog
+import structlog
+structlog.configure(processors=[structlog.processors.JSONRenderer()])
+logger = structlog.get_logger()
+logger.info("Structured log", user="Alice")
+# Output: {"event": "Structured log", "user": "Alice"}
+</xaiArtifact>

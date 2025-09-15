@@ -1,0 +1,644 @@
+### Part 1: Theory of Functions in Python
+
+#### What is a Function in Python?
+A function in Python is a reusable block of code that performs a specific task, takes inputs (arguments), and optionally returns an output. Functions promote modularity, code reuse, and readability, allowing developers to break down complex programs into manageable, organized pieces. Introduced as a fundamental concept in Python, functions are essential for structuring code in applications, from simple scripts to large-scale systems in 2025.
+
+#### Key Components
+1. **Definition**:
+   - Defined using the `def` keyword, followed by the function name, parameters in parentheses, and a colon.
+   - Syntax: 
+     ```python
+     def function_name(parameters):
+         # Code block
+         return value  # Optional
+     ```
+   - Example: `def add(a, b): return a + b`.
+
+2. **Parameters/Arguments**:
+   - **Positional Arguments**: Passed in order (e.g., `add(2, 3)`).
+   - **Keyword Arguments**: Specified with names (e.g., `add(a=2, b=3)`).
+   - **Default Parameters**: Have default values if not provided (e.g., `def greet(name="Guest"): ...`).
+   - **Variable-Length Arguments**: 
+     - `*args`: Collects extra positional arguments as a tuple.
+     - `**kwargs`: Collects extra keyword arguments as a dictionary.
+   - Example: `def func(*args, **kwargs): print(args, kwargs)`.
+
+3. **Return Statement**:
+   - Returns a value to the caller using `return`. If omitted, returns `None`.
+   - Multiple values can be returned as a tuple (e.g., `return x, y`).
+   - Example: `def square(n): return n * n`.
+
+4. **Calling a Function**:
+   - Invoke using the function name and arguments: `result = add(2, 3)`.
+   - Functions can be called multiple times with different inputs.
+
+#### Key Features
+- **Scope and Lifetime**:
+  - Variables defined inside a function are local (accessible only within the function).
+  - Global variables (defined outside) can be accessed but not modified unless declared with `global` or `nonlocal`.
+  - Example: 
+    ```python
+    x = 10  # Global
+    def func():
+        x = 20  # Local
+        print(x)  # Prints 20
+    ```
+- **First-Class Citizens**:
+  - Functions can be assigned to variables, passed as arguments, or returned from other functions.
+  - Example: `f = add; print(f(2, 3))  # Calls add`.
+- **Lambda Functions**:
+  - Anonymous, single-expression functions defined with `lambda`.
+  - Syntax: `lambda arguments: expression`.
+  - Example: `f = lambda x: x * x; print(f(5))  # 25`.
+- **Decorators**:
+  - Functions that modify the behavior of other functions, using `@decorator` syntax.
+  - Common in frameworks like `FastAPI` for adding functionality (e.g., logging, authentication).
+  - Example: 
+    ```python
+    def decorator(func):
+        def wrapper():
+            print("Before")
+            func()
+            print("After")
+        return wrapper
+    ```
+- **Recursion**:
+  - Functions that call themselves to solve problems (e.g., factorial).
+  - Requires a base case to prevent infinite recursion.
+  - Example: `def factorial(n): return 1 if n == 0 else n * factorial(n - 1)`.
+
+#### How Functions Work
+- **Definition**: The `def` statement creates a function object, storing it in memory with its name.
+- **Execution**: When called, Python creates a new local scope, passes arguments, executes the code block, and returns any value.
+- **Stack Frames**: Each function call creates a stack frame to manage variables and execution context, popped when the function returns.
+- **Closure**: Functions can capture variables from their enclosing scope (e.g., in nested functions), used in decorators or callbacks.
+
+#### Use Cases
+- **Code Organization**: Break down complex logic into reusable units (e.g., data processing functions).
+- **Reusability**: Call the same function with different inputs (e.g., a validation function).
+- **Abstraction**: Hide implementation details, exposing only the function’s purpose (e.g., `calculate_tax()`).
+- **Libraries in 2025**:
+  - **Pandas**: Define functions to process DataFrames (e.g., `df.apply(custom_func)`).
+  - **NumPy**: Use functions for array computations (e.g., vectorized operations).
+  - **FastAPI**: Define endpoint functions for API routes (e.g., `@app.get("/items")`).
+  - **Pydantic**: Use functions in custom validators for data models.
+- **Event Handling**: Functions as callbacks in GUI or asynchronous applications.
+- **Data Pipelines**: Functions for ETL (Extract, Transform, Load) in data engineering.
+
+#### Advanced Concepts
+- **Type Hints**:
+  - Use `typing` module to annotate parameters and return types (e.g., `def add(a: int, b: int) -> int:`).
+  - Enhances code clarity and supports static type checking with `mypy`.
+- **Asynchronous Functions**:
+  - Defined with `async def` and used with `await` for non-blocking operations.
+  - Common in `FastAPI` or `asyncio` for I/O-bound tasks in 2025.
+  - Example: `async def fetch_data(): await asyncio.sleep(1)`.
+- **Higher-Order Functions**:
+  - Functions that take other functions as arguments or return them (e.g., `map`, `filter`).
+  - Example: `list(map(lambda x: x * 2, [1, 2, 3]))`.
+- **Closures**:
+  - Inner functions that retain access to outer function variables.
+  - Example: 
+    ```python
+    def outer(x):
+        def inner(y):
+            return x + y
+        return inner
+    ```
+- **Function Annotations**:
+  - Add metadata to parameters and return types (e.g., `def func(x: "count") -> "result":`).
+  - Used for documentation or tools like `mypy`.
+- **Performance**:
+  - **Time Complexity**: Depends on the function’s logic (e.g., O(n) for iterating a list).
+  - Optimize by minimizing redundant computations or using built-in functions.
+  - Avoid excessive recursion due to stack overflow risks.
+- **Functional Programming**:
+  - Python supports functional paradigms with `map`, `filter`, `reduce`, and immutable data patterns.
+  - Example: `from functools import reduce; reduce(lambda x, y: x + y, [1, 2, 3])`.
+
+#### Best Practices
+- Use descriptive function names (e.g., `calculate_total` instead of `calc`).
+- Keep functions small and focused on a single task (Single Responsibility Principle).
+- Use default parameters sparingly to avoid unexpected behavior.
+- Include docstrings for documentation (e.g., `"""Add two numbers."""`).
+- Use type hints for clarity in large codebases.
+- Avoid modifying global variables; prefer explicit parameters and returns.
+- Handle edge cases and errors with `try-except` or validation.
+- Test functions independently with unit tests (e.g., `unittest`, `pytest`).
+- Use `async def` for I/O-bound tasks in modern applications (e.g., `FastAPI` in 2025).
+
+#### Layman’s Explanation of Functions
+A function is like a recipe in a cookbook. You give it ingredients (inputs), follow the steps (code), and get a dish (output). You can use the same recipe multiple times with different ingredients, and it saves you from rewriting the steps every time. Functions make your code neat, reusable, and easier to understand, like having a shortcut for a task you do often.
+
+---
+
+### Part 2: Top 30 Interview Questions for a 4-Year Experienced Python Developer (Focused on Functions)
+
+Below are 30 interview questions tailored for a Python developer with 4 years of experience, focusing on functions and related concepts. Each question includes the expected answer, sample code (provided inline as requested), and a layman’s explanation, designed to be relevant for 2025.
+
+#### Question 1
+**Question**: What is a function in Python, and why is it used?  
+**Expected Answer**: A function is a reusable block of code that performs a specific task, taking inputs and optionally returning an output. It’s used for modularity, code reuse, and readability.  
+**Sample Code**:
+```python
+def add(a, b):
+    return a + b
+print(add(2, 3))  # Output: 5
+```
+**Layman’s Explanation**: A function is like a blender: you put in ingredients (numbers), it processes them (adds them), and gives you a result (the sum).
+
+---
+
+#### Question 2
+**Question**: How do you define and call a function in Python?  
+**Expected Answer**: Define with `def`, a name, parameters, and a body; call by using the name with arguments.  
+**Sample Code**:
+```python
+def greet(name):
+    return f"Hello, {name}!"
+print(greet("Alice"))  # Output: Hello, Alice!
+```
+**Layman’s Explanation**: Defining a function is like writing a recipe; calling it is like using the recipe to make a dish with a specific ingredient, like a name.
+
+---
+
+#### Question 3
+**Question**: What are positional and keyword arguments?  
+**Expected Answer**: Positional arguments are passed in order; keyword arguments are passed with parameter names for clarity or to skip order.  
+**Sample Code**:
+```python
+def describe(name, age):
+    return f"{name} is {age}"
+print(describe("Alice", 25))  # Positional
+print(describe(age=25, name="Alice"))  # Keyword
+# Output: Alice is 25
+#         Alice is 25
+```
+**Layman’s Explanation**: Positional arguments are like giving ingredients in order; keyword arguments are like labeling each ingredient so order doesn’t matter.
+
+---
+
+#### Question 4
+**Question**: How do default parameters work in functions?  
+**Expected Answer**: Default parameters provide fallback values if arguments are not passed, defined in the function signature.  
+**Sample Code**:
+```python
+def greet(name="Guest"):
+    return f"Hello, {name}!"
+print(greet())  # Output: Hello, Guest!
+print(greet("Alice"))  # Output: Hello, Alice!
+```
+**Layman’s Explanation**: Default parameters are like a recipe that uses “vanilla” if you don’t specify a flavor, but you can still choose another.
+
+---
+
+#### Question 5
+**Question**: What are `*args` and `**kwargs` in functions?  
+**Expected Answer**: `*args` collects extra positional arguments as a tuple; `**kwargs` collects extra keyword arguments as a dictionary.  
+**Sample Code**:
+```python
+def func(*args, **kwargs):
+    print(args, kwargs)
+func(1, 2, a=3, b=4)  # Output: (1, 2) {'a': 3, 'b': 4}
+```
+**Layman’s Explanation**: `*args` is like a bag for extra ingredients; `**kwargs` is like a labeled box for extra named items.
+
+---
+
+#### Question 6
+**Question**: What is the `return` statement, and what happens if it’s omitted?  
+**Expected Answer**: `return` sends a value back to the caller; if omitted, the function returns `None`.  
+**Sample Code**:
+```python
+def no_return():
+    print("No return")
+print(no_return())  # Output: No return
+                    #         None
+```
+**Layman’s Explanation**: `return` is like handing back a finished dish; without it, you get an empty plate (`None`).
+
+---
+
+#### Question 7
+**Question**: How does variable scope work in functions?  
+**Expected Answer**: Variables inside a function are local; global variables are accessible but require `global` or `nonlocal` to modify.  
+**Sample Code**:
+```python
+x = 10
+def func():
+    x = 20  # Local
+    print(x)
+func()
+print(x)  # Output: 20
+          #         10
+```
+**Layman’s Explanation**: Scope is like a kitchen: local variables stay inside, global ones are outside, and you need special permission to change the outside ones.
+
+---
+
+#### Question 8
+**Question**: What is a lambda function, and when is it used?  
+**Expected Answer**: A lambda function is an anonymous, single-expression function used for simple, inline operations (e.g., in `map` or `filter`).  
+**Sample Code**:
+```python
+f = lambda x: x * 2
+print(f(5))  # Output: 10
+```
+**Layman’s Explanation**: A lambda is like a quick, one-step recipe you write on the fly, like “double this number,” without naming it.
+
+---
+
+#### Question 9
+**Question**: How do you create a recursive function?  
+**Expected Answer**: A recursive function calls itself with a base case to prevent infinite recursion.  
+**Sample Code**:
+```python
+def factorial(n):
+    if n == 0:
+        return 1
+    return n * factorial(n - 1)
+print(factorial(5))  # Output: 120
+```
+**Layman’s Explanation**: Recursion is like breaking a big task into smaller ones, like calculating 5! by doing 5 * 4!, then 4 * 3!, until you reach 1.
+
+---
+
+#### Question 10
+**Question**: What are decorators, and how are they used?  
+**Expected Answer**: Decorators are functions that wrap other functions to add functionality, like logging or timing, using `@decorator`.  
+**Sample Code**:
+```python
+def log(func):
+    def wrapper():
+        print("Calling", func.__name__)
+        func()
+    return wrapper
+@log
+def hello():
+    print("Hello")
+hello()  # Output: Calling hello
+         #         Hello
+```
+**Layman’s Explanation**: A decorator is like adding a garnish to a dish—it enhances the function with extra steps, like logging before running it.
+
+---
+
+#### Question 11
+**Question**: How can you use type hints in functions?  
+**Expected Answer**: Use `typing` module to annotate parameters and return types for clarity and static type checking with `mypy`.  
+**Sample Code**:
+```python
+from typing import List
+def sum_list(numbers: List[int]) -> int:
+    return sum(numbers)
+print(sum_list([1, 2, 3]))  # Output: 6
+```
+**Layman’s Explanation**: Type hints are like labeling ingredients as “numbers only” to make sure the recipe uses the right stuff.
+
+---
+
+#### Question 12
+**Question**: How do you handle errors in functions?  
+**Expected Answer**: Use `try-except` to catch exceptions and return meaningful results or raise custom errors.  
+**Sample Code**:
+```python
+def divide(a, b):
+    try:
+        return a / b
+    except ZeroDivisionError:
+        return "Cannot divide by zero"
+print(divide(10, 0))  # Output: Cannot divide by zero
+```
+**Layman’s Explanation**: Error handling is like checking if a recipe can work—if you can’t divide by zero, you say so instead of crashing.
+
+---
+
+#### Question 13
+**Question**: How can you use functions with `Pandas` in 2025?  
+**Expected Answer**: Apply custom functions to DataFrame columns or rows using `apply` or `map` for data processing.  
+**Sample Code**:
+```python
+import pandas as pd
+df = pd.DataFrame({"x": [1, 2, 3]})
+def square(x):
+    return x * x
+df["x_squared"] = df["x"].apply(square)
+print(df)
+# Output:    x  x_squared
+#         0  1         1
+#         1  2         4
+#         2  3         9
+```
+**Layman’s Explanation**: With `Pandas`, a function is like a rule to transform each number in a table, like squaring every value.
+
+---
+
+#### Question 14
+**Question**: How can you use functions with `NumPy` arrays?  
+**Expected Answer**: Apply functions to arrays using vectorized operations or element-wise processing with `apply_along_axis`.  
+**Sample Code**:
+```python
+import numpy as np
+arr = np.array([1, 2, 3])
+def square(x):
+    return x * x
+result = np.vectorize(square)(arr)
+print(result)  # Output: [1 4 9]
+```
+**Layman’s Explanation**: With `NumPy`, a function is like a tool that changes every number in a grid, like squaring each one.
+
+---
+
+#### Question 15
+**Question**: How can you use `async def` functions in 2025?  
+**Expected Answer**: Define `async def` functions for non-blocking I/O tasks, used with `await` in `asyncio` or `FastAPI`.  
+**Sample Code**:
+```python
+import asyncio
+async def fetch():
+    await asyncio.sleep(1)
+    return "Done"
+async def main():
+    print(await fetch())
+asyncio.run(main())  # Output: Done
+```
+**Layman’s Explanation**: Async functions are like tasks that wait for something (like a download) without stopping other work, like cooking while waiting for water to boil.
+
+---
+
+#### Question 16
+**Question**: What are higher-order functions, and how are they used?  
+**Expected Answer**: Higher-order functions take or return functions, like `map` or `filter`, for functional programming.  
+**Sample Code**:
+```python
+nums = [1, 2, 3]
+result = list(map(lambda x: x * 2, nums))
+print(result)  # Output: [2, 4, 6]
+```
+**Layman’s Explanation**: Higher-order functions are like handing a recipe to a chef (like `map`) to apply it to every ingredient in a list.
+
+---
+
+#### Question 17
+**Question**: How do closures work in Python functions?  
+**Expected Answer**: Closures are inner functions that retain access to outer function variables, even after the outer function finishes.  
+**Sample Code**:
+```python
+def outer(x):
+    def inner(y):
+        return x + y
+    return inner
+add_5 = outer(5)
+print(add_5(3))  # Output: 8
+```
+**Layman’s Explanation**: A closure is like a recipe that remembers an ingredient (like 5) and uses it later when you add another (like 3).
+
+---
+
+#### Question 18
+**Question**: How can you use functions with `Pydantic` in 2025?  
+**Expected Answer**: Use functions in `Pydantic` validators to enforce custom rules on model fields.  
+**Sample Code**:
+```python
+from pydantic import BaseModel, validator
+class Item(BaseModel):
+    value: int
+    @validator("value")
+    def check_positive(cls, v):
+        if v <= 0:
+            raise ValueError("Must be positive")
+        return v
+print(Item(value=5))  # Output: value=5
+```
+**Layman’s Explanation**: In `Pydantic`, a function is like a gatekeeper checking if a number is positive before letting it into the model.
+
+---
+
+#### Question 19
+**Question**: How can you use functions in `FastAPI` endpoints in 2025?  
+**Expected Answer**: Define endpoint functions with `async def` or `def` to handle API requests, returning responses.  
+**Sample Code**:
+```python
+from fastapi import FastAPI
+app = FastAPI()
+@app.get("/square/{num}")
+async def square(num: int):
+    return {"result": num * num}
+# Run: uvicorn script:app --reload
+# Test: curl http://127.0.0.1:8000/square/5
+# Output: {"result": 25}
+```
+**Layman’s Explanation**: In `FastAPI`, a function is like a waiter taking an order (number) and serving the result (square) to the customer.
+
+---
+
+#### Question 20
+**Question**: How do you document functions using docstrings?  
+**Expected Answer**: Use triple quotes (`"""`) to write descriptive docstrings, explaining purpose, parameters, and return values.  
+**Sample Code**:
+```python
+def add(a: int, b: int) -> int:
+    """Add two numbers.
+    
+    Args:
+        a (int): First number.
+        b (int): Second number.
+    
+    Returns:
+        int: Sum of a and b.
+    """
+    return a + b
+print(add.__doc__)  # Output: Add two numbers...
+```
+**Layman’s Explanation**: A docstring is like a note on a recipe explaining what it does, what ingredients it needs, and what you get.
+
+---
+
+#### Question 21
+**Question**: How can you pass functions as arguments to other functions?  
+**Expected Answer**: Functions, as first-class citizens, can be passed as arguments to other functions for dynamic behavior.  
+**Sample Code**:
+```python
+def apply(func, x):
+    return func(x)
+def square(x):
+    return x * x
+print(apply(square, 5))  # Output: 25
+```
+**Layman’s Explanation**: Passing a function is like giving a chef a specific recipe to use, like “square this number,” to get a result.
+
+---
+
+#### Question 22
+**Question**: How can you return multiple values from a function?  
+**Expected Answer**: Return multiple values as a tuple, which can be unpacked by the caller.  
+**Sample Code**:
+```python
+def stats(numbers):
+    return sum(numbers), len(numbers)
+total, count = stats([1, 2, 3])
+print(total, count)  # Output: 6 3
+```
+**Layman’s Explanation**: Returning multiple values is like handing back a tray with both a sum and a count, which you can pick up separately.
+
+---
+
+#### Question 23
+**Question**: How can you use functions with list comprehensions?  
+**Expected Answer**: Apply functions to elements in a comprehension for concise transformations or filtering.  
+**Sample Code**:
+```python
+def square(x):
+    return x * x
+nums = [1, 2, 3]
+squared = [square(x) for x in nums]
+print(squared)  # Output: [1, 4, 9]
+```
+**Layman’s Explanation**: Using a function in a comprehension is like quickly applying a recipe, like squaring, to every item in a list.
+
+---
+
+#### Question 24
+**Question**: How can you use functions for input validation?  
+**Expected Answer**: Define functions to check inputs, raising exceptions or returning booleans for validity.  
+**Sample Code**:
+```python
+def is_positive(num):
+    if num <= 0:
+        raise ValueError("Must be positive")
+    return num
+try:
+    print(is_positive(5))  # Output: 5
+    print(is_positive(-1))  # Raises ValueError
+except ValueError as e:
+    print(e)
+```
+**Layman’s Explanation**: Validation functions are like checking if an ingredient is fresh before using it, rejecting bad ones.
+
+---
+
+#### Question 25
+**Question**: How can you optimize function performance?  
+**Expected Answer**: Minimize redundant computations, use built-in functions, cache results with `functools.lru_cache`, and avoid deep recursion.  
+**Sample Code**:
+```python
+from functools import lru_cache
+@lru_cache(maxsize=128)
+def fib(n):
+    if n <= 1:
+        return n
+    return fib(n - 1) + fib(n - 2)
+print(fib(10))  # Output: 55
+```
+**Layman’s Explanation**: Optimizing is like saving a recipe’s result so you don’t have to cook it again, speeding things up.
+
+---
+
+#### Question 26
+**Question**: How can you use functions with `map` and `filter`?  
+**Expected Answer**: Use `map` to apply a function to all elements; use `filter` to select elements based on a function’s condition.  
+**Sample Code**:
+```python
+nums = [1, 2, 3]
+squared = list(map(lambda x: x * x, nums))
+evens = list(filter(lambda x: x % 2 == 0, nums))
+print(squared, evens)  # Output: [1, 4, 9] [2]
+```
+**Layman’s Explanation**: `map` is like applying a recipe to every item; `filter` is like picking only the items that fit a rule, like even numbers.
+
+---
+
+#### Question 27
+**Question**: How can you use functions in recursive algorithms?  
+**Expected Answer**: Define recursive functions with base cases for algorithms like tree traversal or factorial calculations.  
+**Sample Code**:
+```python
+def sum_list(lst):
+    if not lst:
+        return 0
+    return lst[0] + sum_list(lst[1:])
+print(sum_list([1, 2, 3]))  # Output: 6
+```
+**Layman’s Explanation**: Recursive functions are like breaking a big pile of numbers into smaller piles, adding one at a time until done.
+
+---
+
+#### Question 28
+**Question**: How can you use functions with `functools.reduce`?  
+**Expected Answer**: Use `reduce` to apply a function cumulatively to an iterable, reducing it to a single value.  
+**Sample Code**:
+```python
+from functools import reduce
+nums = [1, 2, 3]
+total = reduce(lambda x, y: x + y, nums)
+print(total)  # Output: 6
+```
+**Layman’s Explanation**: `reduce` is like combining ingredients one by one, like adding numbers to get a total, using a recipe for each step.
+
+---
+
+#### Question 29
+**Question**: How can you test functions in Python?  
+**Expected Answer**: Use `unittest` or `pytest` to write unit tests, checking function outputs for various inputs, including edge cases.  
+**Sample Code**:
+```python
+import unittest
+def add(a, b):
+    return a + b
+class TestAdd(unittest.TestCase):
+    def test_add(self):
+        self.assertEqual(add(2, 3), 5)
+if __name__ == "__main__":
+    unittest.main(argv=[''], exit=False)
+# Output: OK
+```
+**Layman’s Explanation**: Testing is like trying a recipe with different ingredients to make sure it always works, like checking if 2 + 3 = 5.
+
+---
+
+#### Question 30
+**Question**: What are common pitfalls with functions, and how can you avoid them?  
+**Expected Answer**: Pitfalls include mutable default arguments, global variable misuse, and unclear naming. Avoid by using immutable defaults, explicit parameters, and descriptive names.  
+**Sample Code**:
+```python
+# Bad: Mutable default
+def append(item, lst=[]):  # Bug-prone
+    lst.append(item)
+    return lst
+print(append(1))  # Output: [1]
+print(append(2))  # Output: [1, 2] (shared list)
+# Good
+def append_safe(item, lst=None):
+    lst = lst or []
+    lst.append(item)
+    return lst
+print(append_safe(1))  # Output: [1]
+print(append_safe(2))  # Output: [2]
+```
+**Layman’s Explanation**: Pitfalls are like using the same mixing bowl without cleaning it, causing old ingredients to mix in. Use fresh bowls (immutable defaults) to avoid issues.
+
+---
+
+This comprehensive guide covers the theory of functions in Python and provides 30 interview questions with detailed answers, inline code samples, and layman’s explanations tailored for a 4-year experienced developer in 2025. Let me know if you need further clarification or additional topics!
+
+<xaiArtifact artifact_id="a2a1ea5b-6307-4cb2-8587-3615ac3c2f0c" artifact_version_id="22b217f8-0662-4b72-81cf-2fd2f859a00e" title="function_examples.py" contentType="text/python">
+# Example 1: Basic function
+def add(a: int, b: int) -> int:
+    return a + b
+print(add(2, 3))  # Output: 5
+
+# Example 2: Default parameters
+def greet(name: str = "Guest") -> str:
+    return f"Hello, {name}!"
+print(greet())  # Output: Hello, Guest!
+print(greet("Alice"))  # Output: Hello, Alice!
+
+# Example 3: *args and **kwargs
+def func(*args, **kwargs) -> None:
+    print(args, kwargs)
+func(1, 2, a=3, b=4)  # Output: (1, 2) {'a': 3, 'b': 4}
+
+# Example 4: Lambda function
+square = lambda x: x * x
+print(square(5))  # Output: 25
+</xaiArtifact>

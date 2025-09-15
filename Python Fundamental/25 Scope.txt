@@ -1,0 +1,752 @@
+### Part 1: Theory of Scope in Python
+
+#### What is Scope in Python?
+Scope in Python refers to the region of a program where a variable or name is accessible. It defines the visibility and lifetime of variables, functions, and objects. Python uses a set of rules called **LEGB** (Local, Enclosing, Global, Built-in) to determine where a variable can be accessed and which value it holds. Scope is a fundamental concept for managing variable access, preventing naming conflicts, and ensuring proper program behavior. In 2025, scope remains critical in Python, especially in modern applications using frameworks like FastAPI, Django, and libraries like Pydantic, where proper variable management is essential for scalable and maintainable code.
+
+#### Key Components
+1. **LEGB Rule**:
+   - Python resolves variable names using the LEGB rule, searching in this order:
+     - **Local**: Variables defined inside the current function or block.
+     - **Enclosing**: Variables in the outer function(s) for nested functions (closures).
+     - **Global**: Variables defined at the module level or declared with `global`.
+     - **Built-in**: Python’s built-in names (e.g., `len`, `print`).
+   - Example:
+     ```python
+     x = "global"
+     def outer():
+         x = "enclosing"
+         def inner():
+             x = "local"
+             print(x)  # Output: local
+         inner()
+     outer()
+     ```
+
+2. **Local Scope**:
+   - Variables defined inside a function or block are local and only accessible within that block.
+   - Lifetime: Exists only during the function’s execution.
+   - Example: `x` in `def func(): x = 10` is local to `func`.
+
+3. **Enclosing Scope**:
+   - Applies to nested functions, where the inner function can access variables from the outer function.
+   - Example:
+     ```python
+     def outer():
+         x = "enclosing"
+         def inner():
+             print(x)  # Accesses enclosing x
+         inner()  # Output: enclosing
+     ```
+
+4. **Global Scope**:
+   - Variables defined at the module level or marked with the `global` keyword.
+   - Accessible throughout the module unless shadowed by local variables.
+   - Example: `x = 10` at the top of a file is global.
+
+5. **Built-in Scope**:
+   - Python’s built-in names (e.g., `int`, `str`, `range`) available everywhere unless shadowed.
+   - Example: `print(len("hello"))` uses built-in `len` and `print`.
+
+6. **Keywords for Scope Control**:
+   - `global`: Declares a variable as global, allowing modification in a function.
+   - `nonlocal`: Refers to a variable in the enclosing scope, used in nested functions.
+   - Example:
+     ```python
+     x = 10
+     def func():
+         global x
+         x = 20
+     func()
+     print(x)  # Output: 20
+     ```
+
+#### How Scope Works
+- **Name Resolution**:
+  - When a variable is referenced, Python searches the LEGB scopes in order: Local → Enclosing → Global → Built-in.
+  - If the variable isn’t found, a `NameError` is raised.
+  - Example: `print(undefined_var)` raises `NameError: name 'undefined_var' is not defined`.
+- **Shadowing**:
+  - A variable in a closer scope (e.g., local) can shadow (hide) a variable with the same name in an outer scope (e.g., global).
+  - Example:
+    ```python
+    x = "global"
+    def func():
+        x = "local"
+        print(x)  # Output: local
+    func()
+    ```
+- **Variable Lifetime**:
+  - **Local**: Exists only during function execution.
+  - **Enclosing**: Exists while the outer function is active.
+  - **Global**: Exists for the module’s lifetime.
+  - **Built-in**: Always available.
+- **Assignment vs. Reference**:
+  - Assigning a value creates or modifies a variable in the local scope unless `global` or `nonlocal` is used.
+  - Referencing a variable searches LEGB scopes.
+
+#### Key Features
+- **Encapsulation**:
+  - Local scope isolates variables, preventing unintended changes.
+  - Example: Function variables don’t interfere with global variables.
+- **Closures**:
+  - Inner functions retain access to enclosing scope variables, even after the outer function finishes.
+  - Example:
+    ```python
+    def outer(x):
+        def inner():
+            return x
+        return inner
+    f = outer(5)
+    print(f())  # Output: 5
+    ```
+- **Namespace**:
+  - Each scope creates a namespace (a mapping of names to objects).
+  - Example: `locals()` returns local namespace; `globals()` returns global namespace.
+- **Dynamic Scoping**:
+  - Python resolves names at runtime, allowing flexible but careful variable access.
+- **Immutability and Mutability**:
+  - Immutable objects (e.g., `int`, `str`) in outer scopes can’t be modified without `global`/`nonlocal`.
+  - Mutable objects (e.g., `list`) can be modified in place without keywords.
+
+#### Use Cases
+- **Function Isolation**:
+  - Local scope ensures functions don’t accidentally modify external variables.
+- **Closures in Functional Programming**:
+  - Used in decorators or callbacks to retain state.
+- **Module-Level Organization**:
+  - Global scope for shared module variables in Django/FastAPI.
+- **Data Science**:
+  - Manage variable scope in `pandas`/`NumPy` scripts to avoid naming conflicts.
+- **Web Development**:
+  - **FastAPI**: Use local scope for request-specific data.
+  - **Django**: Global scope for settings, local scope for view logic.
+- **Testing**:
+  - `pytest` fixtures use local scope to isolate test data.
+- **Frameworks in 2025**:
+  - **Pydantic**: Scope for model attributes in validation.
+  - **SQLAlchemy**: Scope for session variables in ORM.
+  - **Streamlit/Dash**: Local scope for UI component state.
+
+#### Advanced Concepts
+- **Closures**:
+  - Functions that capture enclosing scope variables, used in decorators or event handlers.
+  - Example:
+    ```python
+    def make_counter():
+        count = 0
+        def counter():
+            nonlocal count
+            count += 1
+            return count
+        return counter
+    c = make_counter()
+    print(c())  # Output: 1
+    ```
+- **Decorators**:
+  - Use enclosing scope to wrap functions with additional behavior.
+  - Example:
+    ```python
+    def decorator(func):
+        def wrapper():
+            print("Before")
+            func()
+            print("After")
+        return wrapper
+    @decorator
+    def say_hello():
+        print("Hello")
+    say_hello()  # Output: Before
+                 #         Hello
+                 #         After
+    ```
+- **Type Hints**:
+  - Scope affects type checking; variables must be defined in accessible scopes.
+  - Example: `x: int = 10` in global scope is accessible everywhere.
+- **Performance**:
+  - **Time Complexity**:
+    - Name lookup: O(1) for local scope, O(n) for deep LEGB searches.
+  - **Space Complexity**: O(n) for variables in each namespace.
+- **Async Functions**:
+  - Scope rules apply to `async def` functions, with local scope for coroutines.
+  - Example:
+    ```python
+    async def func():
+        x = "local"
+        print(x)
+    ```
+- **Dynamic Namespace Access**:
+  - Use `locals()`, `globals()`, or `vars()` to inspect or modify namespaces (use cautiously).
+
+#### Best Practices
+- Minimize global variables to avoid unintended modifications.
+- Use `nonlocal` for closures, `global` for module-level changes, sparingly.
+- Avoid shadowing built-in names (e.g., `list`, `str`) to prevent confusion.
+- Use descriptive variable names to clarify scope.
+- Test scope behavior with `pytest` to catch naming conflicts.
+- Leverage local scope for encapsulation in functions.
+- In 2025, use scope wisely in FastAPI/Django for request isolation.
+- Apply type hints to clarify variable scope in large codebases.
+- Document scope usage in complex nested functions or closures.
+
+#### Layman’s Explanation of Scope
+Scope is like a set of rooms in a house. Each room (function) has its own toys (local variables) that only people in that room can play with. If you need a toy from the living room (global scope), you can use it unless a room has its own toy with the same name. Some toys (built-in functions like `print`) are available everywhere, like house utilities. The LEGB rule is like a checklist to find the right toy, starting from your room and moving outward.
+
+---
+
+### Part 2: Top 30 Interview Questions for a 4-Year Experienced Python Developer (Focused on Scope)
+
+Below are 30 interview questions tailored for a Python developer with 4 years of experience, focusing on scope. Each question includes the expected answer, sample code (provided inline as requested), and a layman’s explanation, designed to be relevant for 2025.
+
+#### Question 1
+**Question**: What is scope in Python?  
+**Expected Answer**: Scope defines where a variable is accessible, governed by the LEGB rule: Local, Enclosing, Global, Built-in.  
+**Sample Code**:
+```python
+x = "global"
+def func():
+    x = "local"
+    print(x)  # Output: local
+func()
+print(x)  # Output: global
+```
+**Layman’s Explanation**: Scope is like rooms in a house; each room has its own toys, and you use the closest one with the name you want.
+
+---
+
+#### Question 2
+**Question**: What is the LEGB rule in Python?  
+**Expected Answer**: LEGB stands for Local, Enclosing, Global, Built-in, defining the order Python searches for variable names.  
+**Sample Code**:
+```python
+x = "global"
+def outer():
+    x = "enclosing"
+    def inner():
+        x = "local"
+        print(x)  # Output: local
+    inner()
+outer()
+```
+**Layman’s Explanation**: LEGB is like checking for a toy in your room, then your house, then the neighborhood, and finally the city’s shared toys.
+
+---
+
+#### Question 3
+**Question**: What is a local scope in Python?  
+**Expected Answer**: Local scope refers to variables defined inside a function, accessible only within that function.  
+**Sample Code**:
+```python
+def func():
+    x = 10  # Local
+    print(x)
+func()  # Output: 10
+# print(x)  # Raises NameError
+```
+**Layman’s Explanation**: Local scope is like toys in your bedroom; only you can use them while you’re there.
+
+---
+
+#### Question 4
+**Question**: What is the global scope in Python?  
+**Expected Answer**: Global scope includes variables defined at the module level, accessible throughout the module unless shadowed.  
+**Sample Code**:
+```python
+x = "global"
+def func():
+    print(x)  # Access global
+func()  # Output: global
+```
+**Layman’s Explanation**: Global scope is like toys in the living room, available to everyone in the house unless a room has its own.
+
+---
+
+#### Question 5
+**Question**: How does the `global` keyword work in Python?  
+**Expected Answer**: The `global` keyword allows a function to modify a global variable instead of creating a local one.  
+**Sample Code**:
+```python
+x = 10
+def func():
+    global x
+    x = 20
+func()
+print(x)  # Output: 20
+```
+**Layman’s Explanation**: `global` is like telling a room to use and change the living room’s toy instead of making its own.
+
+---
+
+#### Question 6
+**Question**: What is the enclosing scope in Python?  
+**Expected Answer**: Enclosing scope refers to variables in an outer function, accessible to nested inner functions.  
+**Sample Code**:
+```python
+def outer():
+    x = "enclosing"
+    def inner():
+        print(x)  # Access enclosing
+    inner()  # Output: enclosing
+outer()
+```
+**Layman’s Explanation**: Enclosing scope is like toys in a parent’s room that a child’s room can use if they don’t have their own.
+
+---
+
+#### Question 7
+**Question**: How does the `nonlocal` keyword work in Python?  
+**Expected Answer**: The `nonlocal` keyword allows a nested function to modify a variable in the enclosing scope.  
+**Sample Code**:
+```python
+def outer():
+    x = 10
+    def inner():
+        nonlocal x
+        x = 20
+    inner()
+    print(x)  # Output: 20
+outer()
+```
+**Layman’s Explanation**: `nonlocal` is like a child room changing a toy in the parent’s room instead of making a new one.
+
+---
+
+#### Question 8
+**Question**: What is the built-in scope in Python?  
+**Expected Answer**: Built-in scope includes Python’s predefined names like `len` or `print`, available everywhere unless shadowed.  
+**Sample Code**:
+```python
+def func():
+    print(len("hello"))  # Uses built-in len
+func()  # Output: 5
+```
+**Layman’s Explanation**: Built-in scope is like house utilities (like electricity) that everyone can use unless blocked by a local toy.
+
+---
+
+#### Question 9
+**Question**: What happens when a variable is shadowed in Python?  
+**Expected Answer**: A variable in a closer scope (e.g., local) hides a variable with the same name in an outer scope.  
+**Sample Code**:
+```python
+x = "global"
+def func():
+    x = "local"
+    print(x)  # Output: local
+func()
+print(x)  # Output: global
+```
+**Layman’s Explanation**: Shadowing is like a room’s toy hiding the living room’s toy with the same name when you’re in that room.
+
+---
+
+#### Question 10
+**Question**: How do closures use scope in Python?  
+**Expected Answer**: Closures allow inner functions to access and retain enclosing scope variables after the outer function finishes.  
+**Sample Code**:
+```python
+def outer(x):
+    def inner():
+        return x
+    return inner
+f = outer(5)
+print(f())  # Output: 5
+```
+**Layman’s Explanation**: A closure is like a child keeping a parent’s toy even after the parent’s room is closed.
+
+---
+
+#### Question 11
+**Question**: How do you inspect a scope in Python?  
+**Expected Answer**: Use `locals()`, `globals()`, or `vars()` to view variables in the current or global scope.  
+**Sample Code**:
+```python
+x = "global"
+def func():
+    y = "local"
+    print(locals())  # Output: {'y': 'local'}
+func()
+print(globals()['x'])  # Output: global
+```
+**Layman’s Explanation**: Inspecting scope is like checking a room’s toy box or the living room’s inventory to see what’s there.
+
+---
+
+#### Question 12
+**Question**: How does scope work with decorators in Python?  
+**Expected Answer**: Decorators use enclosing scope to wrap functions, accessing the wrapped function and additional state.  
+**Sample Code**:
+```python
+def decorator(func):
+    def wrapper():
+        print("Before")
+        func()
+        print("After")
+    return wrapper
+@decorator
+def say_hello():
+    print("Hello")
+say_hello()  # Output: Before
+             #         Hello
+             #         After
+```
+**Layman’s Explanation**: Decorators are like adding extra steps to a room’s task, using the parent room’s rules to wrap it.
+
+---
+
+#### Question 13
+**Question**: How does scope affect mutable vs. immutable objects?  
+**Expected Answer**: Mutable objects can be modified in place without `global`/`nonlocal`; immutable objects require them for reassignment.  
+**Sample Code**:
+```python
+lst = [1, 2]
+def func():
+    lst.append(3)  # Modifies global list
+func()
+print(lst)  # Output: [1, 2, 3]
+x = 10
+def func2():
+    x = 20  # Creates local, doesn't change global
+func2()
+print(x)  # Output: 10
+```
+**Layman’s Explanation**: Mutable toys (like a list) can be changed anywhere; immutable toys (like a number) need permission to replace.
+
+---
+
+#### Question 14
+**Question**: How does scope work in list comprehensions?  
+**Expected Answer**: List comprehensions create a local scope for their loop variables, not affecting outer scopes.  
+**Sample Code**:
+```python
+x = "outer"
+lst = [x for x in range(3)]
+print(x)  # Output: outer
+```
+**Layman’s Explanation**: A list comprehension is like a temporary room where toys are used but don’t mess with the house’s toys.
+
+---
+
+#### Question 15
+**Question**: How does scope work with async functions in 2025?  
+**Expected Answer**: Async functions have their own local scope, following LEGB rules, with coroutines isolating variables.  
+**Sample Code**:
+```python
+import asyncio
+async def func():
+    x = "local"
+    print(x)  # Output: local
+asyncio.run(func())
+```
+**Layman’s Explanation**: Async function scope is like a room for tasks that wait, keeping its toys separate from others.
+
+---
+
+#### Question 16
+**Question**: How do you handle scope in FastAPI in 2025?  
+**Expected Answer**: Use local scope for request-specific variables in endpoints, global scope for app-wide settings.  
+**Sample Code**:
+```python
+from fastapi import FastAPI
+app = FastAPI()
+global_setting = "app-wide"
+@app.get("/")
+async def root():
+    local_var = "request-specific"
+    return {"setting": global_setting, "local": local_var}
+# Run: uvicorn script:app --reload
+# Test: curl http://127.0.0.1:8000/
+# Output: {"setting": "app-wide", "local": "request-specific"}
+```
+**Layman’s Explanation**: In FastAPI, scope is like keeping request toys in a room and app toys in the living room.
+
+---
+
+#### Question 17
+**Question**: How does scope work with Pydantic in 2025?  
+**Expected Answer**: Pydantic models use local scope for instance attributes, with global scope for class definitions.  
+**Sample Code**:
+```python
+from pydantic import BaseModel
+class User(BaseModel):
+    name: str
+def func():
+    user = User(name="Alice")  # Local scope
+    print(user.name)  # Output: Alice
+func()
+```
+**Layman’s Explanation**: In Pydantic, scope is like a form (model) in a room, with its own toys (attributes) for each user.
+
+---
+
+#### Question 18
+**Question**: How does scope work in Django in 2025?  
+**Expected Answer**: Use global scope for settings and models, local scope for view or model instance logic.  
+**Sample Code**:
+```python
+from django.db import models
+GLOBAL_SETTING = "site-wide"
+class User(models.Model):
+    name = models.CharField(max_length=100)
+    def get_name(self):
+        local_var = "view-specific"
+        return f"{self.name}, {local_var}"
+# Output: Uses global and local scope
+```
+**Layman’s Explanation**: In Django, scope is like house rules (settings) and room-specific toys for each user or view.
+
+---
+
+#### Question 19
+**Question**: How does scope affect lambda functions?  
+**Expected Answer**: Lambda functions inherit the enclosing scope, accessing variables like regular functions.  
+**Sample Code**:
+```python
+def outer():
+    x = 10
+    f = lambda: x
+    return f
+f = outer()
+print(f())  # Output: 10
+```
+**Layman’s Explanation**: Lambda scope is like a small tool in a room using the parent room’s toys when needed.
+
+---
+
+#### Question 20
+**Question**: How does scope work with classes in Python?  
+**Expected Answer**: Class scope includes class attributes; instance methods have local scope, accessing instance and class variables.  
+**Sample Code**:
+```python
+class MyClass:
+    class_var = "class-wide"
+    def method(self):
+        local_var = "method-specific"
+        print(self.class_var, local_var)
+obj = MyClass()
+obj.method()  # Output: class-wide method-specific
+```
+**Layman’s Explanation**: Class scope is like house-wide toys; method scope is like toys used only during a specific task.
+
+---
+
+#### Question 21
+**Question**: How do you avoid shadowing built-in names?  
+**Expected Answer**: Use unique variable names or avoid redefining built-ins like `list` or `str`.  
+**Sample Code**:
+```python
+# Bad
+list = [1, 2]
+# print(list("abc"))  # Raises TypeError
+# Good
+my_list = [1, 2]
+print(list("abc"))  # Output: ['a', 'b', 'c']
+```
+**Layman’s Explanation**: Shadowing is like naming your toy “electricity,” blocking the house’s utility; use unique names instead.
+
+---
+
+#### Question 22
+**Question**: How does scope work with `pytest` fixtures?  
+**Expected Answer**: Fixtures use local scope for setup/teardown, isolating test-specific variables.  
+**Sample Code**:
+```python
+import pytest
+@pytest.fixture
+def data():
+    x = "test-data"
+    return x
+def test_scope(data):
+    print(data)  # Output: test-data
+# Run: pytest script.py
+```
+**Layman’s Explanation**: Fixtures are like a test room’s toy box, giving each test its own toys to play with.
+
+---
+
+#### Question 23
+**Question**: How does scope affect mutable default arguments?  
+**Expected Answer**: Mutable defaults are shared across function calls, stored in the function’s global scope.  
+**Sample Code**:
+```python
+# Bad
+def func(lst=[]):
+    lst.append(1)
+    return lst
+print(func())  # Output: [1]
+print(func())  # Output: [1, 1]
+# Good
+def func(lst=None):
+    lst = lst or []
+    lst.append(1)
+    return lst
+print(func())  # Output: [1]
+print(func())  # Output: [1]
+```
+**Layman’s Explanation**: Mutable defaults are like a shared toy box in the living room; each function call adds to it unless you make a new one.
+
+---
+
+#### Question 24
+**Question**: How does scope work with list comprehensions vs. generator expressions?  
+**Expected Answer**: List comprehensions create a local scope; generator expressions also have local scope but yield values lazily.  
+**Sample Code**:
+```python
+x = "outer"
+lst = [x for x in range(3)]
+gen = (x for x in range(3))
+print(x)  # Output: outer
+print(list(gen))  # Output: [0, 1, 2]
+```
+**Layman’s Explanation**: Comprehensions are like a temporary room; generators are like a librarian giving toys one at a time without changing the house.
+
+---
+
+#### Question 25
+**Question**: How do you debug scope-related issues in Python?  
+**Expected Answer**: Use `locals()`, `globals()`, print statements, or debuggers like `pdb` to inspect variable scope.  
+**Sample Code**:
+```python
+x = "global"
+def func():
+    x = "local"
+    print(locals())  # Output: {'x': 'local'}
+func()
+print(globals()['x'])  # Output: global
+```
+**Layman’s Explanation**: Debugging scope is like checking each room’s toy box to find where a toy is or why it’s missing.
+
+---
+
+#### Question 26
+**Question**: How does scope work with SQLAlchemy in 2025?  
+**Expected Answer**: Use local scope for session variables, global scope for model definitions.  
+**Sample Code**:
+```python
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+Base = declarative_base()
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+def query():
+    local_var = "session-specific"
+    print(local_var, User.__name__)  # Output: session-specific User
+query()
+```
+**Layman’s Explanation**: In SQLAlchemy, scope is like keeping database tables in the house and session toys in a room.
+
+---
+
+#### Question 27
+**Question**: How does scope affect function arguments?  
+**Expected Answer**: Arguments create local variables, shadowing outer scopes unless passed as mutable objects.  
+**Sample Code**:
+```python
+x = "global"
+def func(x):
+    print(x)  # Output: local
+func("local")
+print(x)  # Output: global
+```
+**Layman’s Explanation**: Function arguments are like toys brought into a room, not affecting the house’s toys unless they’re shared.
+
+---
+
+#### Question 28
+**Question**: How do you use scope in machine learning with TensorFlow in 2025?  
+**Expected Answer**: Use local scope for model variables, global scope for shared configurations.  
+**Sample Code**:
+```python
+import tensorflow as tf
+GLOBAL_CONFIG = "model-config"
+def build_model():
+    local_var = "training-data"
+    print(GLOBAL_CONFIG, local_var)  # Output: model-config training-data
+build_model()
+```
+**Layman’s Explanation**: In TensorFlow, scope is like keeping model settings in the house and training data in a specific room.
+
+---
+
+#### Question 29
+**Question**: How does scope work with context managers?  
+**Expected Answer**: Context managers (`with` statements) use local scope for variables defined within the block.  
+**Sample Code**:
+```python
+x = "outer"
+with open('file.txt', 'w') as f:
+    x = "inner"
+    print(x)  # Output: inner
+print(x)  # Output: outer
+```
+**Layman’s Explanation**: Context managers are like a temporary room where toys are used only during a task, not affecting the house.
+
+---
+
+#### Question 30
+**Question**: What are common scope-related pitfalls, and how can you avoid them?  
+**Expected Answer**: Pitfalls include shadowing, unbound locals, and mutable defaults. Avoid by using unique names, `global`/`nonlocal`, and immutable defaults.  
+**Sample Code**:
+```python
+# Bad: Unbound local
+x = 10
+def func():
+    print(x)  # Raises UnboundLocalError
+    x = 20
+# Good
+def func2():
+    global x
+    print(x)  # Output: 10
+    x = 20
+func2()
+```
+**Layman’s Explanation**: Pitfalls are like grabbing a toy before it’s in the room; use clear names and permissions to avoid confusion.
+
+---
+
+This comprehensive guide covers the theory of scope in Python and provides 30 interview questions with detailed answers, inline code samples, and layman’s explanations tailored for a 4-year experienced developer in 2025. Let me know if you need further clarification or additional topics!
+
+<xaiArtifact artifact_id="3cd12ba8-7389-443a-8db1-d9f2587d9fb0" artifact_version_id="a586e39b-9cdb-45f6-9214-da8f2dee6e3e" title="scope_examples.py" contentType="text/python">
+# Example 1: LEGB rule
+x = "global"
+def outer():
+    x = "enclosing"
+    def inner():
+        x = "local"
+        print(x)  # Output: local
+    inner()
+    print(x)  # Output: enclosing
+outer()
+print(x)  # Output: global
+
+# Example 2: global keyword
+y = 10
+def modify_global():
+    global y
+    y = 20
+modify_global()
+print(y)  # Output: 20
+
+# Example 3: nonlocal keyword
+def outer_func():
+    z = 10
+    def inner_func():
+        nonlocal z
+        z = 20
+    inner_func()
+    print(z)  # Output: 20
+outer_func()
+
+# Example 4: Closure
+def make_counter():
+    count = 0
+    def counter():
+        nonlocal count
+        count += 1
+        return count
+    return counter
+c = make_counter()
+print(c())  # Output: 1
+print(c())  # Output: 2
+</xaiArtifact>

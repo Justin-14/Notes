@@ -1,0 +1,714 @@
+### Part 1: Theory of CSV with Python
+
+#### What is CSV in Python?
+CSV (Comma-Separated Values) is a simple file format used to store tabular data, such as spreadsheets or databases, in plain text. Each line represents a row, and columns are separated by a delimiter (usually a comma). In Python, the `csv` module and libraries like `pandas` provide robust tools to read, write, and manipulate CSV files. In 2025, CSV remains a popular format for data exchange in web development (FastAPI, Django), data science, and automation due to its simplicity and compatibility with tools like Excel, databases, and APIs.
+
+#### Key Components
+1. **CSV Structure**:
+   - A CSV file consists of rows, with each row containing fields separated by a delimiter (e.g., comma, tab, semicolon).
+   - The first row often contains headers defining column names.
+   - Example: `name,age\nAlice,25\nBob,30`.
+
+2. **Python’s `csv` Module**:
+   - **Reading**: Use `csv.reader()` to read rows as lists or `csv.DictReader()` for dictionaries with headers as keys.
+   - **Writing**: Use `csv.writer()` to write rows as lists or `csv.DictWriter()` for dictionaries.
+   - Example: `with open('data.csv', 'r') as f: reader = csv.reader(f)`.
+
+3. **Pandas for CSV**:
+   - `pandas.read_csv()` reads CSV files into a DataFrame for advanced manipulation.
+   - `pandas.DataFrame.to_csv()` writes DataFrames to CSV files.
+   - Example: `df = pd.read_csv('data.csv')`.
+
+4. **File Operations**:
+   - Use `open()` with `with` statements to read/write CSV files.
+   - Specify encoding (e.g., `utf-8`) for text files.
+   - Example: `with open('data.csv', 'w', newline='') as f: csv.writer(f).writerow(['name', 'age'])`.
+
+5. **Exception Handling**:
+   - Handle errors like `FileNotFoundError`, `UnicodeDecodeError`, or `csv.Error` for invalid formats.
+   - Example: `try: csv.reader(f) except csv.Error: print("Invalid CSV")`.
+
+6. **Delimiters and Dialects**:
+   - CSV files may use different delimiters (e.g., `,`, `;`, `\t`).
+   - The `csv` module supports dialects to handle variations (e.g., `csv.excel` for Excel-compatible CSVs).
+   - Example: `csv.reader(f, delimiter=';')`.
+
+#### How CSV Processing Works
+- **Reading**:
+  - `csv.reader()` parses each line into a list of fields, splitting on the delimiter.
+  - `csv.DictReader()` maps fields to headers, returning dictionaries.
+  - Example: `['Alice', '25']` or `{'name': 'Alice', 'age': '25'}`.
+- **Writing**:
+  - `csv.writer()` writes lists as rows, adding delimiters and newlines.
+  - `csv.DictWriter()` writes dictionaries, mapping keys to columns.
+  - Example: `writer.writerow(['Alice', '25'])` → `Alice,25\n`.
+- **Pandas**:
+  - `pandas.read_csv()` loads the entire file into a DataFrame, handling headers, data types, and missing values.
+  - `pandas.to_csv()` converts DataFrames back to CSV format.
+- **Performance**:
+  - **Time Complexity**: O(n) for reading/writing n rows; O(m) for parsing m characters per row.
+  - **Space Complexity**: O(n) for storing n rows in memory (or O(1) for iterative reading).
+- **File I/O**:
+  - CSV operations use Python’s file handling with `open()` in `r` (read) or `w` (write) mode.
+  - Use `newline=''` in `open()` to ensure consistent line endings across platforms.
+
+#### Key Features
+- **Simplicity**: CSV is easy to read and write with minimal overhead.
+- **Interoperability**: Compatible with Excel, databases, and most programming languages.
+- **Flexibility**: Supports custom delimiters, headers, and dialects.
+- **Integration**: Works with `pandas`, `FastAPI`, `Django`, and `Pydantic` for modern applications.
+- **Portability**: Plain text format ensures platform independence.
+
+#### Use Cases
+- **Web Development**:
+  - Handle CSV uploads/downloads in APIs (FastAPI, Django REST Framework).
+  - Example: Process uploaded `data.csv` in FastAPI.
+- **Data Science**:
+  - Load datasets into `pandas` for analysis or export results.
+  - Example: `df.to_csv('results.csv')`.
+- **Automation**:
+  - Generate reports or process bulk data in scripts.
+  - Example: Write script outputs to `report.csv`.
+- **Machine Learning**:
+  - Store training datasets or model outputs.
+  - Example: Save features to `features.csv`.
+- **Frameworks in 2025**:
+  - **FastAPI**: Handle async CSV uploads with `aiofiles`.
+  - **Django**: Process CSV in views or export database data.
+  - **Streamlit**: Load/display CSV in dashboards.
+  - **Pydantic**: Validate CSV data with schema enforcement.
+
+#### Advanced Concepts
+- **Custom Delimiters**:
+  - Specify `delimiter` in `csv.reader()`/`csv.writer()` for non-comma separators.
+  - Example: `csv.reader(f, delimiter=';')` for semicolon-separated files.
+- **Dialects**:
+  - Use `csv.register_dialect()` to define custom CSV formats (e.g., quoting, escaping).
+  - Example: `csv.register_dialect('custom', delimiter='|', quoting=csv.QUOTE_ALL)`.
+- **Async CSV Handling**:
+  - Use `aiofiles` with `csv` for asynchronous file operations in FastAPI.
+  - Example:
+    ```python
+    import aiofiles
+    async with aiofiles.open('data.csv', 'r') as f:
+        data = await f.read()
+    ```
+- **Validation**:
+  - Use `Pydantic` to validate CSV data against a schema after parsing with `csv.DictReader`.
+  - Example: Validate rows with a `Pydantic` model.
+- **Large Files**:
+  - Read large CSVs iteratively with `csv.reader()` or `pandas.read_csv(chunksize=n)`.
+  - Example: `for chunk in pd.read_csv('large.csv', chunksize=1000): process(chunk)`.
+- **Security**:
+  - Validate file paths and data to prevent injection or path traversal.
+  - Use `pathlib.Path.resolve()` for safe path handling.
+- **Encoding**:
+  - Handle non-UTF-8 encodings (e.g., `latin1`) with `open(encoding='latin1')`.
+  - Example: Read legacy CSV with `open('data.csv', encoding='latin1')`.
+
+#### Best Practices
+- Use `with` statements for file operations to ensure proper closure.
+- Specify `newline=''` in `open()` to handle line endings consistently.
+- Handle exceptions (`FileNotFoundError`, `csv.Error`) for robustness.
+- Use `pandas` for complex data manipulation; `csv` module for simple tasks.
+- Validate CSV data with `Pydantic` or `jsonschema` in production.
+- Use `pathlib` for cross-platform file handling.
+- In 2025, integrate with `aiofiles` for async apps or `Pydantic` for data validation.
+- Test CSV operations with `pytest` using temporary files.
+
+#### Layman’s Explanation of CSV with Python
+CSV in Python is like using a simple spreadsheet stored as a text file, where each row is a line and columns are separated by commas. It’s like a notebook with a table of information, such as names and ages. Python’s `csv` module or `pandas` lets you read this table into your program or write data back to it. You need to be careful about errors, like missing files or wrong formats, and use tools like `Pydantic` to ensure the data makes sense. It’s a straightforward way to store and share data that works with many tools.
+
+---
+
+### Part 2: Top 30 Interview Questions for a 4-Year Experienced Python Developer (Focused on CSV with Python)
+
+Below are 30 interview questions tailored for a Python developer with 4 years of experience, focusing on CSV handling. Each question includes the expected answer, sample code (provided inline as requested), and a layman’s explanation, designed to be relevant for 2025.
+
+#### Question 1
+**Question**: What is a CSV file, and how is it used in Python?  
+**Expected Answer**: A CSV file stores tabular data with rows and columns separated by delimiters. Python’s `csv` module or `pandas` handles reading/writing CSVs.  
+**Sample Code**:
+```python
+import csv
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['name', 'age'])
+    writer.writerow(['Alice', 25])
+with open('data.csv', 'r') as f:
+    print(f.read())  # Output: name,age\nAlice,25\n
+```
+**Layman’s Explanation**: A CSV is like a simple spreadsheet in a notebook; Python helps you read or write its rows and columns.
+
+---
+
+#### Question 2
+**Question**: What is the difference between `csv.reader()` and `csv.DictReader()`?  
+**Expected Answer**: `csv.reader()` reads rows as lists; `csv.DictReader()` reads rows as dictionaries with headers as keys.  
+**Sample Code**:
+```python
+import csv
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['name', 'age'])
+    writer.writerow(['Alice', 25])
+with open('data.csv', 'r') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        print(row['name'])  # Output: Alice
+```
+**Layman’s Explanation**: `reader` gives you a list of values; `DictReader` gives you a labeled notebook with column names.
+
+---
+
+#### Question 3
+**Question**: How do you write a CSV file in Python?  
+**Expected Answer**: Use `csv.writer()` or `csv.DictWriter()` to write rows to a CSV file.  
+**Sample Code**:
+```python
+import csv
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['name', 'age'])
+    writer.writerow(['Bob', 30])
+with open('data.csv', 'r') as f:
+    print(f.read())  # Output: name,age\nBob,30\n
+```
+**Layman’s Explanation**: Writing a CSV is like filling a table in a notebook with rows of data.
+
+---
+
+#### Question 4
+**Question**: How do you read a CSV file in Python?  
+**Expected Answer**: Use `csv.reader()` to read rows as lists or `csv.DictReader()` for dictionaries.  
+**Sample Code**:
+```python
+import csv
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['name', 'age'])
+    writer.writerow(['Alice', 25])
+with open('data.csv', 'r') as f:
+    reader = csv.reader(f)
+    for row in reader:
+        print(row)  # Output: ['name', 'age']
+                    #         ['Alice', '25']
+```
+**Layman’s Explanation**: Reading a CSV is like opening a notebook and reading its table row by row.
+
+---
+
+#### Question 5
+**Question**: How do you handle `FileNotFoundError` when reading a CSV?  
+**Expected Answer**: Catch `FileNotFoundError` when the CSV file doesn’t exist.  
+**Sample Code**:
+```python
+import csv
+try:
+    with open('nonexistent.csv', 'r') as f:
+        reader = csv.reader(f)
+except FileNotFoundError:
+    print("File not found")  # Output: File not found
+```
+**Layman’s Explanation**: This error is like trying to open a notebook that doesn’t exist; you catch it to avoid issues.
+
+---
+
+#### Question 6
+**Question**: How do you use `pandas` to read a CSV file in 2025?  
+**Expected Answer**: Use `pandas.read_csv()` to load a CSV into a DataFrame.  
+**Sample Code**:
+```python
+import pandas as pd
+with open('data.csv', 'w') as f:
+    f.write('name,age\nAlice,25\n')
+df = pd.read_csv('data.csv')
+print(df['name'][0])  # Output: Alice
+```
+**Layman’s Explanation**: With pandas, reading a CSV is like loading a spreadsheet into a table for easy analysis.
+
+---
+
+#### Question 7
+**Question**: How do you use `pandas` to write a CSV file in 2025?  
+**Expected Answer**: Use `pandas.DataFrame.to_csv()` to write a DataFrame to a CSV file.  
+**Sample Code**:
+```python
+import pandas as pd
+df = pd.DataFrame({'name': ['Alice'], 'age': [25]})
+df.to_csv('data.csv', index=False)
+with open('data.csv', 'r') as f:
+    print(f.read())  # Output: name,age\nAlice,25\n
+```
+**Layman’s Explanation**: Writing with pandas is like saving a table from your program into a spreadsheet notebook.
+
+---
+
+#### Question 8
+**Question**: How do you handle different delimiters in CSV files?  
+**Expected Answer**: Specify the `delimiter` parameter in `csv.reader()` or `pandas.read_csv()`.  
+**Sample Code**:
+```python
+import csv
+with open('data.csv', 'w') as f:
+    f.write('name;age\nAlice;25\n')
+with open('data.csv', 'r') as f:
+    reader = csv.reader(f, delimiter=';')
+    for row in reader:
+        print(row)  # Output: ['name', 'age']
+                    #         ['Alice', '25']
+```
+**Layman’s Explanation**: Different delimiters are like using semicolons instead of commas to separate columns in a notebook.
+
+---
+
+#### Question 9
+**Question**: How do you handle CSV files with `pathlib`?  
+**Expected Answer**: Use `pathlib.Path` to read/write CSV files cross-platform.  
+**Sample Code**:
+```python
+from pathlib import Path
+import csv
+file = Path('data.csv')
+file.write_text('name,age\nAlice,25\n')
+with file.open('r') as f:
+    reader = csv.reader(f)
+    for row in reader:
+        print(row)  # Output: ['name', 'age']
+                    #         ['Alice', '25']
+```
+**Layman’s Explanation**: `pathlib` is like a GPS that helps you find and work with CSV notebooks on any computer.
+
+---
+
+#### Question 10
+**Question**: How do you handle large CSV files in Python?  
+**Expected Answer**: Use `csv.reader()` iteratively or `pandas.read_csv(chunksize=n)` for streaming.  
+**Sample Code**:
+```python
+import pandas as pd
+with open('large.csv', 'w') as f:
+    f.write('name,age\n' + '\n'.join([f'Person{i},{i}' for i in range(1000)]))
+for chunk in pd.read_csv('large.csv', chunksize=500):
+    print(len(chunk))  # Output: 500 (twice)
+```
+**Layman’s Explanation**: Large CSVs are like huge notebooks; you read them in small pieces to avoid overwhelming yourself.
+
+---
+
+#### Question 11
+**Question**: How do you handle CSV encoding issues?  
+**Expected Answer**: Specify encoding (e.g., `utf-8`, `latin1`) in `open()` or `pandas.read_csv()`.  
+**Sample Code**:
+```python
+import csv
+with open('data.csv', 'w', encoding='utf-8') as f:
+    writer = csv.writer(f)
+    writer.writerow(['name', 'age'])
+with open('data.csv', 'r', encoding='utf-8') as f:
+    reader = csv.reader(f)
+    print(next(reader))  # Output: ['name', 'age']
+```
+**Layman’s Explanation**: Encoding is like choosing the right language to read or write a CSV notebook correctly.
+
+---
+
+#### Question 12
+**Question**: How do you use `csv.DictWriter()` to write a CSV file?  
+**Expected Answer**: Use `csv.DictWriter()` to write dictionaries with headers to a CSV.  
+**Sample Code**:
+```python
+import csv
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.DictWriter(f, fieldnames=['name', 'age'])
+    writer.writeheader()
+    writer.writerow({'name': 'Alice', 'age': 25})
+with open('data.csv', 'r') as f:
+    print(f.read())  # Output: name,age\nAlice,25\n
+```
+**Layman’s Explanation**: `DictWriter` is like writing a labeled table in a notebook using column names.
+
+---
+
+#### Question 13
+**Question**: How do you handle missing values in a CSV file?  
+**Expected Answer**: Use `pandas.read_csv(na_values)` or check for empty strings in `csv.reader()`.  
+**Sample Code**:
+```python
+import pandas as pd
+with open('data.csv', 'w') as f:
+    f.write('name,age\nAlice,\nBob,30\n')
+df = pd.read_csv('data.csv', na_values=[''])
+print(df['age'].isna().sum())  # Output: 1
+```
+**Layman’s Explanation**: Missing values are like blank cells in a notebook’s table; you handle them with special checks.
+
+---
+
+#### Question 14
+**Question**: How do you handle CSV files in FastAPI in 2025?  
+**Expected Answer**: Use `aiofiles` to read/write CSV files asynchronously in FastAPI.  
+**Sample Code**:
+```python
+from fastapi import FastAPI, UploadFile
+import aiofiles
+import csv
+app = FastAPI()
+@app.post("/upload")
+async def upload_csv(file: UploadFile):
+    async with aiofiles.open('data.csv', 'wb') as f:
+        await f.write(await file.read())
+    return {"status": "Uploaded"}
+# Run: uvicorn script:app --reload
+```
+**Layman’s Explanation**: In FastAPI, handling CSVs is like letting users upload a spreadsheet notebook to a website.
+
+---
+
+#### Question 15
+**Question**: How do you handle CSV files in Django in 2025?  
+**Expected Answer**: Use `csv` module or `pandas` in views to process CSV files.  
+**Sample Code**:
+```python
+from django.http import HttpResponse
+import csv
+def my_view(request):
+    response = HttpResponse(content_type='text/csv')
+    writer = csv.writer(response)
+    writer.writerow(['name', 'age'])
+    writer.writerow(['Alice', 25])
+    return response
+# Run: python manage.py runserver
+```
+**Layman’s Explanation**: In Django, handling CSVs is like creating or reading a spreadsheet for a webpage.
+
+---
+
+#### Question 16
+**Question**: How do you validate CSV data in Python?  
+**Expected Answer**: Use `Pydantic` to validate rows parsed with `csv.DictReader`.  
+**Sample Code**:
+```python
+from pydantic import BaseModel
+import csv
+class User(BaseModel):
+    name: str
+    age: int
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['name', 'age'])
+    writer.writerow(['Alice', 25])
+with open('data.csv', 'r') as f:
+    reader = csv.DictReader(f)
+    user = User(**next(reader))
+    print(user.name)  # Output: Alice
+```
+**Layman’s Explanation**: Validating CSV is like checking if a notebook’s table follows a specific format.
+
+---
+
+#### Question 17
+**Question**: How do you handle CSV files asynchronously in 2025?  
+**Expected Answer**: Use `aiofiles` with `csv` module for async CSV operations.  
+**Sample Code**:
+```python
+import aiofiles
+import csv
+import asyncio
+async def read_csv():
+    async with aiofiles.open('data.csv', 'w', newline='') as f:
+        writer = csv.writer(f)
+        await f.write('name,age\nAlice,25\n')
+    async with aiofiles.open('data.csv', 'r') as f:
+        return await f.read()
+print(asyncio.run(read_csv()))  # Output: name,age\nAlice,25\n
+```
+**Layman’s Explanation**: Async CSV is like reading or writing a spreadsheet while handling other tasks in a web app.
+
+---
+
+#### Question 18
+**Question**: How do you handle CSV dialects in Python?  
+**Expected Answer**: Use `csv.register_dialect()` to define custom CSV formats.  
+**Sample Code**:
+```python
+import csv
+csv.register_dialect('custom', delimiter='|', quoting=csv.QUOTE_ALL)
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.writer(f, dialect='custom')
+    writer.writerow(['name', 'age'])
+    writer.writerow(['Alice', 25])
+with open('data.csv', 'r') as f:
+    print(f.read())  # Output: "name"|"age"\n"Alice"|"25"\n
+```
+**Layman’s Explanation**: Dialects are like setting custom rules for how a notebook’s table is formatted.
+
+---
+
+#### Question 19
+**Question**: How do you handle CSV files in Streamlit in 2025?  
+**Expected Answer**: Use `st.file_uploader()` or `pandas` to read/write CSV in Streamlit apps.  
+**Sample Code**:
+```python
+import streamlit as st
+import pandas as pd
+uploaded_file = st.file_uploader("Upload CSV")
+if uploaded_file:
+    df = pd.read_csv(uploaded_file)
+    st.write(df)
+# Run: streamlit run script.py
+```
+**Layman’s Explanation**: In Streamlit, CSVs are like letting users upload a spreadsheet to a dashboard.
+
+---
+
+#### Question 20
+**Question**: How do you append to a CSV file?  
+**Expected Answer**: Use `csv.writer()` with `open('file.csv', 'a')` to append rows.  
+**Sample Code**:
+```python
+import csv
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['name', 'age'])
+with open('data.csv', 'a', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['Alice', 25])
+with open('data.csv', 'r') as f:
+    print(f.read())  # Output: name,age\nAlice,25\n
+```
+**Layman’s Explanation**: Appending to a CSV is like adding new rows to a notebook’s table without erasing it.
+
+---
+
+#### Question 21
+**Question**: How do you handle CSV with headers in Python?  
+**Expected Answer**: Use `csv.DictReader()` to read headers or `csv.DictWriter()` to write them.  
+**Sample Code**:
+```python
+import csv
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.DictWriter(f, fieldnames=['name', 'age'])
+    writer.writeheader()
+    writer.writerow({'name': 'Bob', 'age': 30})
+with open('data.csv', 'r') as f:
+    print(f.read())  # Output: name,age\nBob,30\n
+```
+**Layman’s Explanation**: Headers are like labeling the columns in a notebook’s table for easier reference.
+
+---
+
+#### Question 22
+**Question**: How do you handle CSV files with `numpy` in 2025?  
+**Expected Answer**: Use `numpy.loadtxt()` or `numpy.genfromtxt()` to read CSVs into arrays.  
+**Sample Code**:
+```python
+import numpy as np
+with open('data.csv', 'w') as f:
+    f.write('1,2\n3,4\n')
+data = np.loadtxt('data.csv', delimiter=',')
+print(data)  # Output: [[1. 2.]
+             #         [3. 4.]]
+```
+**Layman’s Explanation**: With numpy, CSVs are like loading numbers from a notebook into a math-friendly format.
+
+---
+
+#### Question 23
+**Question**: How do you handle CSV files in unit tests with `pytest`?  
+**Expected Answer**: Use `tmp_path` to create temporary CSV files for testing.  
+**Sample Code**:
+```python
+import pytest
+import csv
+def test_csv(tmp_path):
+    file = tmp_path / 'data.csv'
+    with file.open('w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(['name', 'age'])
+    with file.open('r') as f:
+        reader = csv.reader(f)
+        assert next(reader) == ['name', 'age']
+# Run: pytest script.py
+# Output: Test passes
+```
+**Layman’s Explanation**: Testing CSVs is like using a temporary notebook to check if your code handles tables correctly.
+
+---
+
+#### Question 24
+**Question**: How do you handle CSV files with quoted fields?  
+**Expected Answer**: Use `quoting` in `csv.writer()` or `csv.reader()` to handle quoted fields.  
+**Sample Code**:
+```python
+import csv
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.writer(f, quoting=csv.QUOTE_ALL)
+    writer.writerow(['name', 'age'])
+    writer.writerow(['Alice, Jr.', 25])
+with open('data.csv', 'r') as f:
+    print(f.read())  # Output: "name","age"\n"Alice, Jr.","25"\n
+```
+**Layman’s Explanation**: Quoted fields are like putting text in a notebook in quotes to handle commas within data.
+
+---
+
+#### Question 25
+**Question**: How do you secure CSV handling in Python?  
+**Expected Answer**: Validate file paths with `pathlib.Path.resolve()` and data with `Pydantic`.  
+**Sample Code**:
+```python
+from pathlib import Path
+from pydantic import BaseModel
+import csv
+class User(BaseModel):
+    name: str
+    age: int
+file = Path('data.csv').resolve()
+with file.open('w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['name', 'age'])
+    writer.writerow(['Alice', 25])
+with file.open('r') as f:
+    reader = csv.DictReader(f)
+    user = User(**next(reader))
+    print(user.name)  # Output: Alice
+```
+**Layman’s Explanation**: Securing CSVs is like checking a notebook’s location and contents to avoid mistakes.
+
+---
+
+#### Question 26
+**Question**: How do you handle CSV files with multiple sheets?  
+**Expected Answer**: CSVs don’t support multiple sheets; use `pandas` with Excel or split into multiple CSV files.  
+**Sample Code**:
+```python
+import pandas as pd
+df1 = pd.DataFrame({'name': ['Alice']})
+df2 = pd.DataFrame({'age': [25]})
+df1.to_csv('sheet1.csv', index=False)
+df2.to_csv('sheet2.csv', index=False)
+print(pd.read_csv('sheet1.csv'))  # Output:    name
+                                          #       Alice
+```
+**Layman’s Explanation**: Multiple sheets are like separate notebooks; CSVs need one file per table.
+
+---
+
+#### Question 27
+**Question**: How do you handle CSV files with inconsistent rows?  
+**Expected Answer**: Use `pandas.read_csv(fillna)` or check row lengths with `csv.reader()`.  
+**Sample Code**:
+```python
+import csv
+with open('data.csv', 'w') as f:
+    f.write('name,age\nAlice\nBob,30\n')
+with open('data.csv', 'r') as f:
+    reader = csv.reader(f)
+    for row in reader:
+        print(len(row))  # Output: 2
+                         #         1
+                         #         2
+```
+**Layman’s Explanation**: Inconsistent rows are like a notebook with missing table cells; you check or fill them.
+
+---
+
+#### Question 28
+**Question**: How do you convert CSV to JSON in Python?  
+**Expected Answer**: Parse CSV with `csv.DictReader()` and serialize to JSON with `json.dumps()`.  
+**Sample Code**:
+```python
+import csv
+import json
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['name', 'age'])
+    writer.writerow(['Alice', 25])
+with open('data.csv', 'r') as f:
+    reader = csv.DictReader(f)
+    data = [row for row in reader]
+print(json.dumps(data))  # Output: [{"name": "Alice", "age": "25"}]
+```
+**Layman’s Explanation**: Converting CSV to JSON is like turning a table notebook into a structured JSON note.
+
+---
+
+#### Question 29
+**Question**: How do you handle CSV files in a REST API client?  
+**Expected Answer**: Use `requests` to upload/download CSV files and parse with `csv` or `pandas`.  
+**Sample Code**:
+```python
+import requests
+import csv
+import io
+with open('data.csv', 'w') as f:
+    f.write('name,age\nAlice,25\n')
+with open('data.csv', 'rb') as f:
+    response = requests.post('https://httpbin.org/post', files={'file': f})
+    reader = csv.reader(io.StringIO(response.text))
+    print(next(reader))  # Output: varies (API response)
+```
+**Layman’s Explanation**: In APIs, CSVs are like sending or receiving spreadsheet notebooks over the internet.
+
+---
+
+#### Question 30
+**Question**: What are common pitfalls with CSV handling in Python, and how can you avoid them?  
+**Expected Answer**: Pitfalls include incorrect delimiters, encoding issues, or missing headers. Avoid with proper delimiter specification, encoding, and validation.  
+**Sample Code**:
+```python
+import csv
+try:
+    with open('data.csv', 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f, delimiter=',')
+        writer.writerow(['name', 'age'])
+    with open('data.csv', 'r', encoding='utf-8') as f:
+        reader = csv.reader(f)
+        print(next(reader))  # Output: ['name', 'age']
+except csv.Error:
+    print("CSV error")
+```
+**Layman’s Explanation**: Pitfalls are like mistakes in a notebook’s table; use the right settings and checks to avoid them.
+
+---
+
+This comprehensive guide covers the theory of CSV handling in Python and provides 30 interview questions with detailed answers, inline code samples, and layman’s explanations tailored for a 4-year experienced developer in 2025. Let me know if you need further clarification or additional topics!
+
+<xaiArtifact artifact_id="65602741-7eab-4932-9a1e-7abb2e471f37" artifact_version_id="810f3233-d4ce-452f-88f9-ff46feb021fb" title="csv_examples.py" contentType="text/python">
+# Example 1: Basic CSV writing and reading
+import csv
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['name', 'age'])
+    writer.writerow(['Alice', 25])
+with open('data.csv', 'r') as f:
+    reader = csv.reader(f)
+    for row in reader:
+        print(row)  # Output: ['name', 'age']
+                    #         ['Alice', '25']
+
+# Example 2: CSV with DictReader
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.DictWriter(f, fieldnames=['name', 'age'])
+    writer.writeheader()
+    writer.writerow({'name': 'Bob', 'age': 30})
+with open('data.csv', 'r') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        print(row['name'])  # Output: Bob
+
+# Example 3: CSV with pandas
+import pandas as pd
+df = pd.DataFrame({'name': ['Alice'], 'age': [25]})
+df.to_csv('data.csv', index=False)
+df2 = pd.read_csv('data.csv')
+print(df2['name'][0])  # Output: Alice
+
+# Example 4: Error handling
+try:
+    with open('nonexistent.csv', 'r') as f:
+        reader = csv.reader(f)
+except FileNotFoundError:
+    print("File not found")  # Output: File not found
+</xaiArtifact>

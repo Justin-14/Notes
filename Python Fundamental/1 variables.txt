@@ -1,0 +1,567 @@
+### Part 1: Theory of Variables in Python
+
+#### What are Variables in Python?
+Variables in Python are symbolic names that act as placeholders to store data values in memory. They allow you to reference and manipulate data by assigning a name to a value. Think of variables as labeled boxes where you can store information, such as numbers, text, or complex objects, and retrieve or modify them later.
+
+#### Key Concepts of Variables in Python
+1. **Dynamic Typing**:
+   - Python is dynamically typed, meaning you don’t need to explicitly declare the type of a variable (e.g., `int`, `string`). The type is inferred at runtime based on the assigned value.
+   - Example: `x = 5` (integer), `x = "Hello"` (string) — the same variable `x` can hold different types at different times.
+
+2. **Variable Naming Rules**:
+   - Must start with a letter (a-z, A-Z) or underscore (`_`).
+   - Can contain letters, numbers (0-9), and underscores.
+   - Case-sensitive (`age` and `Age` are different).
+   - Cannot use Python reserved keywords (e.g., `if`, `for`, `class`).
+   - Example: Valid names: `my_var`, `_count`, `user2`. Invalid: `2user`, `my-var`, `for`.
+
+3. **Assignment**:
+   - Variables are created when you assign a value using the `=` operator.
+   - Syntax: `variable_name = value`.
+   - Example: `name = "Alice"` assigns the string `"Alice"` to the variable `name`.
+
+4. **Variable Types**:
+   - Python supports various data types for variables:
+     - **Numeric**: `int` (e.g., `5`), `float` (e.g., `3.14`), `complex` (e.g., `3+4j`).
+     - **String**: `str` (e.g., `"Hello"`).
+     - **Boolean**: `bool` (e.g., `True`, `False`).
+     - **Sequence**: `list` (e.g., `[1, 2, 3]`), `tuple` (e.g., `(1, 2, 3)`), `range` (e.g., `range(5)`).
+     - **Mapping**: `dict` (e.g., `{"key": "value"}`).
+     - **Set**: `set` (e.g., `{1, 2, 3}`), `frozenset`.
+     - **NoneType**: `None` (represents absence of a value).
+   - You can check a variable’s type using `type(variable_name)`.
+
+5. **Variable Scope**:
+   - **Local**: Defined inside a function and accessible only within it.
+   - **Global**: Defined outside functions and accessible throughout the program.
+   - **Nonlocal**: Used in nested functions to refer to variables in the outer function.
+   - Example:
+     ```python
+     global_var = 10  # Global variable
+     def my_function():
+         local_var = 5  # Local variable
+         print(global_var, local_var)
+     ```
+
+6. **Mutable vs. Immutable Types**:
+   - **Mutable**: Objects whose value can change (e.g., `list`, `dict`, `set`).
+   - **Immutable**: Objects whose value cannot change after creation (e.g., `int`, `float`, `str`, `tuple`).
+   - Example: You can modify a list (`my_list[0] = 10`), but not a string (`my_str[0] = "a"` raises an error).
+
+7. **Memory Management**:
+   - Python uses **reference counting** and a **garbage collector** to manage memory.
+   - Variables are references to objects in memory. When you assign a variable, it points to the memory location of the object.
+   - Example: `x = 10; y = x` — both `x` and `y` point to the same memory location containing `10`.
+
+8. **Multiple Assignment**:
+   - Assign multiple variables in one line: `a, b, c = 1, 2, 3`.
+   - Swap variables: `a, b = b, a`.
+
+9. **Type Conversion**:
+   - Convert between types using functions like `int()`, `str()`, `float()`, `list()`, etc.
+   - Example: `x = "123"; y = int(x)` converts string `"123"` to integer `123`.
+
+10. **Best Practices**:
+    - Use meaningful variable names (e.g., `user_age` instead of `x`).
+    - Follow PEP 8 naming conventions (lowercase with underscores for variables, e.g., `my_variable`).
+    - Avoid using global variables excessively to prevent unintended side effects.
+    - Use constants (uppercase names, e.g., `MAX_SIZE = 100`) for values that don’t change.
+
+11. **Common Operations**:
+    - Arithmetic: `x = 5 + 3`.
+    - String concatenation: `greeting = "Hello, " + name`.
+    - List operations: `my_list.append(4)`.
+
+12. **Deleting Variables**:
+    - Use `del variable_name` to remove a variable and free memory (if no other references exist).
+    - Example: `del x` removes the variable `x`.
+
+13. **Variable Annotations (Type Hints)**:
+    - Introduced in Python 3.6, you can add type hints for better code readability and IDE support.
+    - Example: `age: int = 25`.
+    - Tools like `mypy` can check type consistency.
+
+14. **Dynamic Behavior**:
+    - Python allows reassigning variables to different types, which offers flexibility but requires caution to avoid type-related errors.
+
+#### Layman’s Explanation of Variables
+Imagine variables as sticky notes. Each sticky note (variable) has a name and holds some information (value), like a number or a word. You can change what’s written on the sticky note or reuse the same note for different information. Python automatically figures out what kind of information (e.g., number, text) is on the note without you needing to specify it upfront. You can also have rules about where these sticky notes can be used (e.g., only inside a specific room or everywhere in the house).
+
+---
+
+### Part 2: Top 30 Interview Questions for a 4-Year Experienced Python Developer (Focused on Variables)
+
+Below are 30 interview questions tailored for a Python developer with 4 years of experience, focusing on variables and related concepts. Each question includes the expected answer, sample code, and a layman’s explanation. The questions are designed to be relevant for 2025, covering foundational, intermediate, and advanced topics around variables, including modern Python features.
+
+#### Question 1
+**Question**: What is a variable in Python, and how is it different from other programming languages like C or Java?  
+**Expected Answer**: A variable in Python is a named reference to a value stored in memory. Unlike C or Java, Python is dynamically typed, so you don’t declare the variable’s type explicitly. The type is inferred at runtime, and variables can change types during execution.  
+**Sample Code**:
+```python
+x = 5  # x is an integer
+x = "Hello"  # x is now a string
+print(type(x))  # Output: <class 'str'>
+```
+**Layman’s Explanation**: In Python, a variable is like a label you stick on data, and you can change the data it points to without saying what kind it is. In languages like C, you have to say upfront if the label is for a number or text and stick to it.
+
+---
+
+#### Question 2
+**Question**: How does Python handle variable assignment and memory allocation?  
+**Expected Answer**: Python assigns variables by creating a reference to an object in memory. When you assign a value, the variable points to the memory address of the object. Python uses reference counting to manage memory, and the garbage collector frees memory when there are no references to an object.  
+**Sample Code**:
+```python
+x = 10
+y = x  # y points to the same object as x
+print(id(x), id(y))  # Same memory address
+y = 20  # y now points to a new object
+print(id(x), id(y))  # Different memory addresses
+```
+**Layman’s Explanation**: When you give a variable a value, it’s like pointing to a box in a warehouse. If two variables point to the same box, they share it. If you change one variable to point to a new box, the other still points to the old one.
+
+---
+
+#### Question 3
+**Question**: Explain the difference between mutable and immutable types in Python.  
+**Expected Answer**: Mutable types (e.g., lists, dictionaries) can be modified in place, while immutable types (e.g., integers, strings, tuples) cannot. Changing an immutable type creates a new object in memory.  
+**Sample Code**:
+```python
+my_list = [1, 2, 3]
+my_list[0] = 10  # Mutable: changes in place
+print(my_list)  # Output: [10, 2, 3]
+
+my_str = "hello"
+# my_str[0] = "H"  # Error: strings are immutable
+my_str = "Hello"  # Creates a new string
+print(my_str)  # Output: Hello
+```
+**Layman’s Explanation**: Mutable types are like notebooks you can write in and change. Immutable types are like printed books—you can’t change the text, but you can get a new book with different text.
+
+---
+
+#### Question 4
+**Question**: What are the rules for naming variables in Python?  
+**Expected Answer**: Variable names must start with a letter or underscore, contain letters, numbers, or underscores, be case-sensitive, and avoid reserved keywords. PEP 8 recommends lowercase with underscores for readability.  
+**Sample Code**:
+```python
+my_variable = 10  # Valid
+_my_var = 20  # Valid
+# 2var = 30  # Invalid: starts with a number
+# my-var = 40  # Invalid: contains hyphen
+```
+**Layman’s Explanation**: Naming variables is like naming files on your computer. You can use letters and numbers but can’t start with a number or use special characters like dashes. Also, you can’t use Python’s special words like “if” or “for.”
+
+---
+
+#### Question 5
+**Question**: What is the scope of a variable in Python? Explain with an example.  
+**Expected Answer**: Variable scope defines where a variable is accessible. Python has local (inside a function), global (outside functions), and nonlocal (in nested functions) scopes. The LEGB rule (Local, Enclosing, Global, Built-in) determines variable lookup.  
+**Sample Code**:
+```python
+global_var = 10
+def outer():
+    enclosing_var = 20
+    def inner():
+        local_var = 30
+        print(global_var, enclosing_var, local_var)  # Access all
+    inner()
+outer()  # Output: 10 20 30
+```
+**Layman’s Explanation**: Think of variable scope like rooms in a house. A local variable is only in one room (a function). A global variable is available everywhere in the house. Python looks for variables starting in the current room, then outer rooms, and finally the whole house.
+
+---
+
+#### Question 6
+**Question**: How can you declare a global variable inside a function?  
+**Expected Answer**: Use the `global` keyword to declare a variable as global inside a function, allowing modification of a global variable.  
+**Sample Code**:
+```python
+count = 0
+def increment():
+    global count
+    count += 1
+increment()
+print(count)  # Output: 1
+```
+**Layman’s Explanation**: Normally, a function has its own private variables. If you want to change a variable that’s outside the function, you use the `global` keyword to say, “Hey, I’m working with the variable from the main house, not a copy.”
+
+---
+
+#### Question 7
+**Question**: What is the `nonlocal` keyword, and when is it used?  
+**Expected Answer**: The `nonlocal` keyword is used in nested functions to refer to a variable in the enclosing function’s scope, not the global scope. It allows modification of the enclosing variable.  
+**Sample Code**:
+```python
+def outer():
+    x = 10
+    def inner():
+        nonlocal x
+        x += 5
+    inner()
+    print(x)  # Output: 15
+outer()
+```
+**Layman’s Explanation**: Imagine you’re in a small room (inner function) inside a bigger room (outer function). If you want to change something in the bigger room, not the whole house, you use `nonlocal` to say, “I’m changing the thing in the outer room.”
+
+---
+
+#### Question 8
+**Question**: How does Python handle multiple assignments in a single line?  
+**Expected Answer**: Python allows assigning multiple variables in one line using commas. It also supports unpacking sequences into variables.  
+**Sample Code**:
+```python
+a, b, c = 1, 2, 3
+print(a, b, c)  # Output: 1 2 3
+x, y = [10, 20]  # Unpacking
+print(x, y)  # Output: 10 20
+```
+**Layman’s Explanation**: It’s like handing out multiple gifts at once. You can give values to several variables in one go, or unpack a box (like a list) to give its contents to different variables.
+
+---
+
+#### Question 9
+**Question**: What happens when you assign the same value to multiple variables?  
+**Expected Answer**: For immutable types, each variable points to the same object in memory initially, but reassigning one doesn’t affect others. For mutable types, all variables reference the same object, so changes via one variable affect all.  
+**Sample Code**:
+```python
+# Immutable
+x = 10
+y = x
+y = 20
+print(x, y)  # Output: 10 20
+
+# Mutable
+list1 = [1, 2, 3]
+list2 = list1
+list2.append(4)
+print(list1, list2)  # Output: [1, 2, 3, 4] [1, 2, 3, 4]
+```
+**Layman’s Explanation**: For numbers or text, each variable is like a separate note pointing to the same value. Changing one note doesn’t affect the other. For lists, it’s like multiple people holding the same notebook—changing it affects everyone.
+
+---
+
+#### Question 10
+**Question**: How can you check the type of a variable in Python?  
+**Expected Answer**: Use the `type()` function to get the variable’s type. The `isinstance()` function checks if a variable is of a specific type.  
+**Sample Code**:
+```python
+x = 5
+print(type(x))  # Output: <class 'int'>
+print(isinstance(x, int))  # Output: True
+```
+**Layman’s Explanation**: `type()` is like asking, “What kind of thing is this?” It tells you if it’s a number, text, or something else. `isinstance()` is like asking, “Is this a number?” and getting a yes or no.
+
+---
+
+#### Question 11
+**Question**: What is type hinting in Python, and how is it used with variables?  
+**Expected Answer**: Type hinting, introduced in Python 3.6, allows annotating variables with expected types for better code readability and IDE support. It’s optional and doesn’t affect runtime behavior. Use `mypy` for static type checking.  
+**Sample Code**:
+```python
+age: int = 25
+name: str = "Alice"
+def greet(person: str) -> str:
+    return f"Hello, {person}"
+print(greet(name))  # Output: Hello, Alice
+```
+**Layman’s Explanation**: Type hints are like adding a label to a box saying, “This should hold numbers.” It helps others (and tools) understand your code, but Python won’t stop you if you put text in that box.
+
+---
+
+#### Question 12
+**Question**: What is the `del` statement, and how does it affect variables?  
+**Expected Answer**: The `del` statement removes a variable’s reference to an object, potentially freeing memory if no other references exist. It can also delete items from lists or dictionaries.  
+**Sample Code**:
+```python
+x = 10
+del x
+# print(x)  # Error: name 'x' is not defined
+my_list = [1, 2, 3]
+del my_list[0]
+print(my_list)  # Output: [2, 3]
+```
+**Layman’s Explanation**: `del` is like throwing away a sticky note. If it was the only note pointing to that data, the data gets cleaned up. You can also use it to remove one item from a list, like crossing out a grocery item.
+
+---
+
+#### Question 13
+**Question**: How does Python handle variable shadowing?  
+**Expected Answer**: Variable shadowing occurs when a variable in an inner scope (e.g., a function) has the same name as one in an outer scope (e.g., global). The inner variable hides the outer one within its scope.  
+**Sample Code**:
+```python
+x = 10
+def my_function():
+    x = 20  # Shadows global x
+    print(x)  # Output: 20
+my_function()
+print(x)  # Output: 10
+```
+**Layman’s Explanation**: Shadowing is like having two people named “John” in different rooms. Inside the room, you talk to the local John, but outside, you’re still talking to the original John.
+
+---
+
+#### Question 14
+**Question**: What is the difference between `=` and `:=` in Python?  
+**Expected Answer**: The `=` operator is used for variable assignment. The `:=` (walrus operator), introduced in Python 3.8, assigns a value to a variable as part of an expression, often used in loops or conditionals.  
+**Sample Code**:
+```python
+# Regular assignment
+x = 5
+print(x)  # Output: 5
+
+# Walrus operator
+if (n := len("hello")) > 3:
+    print(f"Length is {n}")  # Output: Length is 5
+```
+**Layman’s Explanation**: `=` is like putting a value in a box. `:=` is like putting a value in a box and immediately using that value in a calculation or check, saving you a step.
+
+---
+
+#### Question 15
+**Question**: How can you swap two variables in Python without a temporary variable?  
+**Expected Answer**: Python allows swapping variables using multiple assignment in a single line: `a, b = b, a`. This is concise and doesn’t require a temporary variable.  
+**Sample Code**:
+```python
+a = 5
+b = 10
+a, b = b, a
+print(a, b)  # Output: 10 5
+```
+**Layman’s Explanation**: Swapping is like juggling two balls. Python lets you toss both balls in the air and catch them in opposite hands in one smooth move, without needing an extra hand.
+
+---
+
+#### Question 16
+**Question**: What happens when you try to access an undefined variable?  
+**Expected Answer**: Accessing an undefined variable raises a `NameError` because Python cannot find a variable with that name in the current scope.  
+**Sample Code**:
+```python
+# print(undefined_var)  # Raises NameError: name 'undefined_var' is not defined
+try:
+    print(undefined_var)
+except NameError as e:
+    print(e)  # Output: name 'undefined_var' is not defined
+```
+**Layman’s Explanation**: It’s like looking for a sticky note that doesn’t exist. Python says, “Hey, I can’t find that label!” and throws an error.
+
+---
+
+#### Question 17
+**Question**: How does Python’s garbage collection work with variables?  
+**Expected Answer**: Python uses reference counting to track how many variables reference an object. When the count reaches zero (no references), the garbage collector frees the memory. Cyclic references are handled by the cyclic garbage collector.  
+**Sample Code**:
+```python
+x = [1, 2, 3]
+y = x
+del x
+print(y)  # Output: [1, 2, 3] (object still exists)
+del y  # Object is now eligible for garbage collection
+```
+**Layman’s Explanation**: Python keeps a count of how many labels point to a box. If no labels are left, the box gets thrown out. If boxes point to each other in a loop, Python has a special cleaner to handle that.
+
+---
+
+#### Question 18
+**Question**: What is the difference between shallow and deep copying for variables?  
+**Expected Answer**: Shallow copying creates a new object but copies references to nested objects. Deep copying creates a new object and recursively copies all nested objects. Use `copy.copy()` for shallow copy and `copy.deepcopy()` for deep copy.  
+**Sample Code**:
+```python
+import copy
+list1 = [[1, 2], [3, 4]]
+list2 = copy.copy(list1)  # Shallow copy
+list3 = copy.deepcopy(list1)  # Deep copy
+list2[0][0] = 10
+print(list1)  # Output: [[10, 2], [3, 4]]
+print(list3)  # Output: [[1, 2], [3, 4]]
+```
+**Layman’s Explanation**: Shallow copying is like copying a list of addresses but not the houses. Changing a house affects both lists. Deep copying copies the houses too, so changes don’t affect the original.
+
+---
+
+#### Question 19
+**Question**: How can you convert a variable’s type in Python?  
+**Expected Answer**: Use type conversion functions like `int()`, `str()`, `float()`, `list()`, etc., to convert a variable’s type. Invalid conversions raise errors like `ValueError`.  
+**Sample Code**:
+```python
+x = "123"
+y = int(x)  # Convert string to integer
+print(y + 1)  # Output: 124
+z = float("3.14")  # Convert string to float
+print(z)  # Output: 3.14
+```
+**Layman’s Explanation**: Converting types is like changing a number written as text (“123”) into an actual number you can add. Python has tools to switch between text, numbers, or lists, but it complains if the change doesn’t make sense.
+
+---
+
+#### Question 20
+**Question**: What are constants in Python, and how are they typically defined?  
+**Expected Answer**: Python doesn’t have true constants, but by convention, variables in all uppercase (e.g., `MAX_SIZE`) are treated as constants and not modified. They’re still mutable unless you use tools like `typing.Final`.  
+**Sample Code**:
+```python
+MAX_SIZE = 100
+# Convention: Don’t modify MAX_SIZE
+from typing import Final
+CONSTANT: Final = 42  # Type hint for constant
+# CONSTANT = 50  # mypy would flag this as an error
+```
+**Layman’s Explanation**: Constants are like signs saying, “Don’t change this number!” Python trusts you to follow the rule, but it won’t stop you. Using uppercase names is the standard way to show it’s a constant.
+
+---
+
+#### Question 21
+**Question**: How does Python handle variable references in function arguments?  
+**Expected Answer**: Python passes arguments by reference, meaning variables point to the same object. For mutable objects, changes inside the function affect the original. For immutable objects, changes create a new object.  
+**Sample Code**:
+```python
+def modify(arg_list, arg_num):
+    arg_list.append(4)
+    arg_num += 1
+my_list = [1, 2, 3]
+my_num = 10
+modify(my_list, my_num)
+print(my_list, my_num)  # Output: [1, 2, 3, 4] 10
+```
+**Layman’s Explanation**: When you give a function a variable, it’s like handing over a note with an address. If it’s a notebook (mutable), changes affect the original. If it’s a printed number (immutable), the function makes a new note instead.
+
+---
+
+#### Question 22
+**Question**: What is the significance of `id()` in Python?  
+**Expected Answer**: The `id()` function returns the memory address of an object. It helps identify whether two variables reference the same object. For small integers and some strings, Python reuses objects due to interning.  
+**Sample Code**:
+```python
+x = 42
+y = 42
+print(id(x) == id(y))  # Output: True (integer interning)
+x = [1, 2]
+y = [1, 2]
+print(id(x) == id(y))  # Output: False (different objects)
+```
+**Layman’s Explanation**: `id()` is like getting the GPS coordinates of a box in memory. If two variables have the same coordinates, they’re pointing to the same box. Python sometimes reuses boxes for small numbers to save space.
+
+---
+
+#### Question 23
+**Question**: How can you use variables in string formatting in Python?  
+**Expected Answer**: Python supports multiple string formatting methods: f-strings (Python 3.6+), `str.format()`, and `%` operator. F-strings are the most modern and readable.  
+**Sample Code**:
+```python
+name = "Alice"
+age = 25
+print(f"My name is {name} and I’m {age}")  # Output: My name is Alice and I’m 25
+print("My name is {} and I’m {}".format(name, age))  # Older method
+```
+**Layman’s Explanation**: String formatting is like filling in a form with blanks. You put variables in the blanks to create a sentence. F-strings are the easiest way, like writing `{name}` directly in the sentence.
+
+---
+
+#### Question 24
+**Question**: What is variable unpacking in Python?  
+**Expected Answer**: Variable unpacking assigns elements of an iterable (e.g., list, tuple) to multiple variables in one line. Use `*` for variable-length unpacking.  
+**Sample Code**:
+```python
+a, b, c = [1, 2, 3]
+print(a, b, c)  # Output: 1 2 3
+first, *rest = [1, 2, 3, 4]
+print(first, rest)  # Output: 1 [2, 3, 4]
+```
+**Layman’s Explanation**: Unpacking is like opening a box with multiple items and giving each item to a different person. The `*` means “give the rest of the items to this person as a list.”
+
+---
+
+#### Question 25
+**Question**: How does Python handle variable initialization compared to other languages?  
+**Expected Answer**: Python doesn’t require explicit initialization; a variable is created when assigned a value. Other languages like C require declaring variables with a type before use. Uninitialized variables in Python raise `NameError` if accessed.  
+**Sample Code**:
+```python
+x = 0  # Initialization
+# print(y)  # Raises NameError: name 'y' is not defined
+```
+**Layman’s Explanation**: In Python, you create a variable by giving it a value, like writing on a sticky note. In languages like C, you have to say what kind of note it is first. If you look for a note that doesn’t exist in Python, it complains.
+
+---
+
+#### Question 26
+**Question**: What are the pitfalls of using global variables in Python?  
+**Expected Answer**: Global variables can lead to unintended side effects, make code harder to debug, and reduce modularity. They should be used sparingly, with constants or configuration variables being better alternatives.  
+**Sample Code**:
+```python
+count = 0
+def increment():
+    global count
+    count += 1
+def reset():
+    global count
+    count = 0
+increment()
+print(count)  # Output: 1
+reset()
+print(count)  # Output: 0
+```
+**Layman’s Explanation**: Global variables are like a shared whiteboard everyone can write on. If too many people mess with it, you lose track of who changed what, making your program confusing and error-prone.
+
+---
+
+#### Question 27
+**Question**: How does Python’s `is` operator relate to variables?  
+**Expected Answer**: The `is` operator checks if two variables point to the same object in memory, not just equal values. It’s different from `==`, which checks value equality.  
+**Sample Code**:
+```python
+x = [1, 2]
+y = x
+z = [1, 2]
+print(x is y)  # Output: True (same object)
+print(x is z)  # Output: False (different objects)
+print(x == z)  # Output: True (same values)
+```
+**Layman’s Explanation**: `is` checks if two labels point to the exact same box in the warehouse. `==` checks if the contents of the boxes are the same, even if they’re different boxes.
+
+---
+
+#### Question 28
+**Question**: How can you use variables in list comprehensions?  
+**Expected Answer**: Variables in list comprehensions are temporary and used to iterate over an iterable to create a new list. They’re local to the comprehension and don’t leak to the outer scope.  
+**Sample Code**:
+```python
+numbers = [1, 2, 3, 4]
+squares = [x**2 for x in numbers]
+print(squares)  # Output: [1, 4, 9, 16]
+# print(x)  # Error: x is not defined
+```
+**Layman’s Explanation**: List comprehensions are like a quick way to make a new list by doing something to each item in an old list. The variable you use (like `x`) is just for that process and disappears afterward.
+
+---
+
+#### Question 29
+**Question**: How do variables interact with Python’s memory model for small integers and strings?  
+**Expected Answer**: Python interns small integers (-5 to 256) and some strings for efficiency, so variables assigned these values point to the same object. This is an implementation detail (CPython) and not guaranteed for all strings.  
+**Sample Code**:
+```python
+a = 256
+b = 256
+print(a is b)  # Output: True (integer interning)
+a = "hello"
+b = "hello"
+print(a is b)  # Output: True (string interning, not guaranteed)
+```
+**Layman’s Explanation**: For small numbers and some short words, Python reuses the same box to save space. So, two variables with the same small number point to the same box, which you can check with `is`.
+
+---
+
+#### Question 30
+**Question**: How can you enforce type safety for variables in Python?  
+**Expected Answer**: Python is dynamically typed, but you can enforce type safety using type hints and static type checkers like `mypy`. The `typing` module provides tools like `Final` and `Union` for advanced type constraints.  
+**Sample Code**:
+```python
+from typing import Union
+def add(a: int, b: int) -> int:
+    return a + b
+x: Union[int, float] = 3.14
+print(add(5, 10))  # Output: 15
+# mypy would flag: add("5", 10) as an error
+```
+**Layman’s Explanation**: Type safety is like setting rules for what can go in a box (e.g., only numbers). Python lets you add hints to say what’s allowed, and tools like `mypy` check if you’re following those rules before running the code.
+
+---
+
+This comprehensive guide covers the theory of variables in Python and provides 30 interview questions with detailed answers, code samples, and layman’s explanations tailored for a 4-year experienced developer in 2025. Let me know if you need further clarification or additional topics!

@@ -1,0 +1,727 @@
+### Part 1: Theory of Match in Python
+
+#### What is the Match Statement in Python?
+The `match` statement, introduced in Python 3.10 (released in 2021) via PEP 634, is a structural pattern matching construct that provides a more expressive and readable alternative to traditional `if-elif-else` chains for handling complex conditional logic. It allows developers to match values, patterns, or structures in data (e.g., lists, dictionaries, objects) and execute corresponding code blocks. It’s Python’s equivalent to the `switch` statement in other languages but is more powerful due to its pattern-matching capabilities.
+
+#### Key Features
+- **Syntax**: Uses `match` followed by a subject (the value to match) and `case` clauses with patterns to match against.
+- **Structural Pattern Matching**: Matches not just values but also data structures (e.g., lists, tuples, dictionaries) and object attributes.
+- **Expressive Patterns**: Supports literals, sequences, mappings, classes, wildcards, guards, and capture variables.
+- **Single Execution**: Only the first matching `case` block executes; others are skipped.
+- **Readability**: Reduces boilerplate code compared to nested `if-else` statements, improving code clarity.
+
+#### Basic Syntax
+```python
+match subject:
+    case pattern1:
+        # Code for pattern1
+    case pattern2:
+        # Code for pattern2
+    case _:
+        # Default case (wildcard)
+```
+- **Subject**: The value or expression to match (e.g., a variable, literal, or expression).
+- **Case Patterns**: Define patterns to match against the subject, optionally with conditions (guards).
+- **Wildcard (`_`)**: Catches unmatched cases, similar to `else`.
+- Indentation defines the scope of each `case` block, typically 4 spaces.
+
+#### Types of Patterns
+1. **Literal Patterns**:
+   - Match exact values (e.g., numbers, strings).
+   - Example: `case 1:` matches if subject is `1`.
+2. **Capture Patterns**:
+   - Bind a value to a variable (e.g., `case x:` binds subject to `x`).
+   - Example: `case x: print(x)` captures any value.
+3. **Wildcard Pattern**:
+   - Use `_` to match any value without binding.
+   - Example: `case _: print("Default")`.
+4. **Sequence Patterns**:
+   - Match sequences (lists, tuples) by structure or content.
+   - Example: `case [x, y]:` matches a two-element list, binding elements to `x` and `y`.
+   - Supports `*` for variable-length sequences (e.g., `case [x, *rest]:`).
+5. **Mapping Patterns**:
+   - Match dictionaries by keys or key-value pairs.
+   - Example: `case {"name": n}:` matches a dictionary with a `"name"` key, binding its value to `n`.
+6. **Class Patterns**:
+   - Match objects based on class and attributes.
+   - Example: `case Point(x, y):` matches a `Point` object, binding attributes `x` and `y`.
+7. **Or Patterns**:
+   - Use `|` to match multiple patterns.
+   - Example: `case 1 | 2:` matches if subject is `1` or `2`.
+8. **Guards**:
+   - Add conditions with `if` (e.g., `case x if x > 0:`).
+   - Only executes if the pattern matches *and* the guard is `True`.
+
+#### How Match Works
+- The `match` statement evaluates the subject and compares it against each `case` pattern in order.
+- The first matching pattern triggers its code block; others are skipped.
+- Patterns can destructure data (e.g., unpacking a list) or check specific values/structures.
+- Guards add conditional logic to refine matches.
+- The wildcard (`_`) is typically the last case to handle unmatched values.
+
+#### Advantages
+- **Readability**: Simplifies complex conditional logic compared to `if-elif-else`.
+- **Pattern Matching**: Matches data structures (e.g., lists, dictionaries) directly, reducing manual checks.
+- **Type Safety**: Encourages precise matching, especially with classes or typed data.
+- **Error Reduction**: Avoids repetitive checks and reduces bugs in complex branching.
+- **Integration with Modern Python (2025)**:
+  - Works well with type hints (`typing` module) for static type checking.
+  - Used in frameworks like `FastAPI` or `Pydantic` for parsing API data or validating structures.
+
+#### Limitations
+- **Performance**: Slightly slower than `if-else` for simple comparisons due to pattern-matching overhead.
+- **Learning Curve**: Complex patterns (e.g., nested sequences) can be harder to read for beginners.
+- **Python 3.10+ Only**: Not available in older Python versions, limiting compatibility in legacy codebases.
+- **Not a Direct Switch Replacement**: More complex than a simple `switch` due to structural matching.
+
+#### Use Cases
+- **Data Parsing**: Match JSON-like structures (e.g., API responses) or command-line arguments.
+- **State Machines**: Handle states in workflows or protocols (e.g., HTTP status codes).
+- **Type Checking**: Validate object types and attributes (e.g., in `Pydantic` models).
+- **Sequence Processing**: Destructure lists or tuples in algorithms (e.g., parsing coordinates).
+- **Error Handling**: Match exception types or structures in `try-except` blocks.
+- **Libraries in 2025**:
+  - **Pydantic**: Matches data structures for validation (e.g., API payloads).
+  - **FastAPI**: Matches request patterns or response formats.
+  - **Pandas**: Matches data conditions in pipelines.
+  - **NumPy**: Matches array shapes or metadata.
+
+#### Advanced Concepts
+- **Type Hints**:
+  - Use `typing` module to annotate patterns (e.g., `List[int]`, `Dict[str, int]`) for clarity and `mypy` checks.
+  - Example: `case list(x) if all(isinstance(i, int) for i in x):`.
+- **Nested Patterns**:
+  - Match nested structures (e.g., `case [x, [y, z]]:` for a list containing a sublist).
+  - Useful for complex data like JSON or AST parsing.
+- **Custom Classes**:
+  - Match custom objects by attributes or structure, leveraging `__match_args__` for positional matching.
+  - Example: `class Point: __match_args__ = ("x", "y")`.
+- **Pattern Guards**:
+  - Combine patterns with `if` conditions for fine-grained control.
+  - Example: `case x if x % 2 == 0:` matches even numbers.
+- **Integration with Other Constructs**:
+  - Use with `try-except` for exception matching.
+  - Combine with loops or comprehensions for dynamic pattern matching.
+- **Performance Optimization**:
+  - Order patterns by likelihood to minimize evaluations.
+  - Avoid overly complex patterns for simple logic (use `if-else` instead).
+
+#### Best Practices
+- Use `match` for complex pattern matching (e.g., sequences, dictionaries) rather than simple value comparisons.
+- Place specific patterns before general ones (e.g., literals before wildcards).
+- Use guards sparingly to maintain readability.
+- Leverage type hints for pattern clarity in large codebases.
+- Use wildcard (`_`) as a default case to handle unexpected inputs.
+- Avoid deep nesting in patterns; refactor into functions or simpler structures.
+- Test compatibility with Python 3.10+ in 2025 environments.
+- Combine with modern libraries like `Pydantic` or `FastAPI` for robust applications.
+
+#### Layman’s Explanation of Match
+The `match` statement is like a super-smart receptionist who checks what you’re carrying (a number, list, or object) and directs you to the right room based on its shape or contents. Instead of asking lots of yes-or-no questions (`if-else`), it looks at the whole package at once and picks the best match, making decisions faster and clearer.
+
+---
+
+### Part 2: Top 30 Interview Questions for a 4-Year Experienced Python Developer (Focused on Match)
+
+Below are 30 interview questions tailored for a Python developer with 4 years of experience, focusing on the `match` statement and related concepts. Each question includes the expected answer, sample code (provided inline as requested), and a layman’s explanation, designed to be relevant for 2025. All questions assume Python 3.10+ due to `match` availability.
+
+#### Question 1
+**Question**: What is the `match` statement in Python, and how does it differ from `if-else`?  
+**Expected Answer**: The `match` statement, introduced in Python 3.10, performs structural pattern matching on values or data structures. It’s more expressive than `if-else` for complex patterns (e.g., lists, dictionaries) but slightly slower for simple comparisons.  
+**Sample Code**:
+```python
+x = 1
+match x:
+    case 1:
+        print("One")
+    case _:
+        print("Other")
+# Output: One
+```
+**Layman’s Explanation**: `match` is like a smart sorter that checks what you have (like a number) and picks the right action, unlike `if-else`, which asks one question at a time.
+
+---
+
+#### Question 2
+**Question**: How do you use a wildcard pattern in a `match` statement?  
+**Expected Answer**: The wildcard (`_`) matches any value and is typically used as a default case when no other patterns match.  
+**Sample Code**:
+```python
+x = 5
+match x:
+    case 1:
+        print("One")
+    case _:
+        print("Not one")
+# Output: Not one
+```
+**Layman’s Explanation**: The wildcard is like a “catch-all” bucket—if nothing else fits, it handles whatever you throw at it.
+
+---
+
+#### Question 3
+**Question**: How can you use capture patterns in a `match` statement?  
+**Expected Answer**: Capture patterns bind a value to a variable, allowing you to use the matched value in the case block.  
+**Sample Code**:
+```python
+x = 42
+match x:
+    case n:
+        print(f"Got number: {n}")
+# Output: Got number: 42
+```
+**Layman’s Explanation**: A capture pattern is like grabbing an item and giving it a name so you can use it, like saying, “Here’s a number, let’s call it n.”
+
+---
+
+#### Question 4
+**Question**: How do you match literal values in a `match` statement?  
+**Expected Answer**: Literal patterns match exact values like numbers or strings. They’re used for simple equality checks.  
+**Sample Code**:
+```python
+status = "success"
+match status:
+    case "success":
+        print("OK")
+    case "error":
+        print("Failed")
+    case _:
+        print("Unknown")
+# Output: OK
+```
+**Layman’s Explanation**: Literal matching is like checking if a ticket says “success” to let someone in, or “error” to deny them.
+
+---
+
+#### Question 5
+**Question**: How can you use sequence patterns in a `match` statement?  
+**Expected Answer**: Sequence patterns match lists or tuples by structure or content, unpacking elements into variables or using `*` for variable-length sequences.  
+**Sample Code**:
+```python
+lst = [1, 2, 3]
+match lst:
+    case [x, y, z]:
+        print(f"Three elements: {x}, {y}, {z}")
+    case _:
+        print("Not three elements")
+# Output: Three elements: 1, 2, 3
+```
+**Layman’s Explanation**: Sequence patterns are like opening a box with exactly three items and naming each one, or saying it doesn’t fit if it’s different.
+
+---
+
+#### Question 6
+**Question**: How do you use mapping patterns in a `match` statement?  
+**Expected Answer**: Mapping patterns match dictionaries by keys or key-value pairs, capturing values into variables.  
+**Sample Code**:
+```python
+d = {"name": "Alice", "age": 25}
+match d:
+    case {"name": n}:
+        print(f"Name: {n}")
+    case _:
+        print("No name")
+# Output: Name: Alice
+```
+**Layman’s Explanation**: Mapping patterns are like checking a form for a “name” field and grabbing its value, like finding “Alice” on a name tag.
+
+---
+
+#### Question 7
+**Question**: What are guards in a `match` statement, and how are they used?  
+**Expected Answer**: Guards are `if` conditions in `case` clauses that add extra checks after a pattern matches.  
+**Sample Code**:
+```python
+x = 10
+match x:
+    case n if n % 2 == 0:
+        print("Even")
+    case _:
+        print("Odd")
+# Output: Even
+```
+**Layman’s Explanation**: Guards are like an extra question after checking an item, like “It’s a number, but is it even?” before deciding what to do.
+
+---
+
+#### Question 8
+**Question**: How do you use or patterns in a `match` statement?  
+**Expected Answer**: Or patterns use `|` to match multiple values or patterns in a single `case` clause.  
+**Sample Code**:
+```python
+x = 2
+match x:
+    case 1 | 2:
+        print("One or two")
+    case _:
+        print("Other")
+# Output: One or two
+```
+**Layman’s Explanation**: Or patterns are like saying, “If it’s a 1 or a 2, do this,” making it quick to handle multiple options.
+
+---
+
+#### Question 9
+**Question**: How can you match class objects in a `match` statement?  
+**Expected Answer**: Class patterns match objects by class type and attributes, using `__match_args__` or explicit attribute names.  
+**Sample Code**:
+```python
+class Point:
+    __match_args__ = ("x", "y")
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+p = Point(1, 2)
+match p:
+    case Point(x, y):
+        print(f"Point at ({x}, {y})")
+# Output: Point at (1, 2)
+```
+**Layman’s Explanation**: Class patterns are like checking if a package is a “Point” with specific x and y values, then using those values.
+
+---
+
+#### Question 10
+**Question**: How does the `match` statement handle nested patterns?  
+**Expected Answer**: Nested patterns match complex structures like lists within lists or dictionaries within dictionaries.  
+**Sample Code**:
+```python
+data = [1, [2, 3]]
+match data:
+    case [x, [y, z]]:
+        print(f"First: {x}, Nested: {y}, {z}")
+    case _:
+        print("No match")
+# Output: First: 1, Nested: 2, 3
+```
+**Layman’s Explanation**: Nested patterns are like opening a box with another box inside, checking both for specific items.
+
+---
+
+#### Question 11
+**Question**: How does the `match` statement compare to `if-else` for simple conditions?  
+**Expected Answer**: For simple value comparisons, `if-else` is often simpler and faster. `match` excels for complex structural patterns.  
+**Sample Code**:
+```python
+x = 1
+match x:
+    case 1:
+        print("One")
+    case _:
+        print("Other")
+# vs
+if x == 1:
+    print("One")
+else:
+    print("Other")
+# Output: One
+```
+**Layman’s Explanation**: For simple checks like “is it 1?”, `if-else` is like a quick question, while `match` is overkill unless you’re checking complex shapes.
+
+---
+
+#### Question 12
+**Question**: How can you use the `match` statement for error handling?  
+**Expected Answer**: Match exception types or structures in a `try-except` block to handle errors based on their properties.  
+**Sample Code**:
+```python
+try:
+    x = 1 / 0
+except Exception as e:
+    match e.__class__.__name__:
+        case "ZeroDivisionError":
+            print("Cannot divide by zero")
+        case _:
+            print("Other error")
+# Output: Cannot divide by zero
+```
+**Layman’s Explanation**: Using `match` for errors is like sorting error messages into different bins, like “division by zero” or “something else.”
+
+---
+
+#### Question 13
+**Question**: How can you use type hints with the `match` statement?  
+**Expected Answer**: Use `typing` module to annotate patterns, ensuring type safety with tools like `mypy`.  
+**Sample Code**:
+```python
+from typing import List
+def process(data: List[int]) -> str:
+    match data:
+        case [x, y] if all(isinstance(i, int) for i in data):
+            return f"Sum: {x + y}"
+        case _:
+            return "Invalid"
+print(process([1, 2]))  # Output: Sum: 3
+```
+**Layman’s Explanation**: Type hints with `match` are like labeling a box to say it holds numbers, so tools can check you’re matching correctly.
+
+---
+
+#### Question 14
+**Question**: How can you match variable-length sequences in a `match` statement?  
+**Expected Answer**: Use `*var` to capture variable-length parts of sequences, like lists or tuples.  
+**Sample Code**:
+```python
+lst = [1, 2, 3, 4]
+match lst:
+    case [x, *rest]:
+        print(f"First: {x}, Rest: {rest}")
+    case _:
+        print("No match")
+# Output: First: 1, Rest: [2, 3, 4]
+```
+**Layman’s Explanation**: Variable-length matching is like grabbing the first item from a box and putting the rest in a bag.
+
+---
+
+#### Question 15
+**Question**: How can you use `match` with dictionaries in API parsing (e.g., `FastAPI`)?  
+**Expected Answer**: Match dictionary structures in API responses to extract or validate fields, common in `FastAPI` or `Pydantic` in 2025.  
+**Sample Code**:
+```python
+response = {"status": "success", "data": {"id": 1}}
+match response:
+    case {"status": "success", "data": {"id": id}}:
+        print(f"ID: {id}")
+    case _:
+        print("Failed or invalid")
+# Output: ID: 1
+```
+**Layman’s Explanation**: Matching API data is like checking a form for a “success” stamp and an ID, then using the ID if it’s there.
+
+---
+
+#### Question 16
+**Question**: How does the `match` statement handle `None` values?  
+**Expected Answer**: Match `None` explicitly with `case None:` or use a guard to check for `None`.  
+**Sample Code**:
+```python
+x = None
+match x:
+    case None:
+        print("No value")
+    case _:
+        print("Some value")
+# Output: No value
+```
+**Layman’s Explanation**: Matching `None` is like checking if a box is empty before trying to use what’s inside.
+
+---
+
+#### Question 17
+**Question**: How can you use `match` for state machine logic?  
+**Expected Answer**: Match states or transitions in a state machine, simplifying control flow for workflows or protocols.  
+**Sample Code**:
+```python
+state = "running"
+match state:
+    case "running":
+        print("System active")
+    case "stopped":
+        print("System halted")
+    case _:
+        print("Unknown state")
+# Output: System active
+```
+**Layman’s Explanation**: Using `match` for states is like checking if a machine is “running” or “stopped” to decide what to do next.
+
+---
+
+#### Question 18
+**Question**: How can you match custom objects with attributes?  
+**Expected Answer**: Use class patterns with attribute names or `__match_args__` to match object properties.  
+**Sample Code**:
+```python
+class User:
+    def __init__(self, name, role):
+        self.name = name
+        self.role = role
+u = User("Alice", "admin")
+match u:
+    case User(name=n, role="admin"):
+        print(f"Admin: {n}")
+    case _:
+        print("Not admin")
+# Output: Admin: Alice
+```
+**Layman’s Explanation**: Matching objects is like checking if a person has an “admin” badge and getting their name if they do.
+
+---
+
+#### Question 19
+**Question**: How can you use `match` with `Pydantic` models in 2025?  
+**Expected Answer**: Match `Pydantic` model attributes or structures to validate or process API data, leveraging type safety.  
+**Sample Code**:
+```python
+from pydantic import BaseModel
+class Item(BaseModel):
+    id: int
+    name: str
+item = Item(id=1, name="Book")
+match item:
+    case Item(id=i, name=n):
+        print(f"Item {i}: {n}")
+    case _:
+        print("Invalid item")
+# Output: Item 1: Book
+```
+**Layman’s Explanation**: With `Pydantic`, `match` is like checking if a form has the right fields, like an ID and name, before using them.
+
+---
+
+#### Question 20
+**Question**: How can you combine `match` with loops?  
+**Expected Answer**: Use `match` inside loops to process elements based on their structure or value, or match loop variables.  
+**Sample Code**:
+```python
+data = [[1, 2], [3], []]
+for item in data:
+    match item:
+        case [x, y]:
+            print(f"Pair: {x}, {y}")
+        case [x]:
+            print(f"Single: {x}")
+        case _:
+            print("Empty")
+# Output: Pair: 1, 2
+#         Single: 3
+#         Empty
+```
+**Layman’s Explanation**: Matching in a loop is like sorting each box in a pile, checking if it has two items, one item, or none.
+
+---
+
+#### Question 21
+**Question**: How can you use `match` for parsing command-line arguments?  
+**Expected Answer**: Match command structures (e.g., lists or dictionaries) to handle different argument patterns.  
+**Sample Code**:
+```python
+cmd = ["run", "--fast"]
+match cmd:
+    case ["run", "--fast"]:
+        print("Running fast")
+    case ["run"]:
+        print("Running normal")
+    case _:
+        print("Unknown command")
+# Output: Running fast
+```
+**Layman’s Explanation**: Matching commands is like reading a note that says “run fast” or just “run” and following the right instructions.
+
+---
+
+#### Question 22
+**Question**: How does `match` handle type checking?  
+**Expected Answer**: Use `isinstance()` in guards or class patterns to enforce type constraints in `match` statements.  
+**Sample Code**:
+```python
+x = 42
+match x:
+    case n if isinstance(n, int):
+        print("Integer")
+    case _:
+        print("Not an integer")
+# Output: Integer
+```
+**Layman’s Explanation**: Type checking in `match` is like verifying a package is a number before processing it, ensuring it’s the right kind.
+
+---
+
+#### Question 23
+**Question**: How can you optimize `match` statement performance?  
+**Expected Answer**: Order specific patterns before general ones, minimize guards, and use `if-else` for simple comparisons to reduce overhead.  
+**Sample Code**:
+```python
+x = 1
+match x:
+    case 1:  # Specific first
+        print("One")
+    case n if n > 0:
+        print("Positive")
+    case _:
+        print("Other")
+# Output: One
+```
+**Layman’s Explanation**: Optimizing `match` is like checking the most likely items first, like looking for “1” before checking if it’s just positive.
+
+---
+
+#### Question 24
+**Question**: How can you use `match` with `pandas` data in 2025?  
+**Expected Answer**: Match DataFrame row structures or values to process data conditionally, often with dictionaries or Series.  
+**Sample Code**:
+```python
+import pandas as pd
+df = pd.DataFrame([{"name": "Alice", "age": 25}])
+row = df.iloc[0]
+match row.to_dict():
+    case {"name": n, "age": a} if a >= 18:
+        print(f"Adult: {n}")
+    case _:
+        print("Invalid")
+# Output: Adult: Alice
+```
+**Layman’s Explanation**: Matching `pandas` data is like checking a table row for a name and age, then deciding if it’s an adult.
+
+---
+
+#### Question 25
+**Question**: How can you handle invalid patterns in `match`?  
+**Expected Answer**: Use a wildcard (`_`) or specific error cases to catch invalid or unexpected inputs gracefully.  
+**Sample Code**:
+```python
+x = "invalid"
+match x:
+    case int():
+        print("Number")
+    case _:
+        print("Invalid input")
+# Output: Invalid input
+```
+**Layman’s Explanation**: Handling invalid patterns is like having a “sorry, try again” option for anything that doesn’t fit your expected items.
+
+---
+
+#### Question 26
+**Question**: How can you use `match` with `numpy` arrays?  
+**Expected Answer**: Match array shapes, values, or metadata, often converting to lists or tuples for pattern matching.  
+**Sample Code**:
+```python
+import numpy as np
+arr = np.array([1, 2])
+match list(arr):
+    case [x, y]:
+        print(f"Two elements: {x}, {y}")
+    case _:
+        print("Not two elements")
+# Output: Two elements: 1, 2
+```
+**Layman’s Explanation**: Matching `numpy` arrays is like checking if a grid has exactly two numbers, then using those numbers.
+
+---
+
+#### Question 27
+**Question**: How can you use `match` for JSON-like data parsing?  
+**Expected Answer**: Match dictionary or list structures to parse JSON-like data, extracting fields or validating formats.  
+**Sample Code**:
+```python
+data = {"type": "error", "code": 404}
+match data:
+    case {"type": "error", "code": c}:
+        print(f"Error code: {c}")
+    case _:
+        print("Not an error")
+# Output: Error code: 404
+```
+**Layman’s Explanation**: Matching JSON is like checking a message for an “error” label and a code, then acting on that code.
+
+---
+
+#### Question 28
+**Question**: How can you combine `match` with `try-except`?  
+**Expected Answer**: Use `match` in `except` blocks to match exception types or attributes for detailed error handling.  
+**Sample Code**:
+```python
+try:
+    x = int("abc")
+except ValueError as e:
+    match str(e):
+        case s if "invalid literal" in s:
+            print("Bad number format")
+        case _:
+            print("Other error")
+# Output: Bad number format
+```
+**Layman’s Explanation**: Combining `match` with `try-except` is like sorting errors into categories, like “bad number” or “something else,” to handle them right.
+
+---
+
+#### Question 29
+**Question**: How can you refactor complex `if-else` chains into `match`?  
+**Expected Answer**: Replace nested `if-else` with `match` patterns for clarity, especially for structural checks, using specific patterns and guards.  
+**Sample Code**:
+```python
+data = [1, 2]
+# Old if-else
+if len(data) == 2:
+    x, y = data
+    print(f"Pair: {x}, {y}")
+else:
+    print("Not a pair")
+# New match
+match data:
+    case [x, y]:
+        print(f"Pair: {x}, {y}")
+    case _:
+        print("Not a pair")
+# Output: Pair: 1, 2
+```
+**Layman’s Explanation**: Refactoring to `match` is like replacing a long list of questions with a single check that looks at the whole item at once.
+
+---
+
+#### Question 30
+**Question**: What are common pitfalls with the `match` statement?  
+**Expected Answer**: Pitfalls include overusing for simple conditions, complex patterns reducing readability, or missing Python 3.10+ compatibility. Use specific patterns first and test thoroughly.  
+**Sample Code**:
+```python
+x = 1
+# Overcomplicated match
+match x:
+    case n if n == 1:
+        print("One")
+    case _:
+        print("Other")
+# Better if-else
+if x == 1:
+    print("One")
+else:
+    print("Other")
+# Output: One
+```
+**Layman’s Explanation**: Pitfalls are like using a big machine for a simple job—`match` can be overkill for basic checks, so use it wisely and keep it clear.
+
+---
+
+This comprehensive guide covers the theory of the `match` statement in Python and provides 30 interview questions with detailed answers, inline code samples, and layman’s explanations tailored for a 4-year experienced developer in 2025. Let me know if you need further clarification or additional topics!
+
+<xaiArtifact artifact_id="2931aaba-6b1b-4641-b59b-8ab03a11a437" artifact_version_id="dfb4d98c-6f74-4b6b-8bfa-b952896a8d75" title="match_examples.py" contentType="text/python">
+# Example 1: Basic literal matching
+x = 1
+match x:
+    case 1:
+        print("One")
+    case _:
+        print("Other")
+# Output: One
+
+# Example 2: Sequence pattern
+lst = [1, 2, 3]
+match lst:
+    case [x, y, z]:
+        print(f"Three elements: {x}, {y}, {z}")
+    case _:
+        print("Not three elements")
+# Output: Three elements: 1, 2, 3
+
+# Example 3: Mapping pattern
+d = {"name": "Alice", "age": 25}
+match d:
+    case {"name": n}:
+        print(f"Name: {n}")
+    case _:
+        print("No name")
+# Output: Name: Alice
+
+# Example 4: Class pattern
+class Point:
+    __match_args__ = ("x", "y")
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+p = Point(1, 2)
+match p:
+    case Point(x, y):
+        print(f"Point at ({x}, {y})")
+# Output: Point at (1, 2)
+</xaiArtifact>

@@ -1,0 +1,828 @@
+### Part 1: Theory of Inheritance in Python
+
+#### What is Inheritance in Python?
+Inheritance is a core concept of Object-Oriented Programming (OOP) in Python, allowing a class (called a child or derived class) to inherit attributes and methods from another class (called a parent or base class). This promotes code reuse, modularity, and extensibility by enabling child classes to extend or modify the behavior of parent classes. Introduced in Python’s early versions, inheritance remains a cornerstone of Python in 2025, widely used in frameworks like Django, FastAPI, and libraries like Pydantic for building scalable applications.
+
+#### Key Components
+1. **Parent Class (Base Class)**:
+   - The class whose attributes and methods are inherited.
+   - Example: `class Animal: pass`.
+
+2. **Child Class (Derived Class)**:
+   - The class that inherits from the parent class, defined using `class Child(Parent):`.
+   - Can override parent methods or add new ones.
+   - Example: `class Dog(Animal): pass`.
+
+3. **Syntax**:
+   - Define a child class by specifying the parent class in parentheses.
+   - Example:
+     ```python
+     class Animal:
+         def speak(self):
+             return "Sound"
+     class Dog(Animal):
+         def speak(self):
+             return "Woof!"
+     ```
+
+4. **Types of Inheritance**:
+   - **Single Inheritance**: One child class inherits from one parent class.
+   - **Multiple Inheritance**: A child class inherits from multiple parent classes.
+   - **Multilevel Inheritance**: A class inherits from a child class, forming a chain (e.g., `Grandparent -> Parent -> Child`).
+   - **Hierarchical Inheritance**: Multiple child classes inherit from one parent class.
+   - **Hybrid Inheritance**: A combination of the above, often complex.
+
+5. **Method Resolution Order (MRO)**:
+   - Determines the order in which Python searches for methods in a class hierarchy.
+   - Accessible via `__mro__` attribute or `mro()` method.
+   - Uses the C3 linearization algorithm to resolve conflicts in multiple inheritance.
+
+#### How Inheritance Works
+- **Mechanism**:
+  - When a child class is defined, it inherits all attributes and methods of the parent class.
+  - The child can:
+    - Use parent methods/attributes as-is.
+    - Override parent methods to provide custom behavior.
+    - Extend functionality by adding new methods/attributes.
+- **Accessing Parent Methods**:
+  - Use `super()` to call parent class methods, often in `__init__` or overridden methods.
+  - Example: `super().__init__(args)` to call the parent’s constructor.
+- **Method Overriding**:
+  - A child class redefines a parent’s method with its own implementation.
+  - Example: Overriding `speak()` in `Dog` to return “Woof!” instead of “Sound”.
+- **Attribute Inheritance**:
+  - Child classes inherit class and instance attributes from the parent.
+  - Example: A `species` class attribute in `Animal` is available to `Dog`.
+
+#### Key Features
+- **Code Reusability**:
+  - Reuse parent class code without duplication.
+  - Example: Common methods like `eat()` in `Animal` reused by `Dog` and `Cat`.
+- **Polymorphism**:
+  - Child classes can override parent methods, allowing different behaviors for the same method name.
+  - Example: `Dog().speak()` returns “Woof!”; `Cat().speak()` returns “Meow!”.
+- **Extensibility**:
+  - Child classes can add new methods or attributes.
+  - Example: `Dog` adds `fetch()` method not present in `Animal`.
+- **Multiple Inheritance**:
+  - Python supports inheriting from multiple parents, resolved via MRO.
+  - Example: `class Child(Base1, Base2): pass`.
+- **Abstract Base Classes (ABCs)**:
+  - Use `abc` module to define abstract parents that enforce method implementation in children.
+  - Example:
+    ```python
+    from abc import ABC, abstractmethod
+    class Animal(ABC):
+        @abstractmethod
+        def speak(self):
+            pass
+    ```
+
+#### Use Cases
+- **Modeling Hierarchies**:
+  - Represent real-world relationships (e.g., `Animal -> Dog`, `Vehicle -> Car`).
+- **Frameworks in 2025**:
+  - **Django**: Inherit from `models.Model` for ORM models.
+  - **FastAPI**: Inherit from Pydantic’s `BaseModel` for data validation.
+  - **Pydantic**: Use inheritance to extend model schemas.
+  - **TensorFlow/PyTorch**: Inherit base classes for custom models or layers.
+- **Code Organization**:
+  - Group shared functionality in parent classes (e.g., logging or authentication).
+- **Extending Libraries**:
+  - Subclass library classes to customize behavior (e.g., extending `unittest.TestCase`).
+- **Web Development**:
+  - Inherit from base controllers or middleware in FastAPI/Django.
+
+#### Advanced Concepts
+- **Method Resolution Order (MRO)**:
+  - Python uses C3 linearization to resolve method lookup in complex hierarchies.
+  - Example: `print(Child.__mro__)` shows the search order.
+- **Super()**:
+  - Calls parent class methods, supporting cooperative multiple inheritance.
+  - Example: `super().method()` to call the next method in the MRO.
+- **Mixins**:
+  - Small classes designed for multiple inheritance to add specific functionality.
+  - Example:
+    ```python
+    class LogMixin:
+        def log(self):
+            print("Logging")
+    class Dog(Animal, LogMixin):
+        pass
+    ```
+- **Abstract Base Classes**:
+  - Enforce interfaces using `abc.ABC` and `@abstractmethod`.
+  - Example: Ensure all subclasses implement `speak()`.
+- **Type Hints**:
+  - Use `typing` module to annotate inherited classes and methods.
+  - Example: `from typing import Type; def process(cls: Type[Animal])`.
+- **Performance**:
+  - **Time Complexity**:
+    - Method lookup: O(n) for deep hierarchies due to MRO traversal.
+    - Attribute access: O(1).
+  - **Space Complexity**: O(1) per class for metadata; O(n) for instance attributes.
+- **Asynchronous Inheritance**:
+  - Inherit async methods in frameworks like FastAPI for non-blocking operations.
+  - Example:
+    ```python
+    class AsyncParent:
+        async def process(self):
+            pass
+    class AsyncChild(AsyncParent):
+        async def process(self):
+            return "Done"
+    ```
+
+#### Best Practices
+- Keep inheritance hierarchies shallow to avoid complexity.
+- Use `super()` for cooperative multiple inheritance.
+- Prefer composition over inheritance for flexibility when possible.
+- Use abstract base classes to define clear interfaces.
+- Document overridden methods to clarify intent.
+- Use type hints for clarity in large codebases.
+- Test inherited behavior with `pytest` or `unittest`.
+- Avoid diamond problem issues by understanding MRO.
+- In 2025, leverage inheritance with Pydantic/FastAPI for API models or Django for ORM.
+- Validate inputs in parent/child constructors to prevent errors.
+
+#### Layman’s Explanation of Inheritance
+Inheritance is like a family business where a child inherits tools and skills from a parent. The parent business (base class) has standard ways of working, like making a product. The child business (derived class) can use those methods, tweak them (e.g., make a fancier product), or add new ones (e.g., offer delivery). It’s about building on what the parent provides without starting from scratch.
+
+---
+
+### Part 2: Top 30 Interview Questions for a 4-Year Experienced Python Developer (Focused on Inheritance)
+
+Below are 30 interview questions tailored for a Python developer with 4 years of experience, focusing on inheritance. Each question includes the expected answer, sample code (provided inline as requested), and a layman’s explanation, designed to be relevant for 2025.
+
+#### Question 1
+**Question**: What is inheritance in Python?  
+**Expected Answer**: Inheritance allows a child class to inherit attributes and methods from a parent class, promoting code reuse.  
+**Sample Code**:
+```python
+class Animal:
+    def speak(self):
+        return "Sound"
+class Dog(Animal):
+    def speak(self):
+        return "Woof!"
+dog = Dog()
+print(dog.speak())  # Output: Woof!
+```
+**Layman’s Explanation**: Inheritance is like a child business using the parent’s tools but making its own unique product.
+
+---
+
+#### Question 2
+**Question**: How do you define a child class in Python?  
+**Expected Answer**: Use `class Child(Parent):` to specify the parent class in parentheses.  
+**Sample Code**:
+```python
+class Vehicle:
+    def move(self):
+        return "Moving"
+class Car(Vehicle):
+    def move(self):
+        return "Driving"
+car = Car()
+print(car.move())  # Output: Driving
+```
+**Layman’s Explanation**: Defining a child class is like saying a car business follows a vehicle business’s blueprint but adds its own style.
+
+---
+
+#### Question 3
+**Question**: What is single inheritance in Python?  
+**Expected Answer**: Single inheritance occurs when a child class inherits from one parent class.  
+**Sample Code**:
+```python
+class Animal:
+    def eat(self):
+        return "Eating"
+class Cat(Animal):
+    def speak(self):
+        return "Meow!"
+cat = Cat()
+print(cat.eat())  # Output: Eating
+```
+**Layman’s Explanation**: Single inheritance is like a cat shop inheriting only from an animal shop, using its eating method.
+
+---
+
+#### Question 4
+**Question**: What is multiple inheritance in Python?  
+**Expected Answer**: Multiple inheritance allows a child class to inherit from multiple parent classes, resolved via MRO.  
+**Sample Code**:
+```python
+class A:
+    def greet(self):
+        return "Hello from A"
+class B:
+    def greet(self):
+        return "Hello from B"
+class C(A, B):
+    pass
+c = C()
+print(c.greet())  # Output: Hello from A
+```
+**Layman’s Explanation**: Multiple inheritance is like a child business combining tools from two parent businesses, picking one’s greeting first.
+
+---
+
+#### Question 5
+**Question**: What is multilevel inheritance in Python?  
+**Expected Answer**: Multilevel inheritance involves a chain where a class inherits from a child class, which inherits from a parent.  
+**Sample Code**:
+```python
+class Animal:
+    def eat(self):
+        return "Eating"
+class Mammal(Animal):
+    def walk(self):
+        return "Walking"
+class Dog(Mammal):
+    def bark(self):
+        return "Woof!"
+dog = Dog()
+print(dog.eat())  # Output: Eating
+```
+**Layman’s Explanation**: Multilevel inheritance is like a dog shop inheriting from a mammal shop, which inherits from an animal shop.
+
+---
+
+#### Question 6
+**Question**: How does method overriding work in Python?  
+**Expected Answer**: A child class redefines a parent class’s method to provide a different implementation.  
+**Sample Code**:
+```python
+class Animal:
+    def speak(self):
+        return "Sound"
+class Dog(Animal):
+    def speak(self):
+        return "Woof!"
+dog = Dog()
+print(dog.speak())  # Output: Woof!
+```
+**Layman’s Explanation**: Overriding is like a child business changing the parent’s way of greeting customers to its own style.
+
+---
+
+#### Question 7
+**Question**: How do you use `super()` in Python?  
+**Expected Answer**: `super()` calls a parent class’s method, often in `__init__` or overridden methods.  
+**Sample Code**:
+```python
+class Animal:
+    def __init__(self, species):
+        self.species = species
+class Dog(Animal):
+    def __init__(self, name, species):
+        super().__init__(species)
+        self.name = name
+dog = Dog("Buddy", "Canis")
+print(dog.species)  # Output: Canis
+```
+**Layman’s Explanation**: `super()` is like asking the parent business to set up its part before the child adds its own details.
+
+---
+
+#### Question 8
+**Question**: What is the Method Resolution Order (MRO) in Python?  
+**Expected Answer**: MRO defines the order Python searches for methods in a class hierarchy, accessible via `__mro__`.  
+**Sample Code**:
+```python
+class A:
+    def method(self):
+        return "A"
+class B(A):
+    def method(self):
+        return "B"
+class C(A):
+    pass
+class D(B, C):
+    pass
+d = D()
+print(d.method())  # Output: B
+print(D.__mro__)  # Output: (<class '__main__.D'>, <class '__main__.B'>, <class '__main__.C'>, <class '__main__.A'>, <class 'object'>)
+```
+**Layman’s Explanation**: MRO is like a priority list for which shop’s method to use when a business has multiple parents.
+
+---
+
+#### Question 9
+**Question**: How do you implement abstract base classes in Python?  
+**Expected Answer**: Use `abc.ABC` and `@abstractmethod` to define methods that child classes must implement.  
+**Sample Code**:
+```python
+from abc import ABC, abstractmethod
+class Animal(ABC):
+    @abstractmethod
+    def speak(self):
+        pass
+class Dog(Animal):
+    def speak(self):
+        return "Woof!"
+dog = Dog()
+print(dog.speak())  # Output: Woof!
+```
+**Layman’s Explanation**: An abstract class is like a rulebook saying every shop must have a greeting, but each shop picks its own.
+
+---
+
+#### Question 10
+**Question**: What is a mixin in Python?  
+**Expected Answer**: A mixin is a class designed for multiple inheritance to add specific functionality without being a full parent.  
+**Sample Code**:
+```python
+class LogMixin:
+    def log(self):
+        return "Logging"
+class Animal:
+    def speak(self):
+        return "Sound"
+class Dog(Animal, LogMixin):
+    def speak(self):
+        return "Woof!"
+dog = Dog()
+print(dog.log())  # Output: Logging
+```
+**Layman’s Explanation**: A mixin is like a small toolkit added to a shop, giving it extra features like logging.
+
+---
+
+#### Question 11
+**Question**: How do you handle multiple inheritance conflicts?  
+**Expected Answer**: Python uses MRO to resolve conflicts; `super()` ensures cooperative method calls.  
+**Sample Code**:
+```python
+class A:
+    def greet(self):
+        return "A"
+class B:
+    def greet(self):
+        return "B"
+class C(A, B):
+    def greet(self):
+        return super().greet() + " from C"
+c = C()
+print(c.greet())  # Output: A from C
+```
+**Layman’s Explanation**: Conflicts are like two shops offering different greetings; Python picks one based on a priority list.
+
+---
+
+#### Question 12
+**Question**: How do you override a parent class’s `__init__` method?  
+**Expected Answer**: Define `__init__` in the child class, optionally calling the parent’s `__init__` with `super()`.  
+**Sample Code**:
+```python
+class Animal:
+    def __init__(self, species):
+        self.species = species
+class Cat(Animal):
+    def __init__(self, name, species):
+        super().__init__(species)
+        self.name = name
+cat = Cat("Whiskers", "Felis")
+print(cat.name, cat.species)  # Output: Whiskers Felis
+```
+**Layman’s Explanation**: Overriding `__init__` is like setting up a new shop with extra details while keeping the parent’s setup.
+
+---
+
+#### Question 13
+**Question**: How do you use inheritance with Pydantic in 2025?  
+**Expected Answer**: Inherit from `BaseModel` to create validated data models, extending or overriding fields.  
+**Sample Code**:
+```python
+from pydantic import BaseModel
+class User(BaseModel):
+    name: str
+class Admin(User):
+    role: str
+admin = Admin(name="Alice", role="admin")
+print(admin)  # Output: name='Alice' role='admin'
+```
+**Layman’s Explanation**: In Pydantic, inheritance is like adding a “role” field to a user form, building on the basic user template.
+
+---
+
+#### Question 14
+**Question**: How do you use inheritance in Django in 2025?  
+**Expected Answer**: Inherit from `models.Model` to create ORM models, or use abstract models for shared fields.  
+**Sample Code**:
+```python
+from django.db import models
+class Animal(models.Model):
+    species = models.CharField(max_length=100)
+class Dog(Animal):
+    name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.name
+# Output: Creates database tables for Animal and Dog
+```
+**Layman’s Explanation**: In Django, inheritance is like a dog shop table inheriting a species field from an animal shop table.
+
+---
+
+#### Question 15
+**Question**: How do you implement polymorphic behavior in Python?  
+**Expected Answer**: Override parent methods in child classes to provide different behaviors for the same method name.  
+**Sample Code**:
+```python
+class Animal:
+    def speak(self):
+        return "Sound"
+class Dog(Animal):
+    def speak(self):
+        return "Woof!"
+class Cat(Animal):
+    def speak(self):
+        return "Meow!"
+animals = [Dog(), Cat()]
+for animal in animals:
+    print(animal.speak())  # Output: Woof!
+                          #         Meow!
+```
+**Layman’s Explanation**: Polymorphism is like different shops using the same “greet” sign but saying different things.
+
+---
+
+#### Question 16
+**Question**: How do you use `super()` in multiple inheritance?  
+**Expected Answer**: `super()` follows MRO to call the next parent’s method, enabling cooperative inheritance.  
+**Sample Code**:
+```python
+class A:
+    def __init__(self):
+        self.value = "A"
+class B:
+    def __init__(self):
+        self.value = "B"
+class C(A, B):
+    def __init__(self):
+        super().__init__()
+c = C()
+print(c.value)  # Output: A
+```
+**Layman’s Explanation**: `super()` in multiple inheritance is like asking the next shop in line to set up its part of the business.
+
+---
+
+#### Question 17
+**Question**: What is the diamond problem in multiple inheritance?  
+**Expected Answer**: The diamond problem occurs when a class inherits from two classes that share a common ancestor, resolved by MRO.  
+**Sample Code**:
+```python
+class A:
+    def method(self):
+        return "A"
+class B(A):
+    def method(self):
+        return "B"
+class C(A):
+    def method(self):
+        return "C"
+class D(B, C):
+    pass
+d = D()
+print(d.method())  # Output: B
+print(D.__mro__)  # Shows order: D, B, C, A, object
+```
+**Layman’s Explanation**: The diamond problem is like two shops inheriting from the same grandparent; Python picks one path to avoid confusion.
+
+---
+
+#### Question 18
+**Question**: How do you use abstract base classes with multiple inheritance?  
+**Expected Answer**: Combine ABCs with regular classes, ensuring all abstract methods are implemented.  
+**Sample Code**:
+```python
+from abc import ABC, abstractmethod
+class Animal(ABC):
+    @abstractmethod
+    def speak(self):
+        pass
+class Behavior:
+    def move(self):
+        return "Moving"
+class Dog(Animal, Behavior):
+    def speak(self):
+        return "Woof!"
+dog = Dog()
+print(dog.speak(), dog.move())  # Output: Woof! Moving
+```
+**Layman’s Explanation**: Using ABCs with multiple inheritance is like requiring a shop to have a greeting while adding movement from another parent.
+
+---
+
+#### Question 19
+**Question**: How do you use inheritance with FastAPI in 2025?  
+**Expected Answer**: Inherit from Pydantic’s `BaseModel` or custom classes for response models or dependencies.  
+**Sample Code**:
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+app = FastAPI()
+class User(BaseModel):
+    name: str
+class Admin(User):
+    role: str
+@app.get("/admin", response_model=Admin)
+async def get_admin():
+    return Admin(name="Alice", role="admin")
+# Run: uvicorn script:app --reload
+# Test: curl http://127.0.0.1:8000/admin
+# Output: {"name": "Alice", "role": "admin"}
+```
+**Layman’s Explanation**: In FastAPI, inheritance is like adding a “role” to a user form for an admin, used in API responses.
+
+---
+
+#### Question 20
+**Question**: How do you override class attributes in a child class?  
+**Expected Answer**: Define the same attribute in the child class to override the parent’s value.  
+**Sample Code**:
+```python
+class Animal:
+    species = "Unknown"
+class Dog(Animal):
+    species = "Canis"
+dog = Dog()
+print(dog.species)  # Output: Canis
+```
+**Layman’s Explanation**: Overriding a class attribute is like a child shop using its own brand name instead of the parent’s.
+
+---
+
+#### Question 21
+**Question**: How do you use type hints with inheritance?  
+**Expected Answer**: Use `typing.Type` or `typing.Union` to annotate parent/child classes for type checking.  
+**Sample Code**:
+```python
+from typing import Type
+class Animal:
+    def speak(self) -> str:
+        return "Sound"
+class Dog(Animal):
+    def speak(self) -> str:
+        return "Woof!"
+def process(animal: Type[Animal]) -> str:
+    return animal().speak()
+print(process(Dog))  # Output: Woof!
+```
+**Layman’s Explanation**: Type hints with inheritance are like labeling a shop as an “animal shop” to ensure it follows the right rules.
+
+---
+
+#### Question 22
+**Question**: How do you handle exceptions in inherited classes?  
+**Expected Answer**: Catch exceptions in child or parent methods, optionally raising custom exceptions.  
+**Sample Code**:
+```python
+class Animal:
+    def move(self):
+        raise NotImplementedError("Must implement move")
+class Dog(Animal):
+    def move(self):
+        try:
+            return "Running"
+        except Exception as e:
+            raise ValueError(f"Error: {e}")
+dog = Dog()
+print(dog.move())  # Output: Running
+```
+**Layman’s Explanation**: Exception handling in inheritance is like a child shop fixing a parent’s broken tool or reporting the issue.
+
+---
+
+#### Question 23
+**Question**: How do you use inheritance in unit testing with `pytest`?  
+**Expected Answer**: Inherit from `unittest.TestCase` or create base test classes for shared setup.  
+**Sample Code**:
+```python
+import pytest
+class BaseTest:
+    def setup(self):
+        self.value = 1
+class TestMath(BaseTest):
+    def test_add(self):
+        assert self.value + 1 == 2
+# Run: pytest script.py
+# Output: Test passes
+```
+**Layman’s Explanation**: In testing, inheritance is like a parent test shop setting up tools that child tests use to check math.
+
+---
+
+#### Question 24
+**Question**: How do you implement a factory pattern with inheritance?  
+**Expected Answer**: Use a parent class or method to create child class instances based on conditions.  
+**Sample Code**:
+```python
+class Animal:
+    @classmethod
+    def create(cls, type_):
+        if type_ == "dog":
+            return Dog()
+        return Cat()
+class Dog(Animal):
+    def speak(self):
+        return "Woof!"
+class Cat(Animal):
+    def speak(self):
+        return "Meow!"
+animal = Animal.create("dog")
+print(animal.speak())  # Output: Woof!
+```
+**Layman’s Explanation**: A factory with inheritance is like a shop that builds either a dog or cat business based on what you ask for.
+
+---
+
+#### Question 25
+**Question**: How do you use inheritance with SQLAlchemy in 2025?  
+**Expected Answer**: Inherit from `declarative_base()` for ORM models, or use joined table inheritance for polymorphism.  
+**Sample Code**:
+```python
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+Base = declarative_base()
+class Animal(Base):
+    __tablename__ = "animals"
+    id = Column(Integer, primary_key=True)
+    species = Column(String)
+class Dog(Animal):
+    __tablename__ = "dogs"
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+# Output: Creates separate tables for Animal and Dog
+```
+**Layman’s Explanation**: In SQLAlchemy, inheritance is like a dog table inheriting a species field from an animal table.
+
+---
+
+#### Question 26
+**Question**: How do you use async methods in inherited classes in 2025?  
+**Expected Answer**: Define `async def` methods in parent or child classes for asynchronous operations.  
+**Sample Code**:
+```python
+import asyncio
+class AsyncParent:
+    async def process(self):
+        await asyncio.sleep(1)
+        return "Parent"
+class AsyncChild(AsyncParent):
+    async def process(self):
+        return "Child"
+async def main():
+    child = AsyncChild()
+    print(await child.process())  # Output: Child
+asyncio.run(main())
+```
+**Layman’s Explanation**: Async methods in inheritance are like a child shop handling tasks without pausing, building on the parent’s work.
+
+---
+
+#### Question 27
+**Question**: How do you override properties in a child class?  
+**Expected Answer**: Redefine the `@property` method in the child class, optionally calling the parent’s property.  
+**Sample Code**:
+```python
+class Animal:
+    @property
+    def sound(self):
+        return "Sound"
+class Dog(Animal):
+    @property
+    def sound(self):
+        return "Woof!"
+dog = Dog()
+print(dog.sound)  # Output: Woof!
+```
+**Layman’s Explanation**: Overriding a property is like a child shop changing the parent’s “sound” display to its own version.
+
+---
+
+#### Question 28
+**Question**: How do you use inheritance with mixins in Python?  
+**Expected Answer**: Inherit from a mixin class alongside a primary parent to add specific functionality.  
+**Sample Code**:
+```python
+class Printable:
+    def print(self):
+        return f"Printing {self.__class__.__name__}"
+class Animal:
+    def speak(self):
+        return "Sound"
+class Dog(Animal, Printable):
+    def speak(self):
+        return "Woof!"
+dog = Dog()
+print(dog.print())  # Output: Printing Dog
+```
+**Layman’s Explanation**: A mixin is like adding a printing service to a dog shop, alongside its animal features.
+
+---
+
+#### Question 29
+**Question**: How do you debug inheritance issues in Python?  
+**Expected Answer**: Check MRO, use print statements or logging, and verify `super()` calls; use debuggers like `pdb`.  
+**Sample Code**:
+```python
+class A:
+    def method(self):
+        print("A")
+class B(A):
+    def method(self):
+        print("B")
+        super().method()
+class C(A):
+    def method(self):
+        print("C")
+class D(B, C):
+    def method(self):
+        print("D")
+        super().method()
+d = D()
+d.method()  # Output: D
+            #         B
+            #         C
+```
+**Layman’s Explanation**: Debugging inheritance is like checking which shop’s instructions are used when a task gets confusing.
+
+---
+
+#### Question 30
+**Question**: What are common pitfalls with inheritance, and how can you avoid them?  
+**Expected Answer**: Pitfalls include complex MRO, diamond problems, and tight coupling. Avoid by keeping hierarchies simple, using `super()`, and preferring composition.  
+**Sample Code**:
+```python
+# Bad: Complex inheritance
+class A: pass
+class B(A): pass
+class C(A): pass
+class D(B, C): pass
+# Good: Composition
+class Engine:
+    def start(self):
+        return "Engine started"
+class Car:
+    def __init__(self):
+        self.engine = Engine()
+    def start(self):
+        return self.engine.start()
+car = Car()
+print(car.start())  # Output: Engine started
+```
+**Layman’s Explanation**: Pitfalls are like a shop getting confused by too many parent rules; keep it simple or use separate tools instead.
+
+---
+
+This comprehensive guide covers the theory of inheritance in Python and provides 30 interview questions with detailed answers, inline code samples, and layman’s explanations tailored for a 4-year experienced developer in 2025. Let me know if you need further clarification or additional topics!
+
+<xaiArtifact artifact_id="7232fa4a-38e1-4960-8ccf-5171a550a0a8" artifact_version_id="efb9a39e-9ad3-44b4-8cbf-f03a7f6b477d" title="inheritance_examples.py" contentType="text/python">
+# Example 1: Single inheritance
+class Animal:
+    def speak(self):
+        return "Sound"
+class Dog(Animal):
+    def speak(self):
+        return "Woof!"
+dog = Dog()
+print(dog.speak())  # Output: Woof!
+
+# Example 2: Multiple inheritance
+class A:
+    def greet(self):
+        return "Hello from A"
+class B:
+    def greet(self):
+        return "Hello from B"
+class C(A, B):
+    pass
+c = C()
+print(c.greet())  # Output: Hello from A
+
+# Example 3: Super() usage
+class Animal:
+    def __init__(self, species):
+        self.species = species
+class Cat(Animal):
+    def __init__(self, name, species):
+        super().__init__(species)
+        self.name = name
+cat = Cat("Whiskers", "Felis")
+print(cat.name, cat.species)  # Output: Whiskers Felis
+
+# Example 4: Abstract base class
+from abc import ABC, abstractmethod
+class Animal(ABC):
+    @abstractmethod
+    def speak(self):
+        pass
+class Dog(Animal):
+    def speak(self):
+        return "Woof!"
+dog = Dog()
+print(dog.speak())  # Output: Woof!
+</xaiArtifact>

@@ -1,0 +1,640 @@
+### Part 1: Theory of Writing and Creating Files in Python
+
+#### What is File Writing and Creation in Python?
+File writing and creation in Python involve generating new files or modifying existing ones to store data, such as text, CSV, JSON, or binary data. Python provides built-in functions and modules to create and write to files, enabling applications to save data for persistence, logging, or data exchange. In 2025, file writing is critical for web development (FastAPI, Django), data science (pandas), automation, and logging, where saving data reliably is essential.
+
+#### Key Components
+1. **Creating a File**:
+   - Use the `open()` function with write (`w`) or append (`a`) mode to create a file if it doesn’t exist.
+   - Syntax: `open('file.txt', 'w', encoding='utf-8')`.
+   - Example: `with open('newfile.txt', 'w') as f: f.write('Hello')` creates `newfile.txt`.
+
+2. **Writing Methods**:
+   - `write(str)`: Writes a string to the file.
+   - `writelines(lines)`: Writes a list of strings without adding newlines.
+   - Example: `f.write('Hello\n')` adds a line with a newline character.
+
+3. **File Modes**:
+   - `w`: Write mode (creates a new file or overwrites an existing one).
+   - `a`: Append mode (adds to the end of an existing file or creates a new one).
+   - `r+`: Read and write (file must exist).
+   - `wb`, `ab`: Binary write/append for non-text data (e.g., images).
+   - Example: `open('file.txt', 'a')` appends to `file.txt`.
+
+4. **Context Managers**:
+   - The `with` statement ensures files are closed automatically after writing, preventing resource leaks.
+   - Example: `with open('file.txt', 'w') as f: f.write('Data')`.
+
+5. **File Types**:
+   - **Text Files**: Store human-readable data (e.g., `.txt`, `.csv`, `.json`).
+   - **Binary Files**: Store non-text data (e.g., images, `.pdf`, `.bin`).
+   - Example: Write text to `file.txt` or binary to `image.png`.
+
+6. **Exception Handling**:
+   - Handle errors like `PermissionError`, `OSError`, or `IsADirectoryError` using `try-except`.
+   - Example: `try: open('file.txt', 'w') except PermissionError: print("Access denied")`.
+
+7. **File Paths**:
+   - Use `pathlib.Path` or `os.path` for cross-platform path handling.
+   - Example: `Path('data/file.txt').write_text('Hello')`.
+
+#### How File Writing and Creation Works
+- **Execution**:
+  - `open()` in write/append mode creates a file object, interacting with the filesystem via OS system calls.
+  - Writing methods (`write`, `writelines`) send data to the file, managed by a file pointer.
+  - The `with` statement ensures the file is closed, flushing data to disk.
+- **Buffering**:
+  - Python buffers writes to reduce system calls, improving performance.
+  - Example: `open('file.txt', 'w', buffering=8192)` sets a custom buffer size.
+  - Use `flush()` to force writing data to disk immediately.
+- **Encoding**:
+  - Text files require an encoding (e.g., `utf-8`, default in Python 3).
+  - Binary files use `wb` mode without encoding.
+  - Example: `open('file.txt', 'w', encoding='utf-8')`.
+- **File Position**:
+  - The file pointer tracks the current write position.
+  - Use `seek(offset)` to move the pointer; `tell()` to get its position.
+  - Example: `f.seek(0)` moves to the start for overwriting.
+- **Performance**:
+  - **Time Complexity**: O(n) for writing n bytes; O(1) for opening/creating.
+  - **Space Complexity**: O(n) for buffering data in memory before writing.
+  - Large writes should use chunks to manage memory.
+
+#### Key Features
+- **Simplicity**: `open()` and `write()` are straightforward for basic operations.
+- **Flexibility**: Supports text, binary, and structured formats (CSV, JSON).
+- **Safety**: `with` statements prevent resource leaks by auto-closing files.
+- **Cross-Platform**: `pathlib` ensures compatibility across Windows, Linux, macOS.
+- **Integration**: Works with `pandas`, `json`, `csv`, and `aiofiles` for modern apps.
+
+#### Use Cases
+- **Web Development**:
+  - Write logs, configurations, or API outputs in FastAPI/Django.
+  - Example: Save API logs to `api.log`.
+- **Data Science**:
+  - Export data to CSV/JSON with `pandas` or `json`.
+  - Example: `df.to_csv('output.csv')`.
+- **Automation**:
+  - Generate reports or save script outputs.
+  - Example: Write results to `report.txt`.
+- **Machine Learning**:
+  - Save models or datasets.
+  - Example: Save a model to `model.pkl` with `pickle`.
+- **Frameworks in 2025**:
+  - **FastAPI**: Write async logs or JSON responses.
+  - **Django**: Save database dumps or logs.
+  - **Streamlit**: Export user-generated data.
+  - **Pydantic**: Write validated configurations.
+
+#### Advanced Concepts
+- **Path Handling**:
+  - `pathlib.Path` provides object-oriented, cross-platform file creation/writing.
+  - Example: `Path('file.txt').write_text('Data')`.
+- **Binary File Writing**:
+  - Use `wb` mode for images, PDFs, or serialized objects.
+  - Example: `with open('image.png', 'wb') as f: f.write(image_data)`.
+- **File Locking**:
+  - Use `fcntl` (Unix) or `msvcrt` (Windows) to prevent concurrent write conflicts.
+  - Example: Lock a file to ensure exclusive access during writing.
+- **Serialization**:
+  - Write structured data with `json.dump()`, `pickle.dump()`, or `yaml.dump()`.
+  - Example: `json.dump(data, open('data.json', 'w'))`.
+- **Async File Writing**:
+  - Use `aiofiles` for asynchronous writes in FastAPI or other async apps.
+  - Example:
+    ```python
+    import aiofiles
+    async with aiofiles.open('file.txt', 'w') as f:
+        await f.write('Data')
+    ```
+- **Security**:
+  - Validate file paths to prevent directory traversal (e.g., `../../etc/passwd`).
+  - Use `pathlib.Path.resolve()` to normalize paths.
+- **Logging**:
+  - Write logs to files with `logging` for debugging or monitoring.
+  - Example: `logging.basicConfig(filename='app.log')`.
+
+#### Best Practices
+- Always use `with` statements to ensure files are closed.
+- Handle exceptions (e.g., `PermissionError`, `OSError`) for robustness.
+- Specify encoding (e.g., `utf-8`) for text files.
+- Use `pathlib` for cross-platform compatibility.
+- Write large data in chunks to manage memory.
+- Validate file paths to prevent security issues.
+- Use libraries (`pandas`, `json`) for structured data.
+- In 2025, integrate with `aiofiles` for async apps or `pydantic` for config validation.
+- Test file writing with `pytest` using temporary files.
+
+#### Layman’s Explanation of File Writing and Creation
+Writing and creating files in Python is like writing notes in a new or existing notebook. You use `open()` to pick up or create the notebook, and `write()` to jot down your notes. The `with` statement ensures you put the notebook back properly. You can overwrite the whole notebook (`w` mode) or add notes to the end (`a` mode). Be careful about errors, like not having permission to write, and use tools like `pathlib` to find or create the notebook on any computer.
+
+---
+
+### Part 2: Top 30 Interview Questions for a 4-Year Experienced Python Developer (Focused on File Writing and Creation)
+
+Below are 30 interview questions tailored for a Python developer with 4 years of experience, focusing on file writing and creation. Each question includes the expected answer, sample code (provided inline as requested), and a layman’s explanation, designed to be relevant for 2025.
+
+#### Question 1
+**Question**: What does it mean to write and create files in Python?  
+**Expected Answer**: Writing and creating files involve generating new files or modifying existing ones using `open()` in write (`w`) or append (`a`) mode.  
+**Sample Code**:
+```python
+with open('file.txt', 'w') as f:
+    f.write('Hello')
+with open('file.txt', 'r') as f:
+    print(f.read())  # Output: Hello
+```
+**Layman’s Explanation**: Writing and creating files is like making a new notebook or adding notes to an existing one.
+
+---
+
+#### Question 2
+**Question**: What are the file modes for writing in Python?  
+**Expected Answer**: Write modes include `w` (overwrite/create), `a` (append/create), `r+` (read/write), and `wb`/`ab` (binary write/append).  
+**Sample Code**:
+```python
+with open('file.txt', 'w') as f:
+    f.write('Test')
+with open('file.txt', 'r') as f:
+    print(f.read())  # Output: Test
+```
+**Layman’s Explanation**: File modes are like choosing whether to rewrite a notebook, add to it, or handle pictures instead of text.
+
+---
+
+#### Question 3
+**Question**: Why use a `with` statement for file writing?  
+**Expected Answer**: The `with` statement ensures the file is closed automatically, preventing resource leaks.  
+**Sample Code**:
+```python
+with open('file.txt', 'w') as f:
+    f.write('Hello')
+    print(f.closed)  # Output: False (inside with)
+print(f.closed)  # Output: True (after with)
+```
+**Layman’s Explanation**: The `with` statement is like borrowing a notebook and ensuring it’s returned when you’re done writing.
+
+---
+
+#### Question 4
+**Question**: How do you write a string to a file?  
+**Expected Answer**: Use `write()` to write a string to a file in `w` or `a` mode.  
+**Sample Code**:
+```python
+with open('file.txt', 'w') as f:
+    f.write('Hello, World!')
+with open('file.txt', 'r') as f:
+    print(f.read())  # Output: Hello, World!
+```
+**Layman’s Explanation**: Writing a string is like jotting down a sentence in a notebook.
+
+---
+
+#### Question 5
+**Question**: How do you append to a file?  
+**Expected Answer**: Use `a` mode to add content to the end of a file without overwriting.  
+**Sample Code**:
+```python
+with open('file.txt', 'w') as f:
+    f.write('First line\n')
+with open('file.txt', 'a') as f:
+    f.write('Second line\n')
+with open('file.txt', 'r') as f:
+    print(f.read())  # Output: First line
+                     #         Second line
+```
+**Layman’s Explanation**: Appending is like adding a new note to the end of a notebook without erasing earlier notes.
+
+---
+
+#### Question 6
+**Question**: How do you handle `PermissionError` when writing files?  
+**Expected Answer**: Catch `PermissionError` when access to the file is denied.  
+**Sample Code**:
+```python
+try:
+    with open('/protected/file.txt', 'w') as f:
+        f.write('Test')
+except PermissionError:
+    print("Permission denied")  # Output: Permission denied
+```
+**Layman’s Explanation**: Permission errors are like being unable to write in a locked notebook; you need the right key.
+
+---
+
+#### Question 7
+**Question**: How do you use `pathlib` for file writing?  
+**Expected Answer**: Use `pathlib.Path.write_text()` for text or `write_bytes()` for binary data.  
+**Sample Code**:
+```python
+from pathlib import Path
+file = Path('file.txt')
+file.write_text('Hello')
+print(file.read_text())  # Output: Hello
+```
+**Layman’s Explanation**: `pathlib` is like a GPS that helps you create or write in a notebook on any computer.
+
+---
+
+#### Question 8
+**Question**: How do you write a CSV file in Python?  
+**Expected Answer**: Use the `csv` module to write structured data to a CSV file.  
+**Sample Code**:
+```python
+import csv
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['name', 'age'])
+    writer.writerow(['Alice', 25])
+with open('data.csv', 'r') as f:
+    print(f.read())  # Output: name,age
+                     #         Alice,25
+```
+**Layman’s Explanation**: Writing a CSV is like filling a spreadsheet with rows and columns in a notebook.
+
+---
+
+#### Question 9
+**Question**: How do you write a JSON file in Python?  
+**Expected Answer**: Use `json.dump()` to write a Python dictionary to a JSON file.  
+**Sample Code**:
+```python
+import json
+data = {"name": "Bob", "age": 30}
+with open('data.json', 'w') as f:
+    json.dump(data, f)
+with open('data.json', 'r') as f:
+    print(f.read())  # Output: {"name": "Bob", "age": 30}
+```
+**Layman’s Explanation**: Writing JSON is like saving a structured list, like a dictionary, in a notebook.
+
+---
+
+#### Question 10
+**Question**: How do you write a binary file in Python?  
+**Expected Answer**: Use `wb` mode with `write()` to write binary data as bytes.  
+**Sample Code**:
+```python
+with open('data.bin', 'wb') as f:
+    f.write(b'Binary data')
+with open('data.bin', 'rb') as f:
+    print(f.read())  # Output: b'Binary data'
+```
+**Layman’s Explanation**: Writing binary files is like saving pictures or raw data in a special notebook format.
+
+---
+
+#### Question 11
+**Question**: How do you write files asynchronously in 2025?  
+**Expected Answer**: Use `aiofiles.open()` for asynchronous file writing in async applications.  
+**Sample Code**:
+```python
+import aiofiles
+async def write_async():
+    async with aiofiles.open('file.txt', 'w') as f:
+        await f.write('Async data')
+import asyncio
+asyncio.run(write_async())
+with open('file.txt', 'r') as f:
+    print(f.read())  # Output: Async data
+```
+**Layman’s Explanation**: Async writing is like jotting notes in a notebook while handling other tasks, like in a web app.
+
+---
+
+#### Question 12
+**Question**: How do you write files in FastAPI in 2025?  
+**Expected Answer**: Use `aiofiles` for async writes or standard `open()` for logs/configs.  
+**Sample Code**:
+```python
+from fastapi import FastAPI
+import aiofiles
+app = FastAPI()
+@app.post("/write")
+async def write_file():
+    async with aiofiles.open('file.txt', 'w') as f:
+        await f.write('API data')
+    return {"status": "Written"}
+# Run: uvicorn script:app --reload
+```
+**Layman’s Explanation**: In FastAPI, writing files is like saving data from a website into a notebook.
+
+---
+
+#### Question 13
+**Question**: How do you write files in Django in 2025?  
+**Expected Answer**: Use `open()` or Django’s `FileField` to write files in views or models.  
+**Sample Code**:
+```python
+from django.http import HttpResponse
+def my_view(request):
+    with open('file.txt', 'w') as f:
+        f.write('Django data')
+    return HttpResponse("Written")
+# Run: python manage.py runserver
+```
+**Layman’s Explanation**: In Django, writing files is like saving notes for a webpage to use later.
+
+---
+
+#### Question 14
+**Question**: How do you write a pickle file?  
+**Expected Answer**: Use `pickle.dump()` to serialize Python objects to a binary file.  
+**Sample Code**:
+```python
+import pickle
+data = {"key": "value"}
+with open('data.pkl', 'wb') as f:
+    pickle.dump(data, f)
+with open('data.pkl', 'rb') as f:
+    print(pickle.load(f))  # Output: {'key': 'value'}
+```
+**Layman’s Explanation**: Writing a pickle file is like saving a Python object, like a dictionary, in a special notebook.
+
+---
+
+#### Question 15
+**Question**: How do you handle file encoding when writing?  
+**Expected Answer**: Specify encoding (e.g., `utf-8`) in `open()` for text files.  
+**Sample Code**:
+```python
+with open('file.txt', 'w', encoding='utf-8') as f:
+    f.write('Hello')
+with open('file.txt', 'r', encoding='utf-8') as f:
+    print(f.read())  # Output: Hello
+```
+**Layman’s Explanation**: Encoding is like choosing the right language to write in a notebook so it’s readable later.
+
+---
+
+#### Question 16
+**Question**: How do you write to a file with `pandas` in 2025?  
+**Expected Answer**: Use `pandas.DataFrame.to_csv()`, `to_json()`, etc., to write data.  
+**Sample Code**:
+```python
+import pandas as pd
+df = pd.DataFrame({'name': ['Alice'], 'age': [25]})
+df.to_csv('data.csv', index=False)
+with open('data.csv', 'r') as f:
+    print(f.read())  # Output: name,age
+                     #         Alice,25
+```
+**Layman’s Explanation**: With pandas, writing files is like saving a spreadsheet table to a notebook.
+
+---
+
+#### Question 17
+**Question**: How do you use `writelines()` to write to a file?  
+**Expected Answer**: Use `writelines()` to write a list of strings without adding newlines.  
+**Sample Code**:
+```python
+with open('file.txt', 'w') as f:
+    f.writelines(['Line 1\n', 'Line 2\n'])
+with open('file.txt', 'r') as f:
+    print(f.read())  # Output: Line 1
+                     #         Line 2
+```
+**Layman’s Explanation**: `writelines()` is like writing a list of sentences to a notebook, one after another.
+
+---
+
+#### Question 18
+**Question**: How do you write large data to a file efficiently?  
+**Expected Answer**: Write in chunks using `write()` in a loop to manage memory.  
+**Sample Code**:
+```python
+with open('large.txt', 'w') as f:
+    for i in range(1000):
+        f.write(f'Line {i}\n')
+with open('large.txt', 'r') as f:
+    print(f.readline())  # Output: Line 0
+```
+**Layman’s Explanation**: Writing large data is like filling a big notebook page by page to avoid overwhelming yourself.
+
+---
+
+#### Question 19
+**Question**: How do you log to a file in Python?  
+**Expected Answer**: Use `logging.basicConfig()` with a filename to write logs.  
+**Sample Code**:
+```python
+import logging
+logging.basicConfig(filename='app.log', level=logging.INFO)
+logging.info('Test log')
+with open('app.log', 'r') as f:
+    print(f.read())  # Output: INFO:root:Test log
+```
+**Layman’s Explanation**: Logging to a file is like keeping a diary of what your program does.
+
+---
+
+#### Question 20
+**Question**: How do you write files in Streamlit in 2025?  
+**Expected Answer**: Use `open()` or save user-generated data to files in Streamlit apps.  
+**Sample Code**:
+```python
+import streamlit as st
+data = st.text_input('Enter data')
+if st.button('Save'):
+    with open('file.txt', 'w') as f:
+        f.write(data)
+    st.write('Saved')
+# Run: streamlit run script.py
+```
+**Layman’s Explanation**: In Streamlit, writing files is like saving user input from a dashboard to a notebook.
+
+---
+
+#### Question 21
+**Question**: How do you secure file writing operations?  
+**Expected Answer**: Validate paths with `pathlib.Path.resolve()` to prevent directory traversal.  
+**Sample Code**:
+```python
+from pathlib import Path
+filename = 'file.txt'
+path = Path(filename).resolve()
+path.write_text('Safe')
+print(path.read_text())  # Output: Safe
+```
+**Layman’s Explanation**: Securing file writing is like checking a notebook’s location to avoid writing to the wrong place.
+
+---
+
+#### Question 22
+**Question**: How do you write YAML files in Python?  
+**Expected Answer**: Use `yaml.dump()` from `pyyaml` to write structured data.  
+**Sample Code**:
+```python
+import yaml
+data = {'name': 'Alice', 'age': 25}
+with open('data.yml', 'w') as f:
+    yaml.dump(data, f)
+with open('data.yml', 'r') as f:
+    print(f.read())  # Output: name: Alice
+                     #         age: 25
+```
+**Layman’s Explanation**: Writing YAML is like saving organized data, like a config, in a structured notebook.
+
+---
+
+#### Question 23
+**Question**: How do you handle file locking for writing?  
+**Expected Answer**: Use `fcntl` (Unix) or `msvcrt` (Windows) to lock files during writes.  
+**Sample Code**:
+```python
+import fcntl
+with open('file.txt', 'w') as f:
+    fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+    f.write('Locked write')
+    fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+with open('file.txt', 'r') as f:
+    print(f.read())  # Output: Locked write
+```
+**Layman’s Explanation**: File locking is like putting a lock on a notebook so only one person can write at a time.
+
+---
+
+#### Question 24
+**Question**: How do you write files in a directory?  
+**Expected Answer**: Use `pathlib.Path` or `os.makedirs()` to create directories and write files.  
+**Sample Code**:
+```python
+from pathlib import Path
+Path('data').mkdir(exist_ok=True)
+Path('data/file.txt').write_text('Hello')
+print(Path('data/file.txt').read_text())  # Output: Hello
+```
+**Layman’s Explanation**: Writing in a directory is like creating a folder and putting a notebook inside it.
+
+---
+
+#### Question 25
+**Question**: How do you use `seek()` and `tell()` when writing files?  
+**Expected Answer**: `seek()` moves the file pointer; `tell()` returns its position for writing.  
+**Sample Code**:
+```python
+with open('file.txt', 'w') as f:
+    f.write('Hello')
+with open('file.txt', 'r+') as f:
+    f.seek(2)
+    f.write('X')
+    print(f.tell())  # Output: 3
+with open('file.txt', 'r') as f:
+    print(f.read())  # Output: HeXlo
+```
+**Layman’s Explanation**: `seek()` is like moving to a specific page to write; `tell()` tells you where you are.
+
+---
+
+#### Question 26
+**Question**: How do you write compressed files (e.g., gzip)?  
+**Expected Answer**: Use `gzip.open()` to write compressed files.  
+**Sample Code**:
+```python
+import gzip
+with gzip.open('file.txt.gz', 'wt') as f:
+    f.write('Compressed data')
+with gzip.open('file.txt.gz', 'rt') as f:
+    print(f.read())  # Output: Compressed data
+```
+**Layman’s Explanation**: Writing compressed files is like zipping a notebook to save space before saving it.
+
+---
+
+#### Question 27
+**Question**: How do you handle file writing in unit tests with `pytest`?  
+**Expected Answer**: Use `tmp_path` to create temporary files for testing writes.  
+**Sample Code**:
+```python
+import pytest
+def test_write_file(tmp_path):
+    file = tmp_path / 'test.txt'
+    file.write_text('Hello')
+    assert file.read_text() == 'Hello'
+# Run: pytest script.py
+# Output: Test passes
+```
+**Layman’s Explanation**: Testing file writing is like using a temporary notebook to check if your code writes correctly.
+
+---
+
+#### Question 28
+**Question**: How do you write files with `numpy` in 2025?  
+**Expected Answer**: Use `numpy.savetxt()` to write numerical data to files.  
+**Sample Code**:
+```python
+import numpy as np
+data = np.array([[1, 2], [3, 4]])
+np.savetxt('data.txt', data)
+with open('data.txt', 'r') as f:
+    print(f.read())  # Output: 1.000000e+00 2.000000e+00
+                     #         3.000000e+00 4.000000e+00
+```
+**Layman’s Explanation**: With numpy, writing files is like saving numbers in a notebook for math calculations.
+
+---
+
+#### Question 29
+**Question**: How do you write multiple files in a loop?  
+**Expected Answer**: Use a loop to create and write to multiple files dynamically.  
+**Sample Code**:
+```python
+for i in range(3):
+    with open(f'file{i}.txt', 'w') as f:
+        f.write(f'Data {i}')
+with open('file0.txt', 'r') as f:
+    print(f.read())  # Output: Data 0
+```
+**Layman’s Explanation**: Writing multiple files is like creating several notebooks with different notes in a loop.
+
+---
+
+#### Question 30
+**Question**: What are common pitfalls with file writing, and how can you avoid them?  
+**Expected Answer**: Pitfalls include not closing files, overwriting data, or incorrect encodings. Avoid with `with` statements, `a` mode for appending, and encoding specification.  
+**Sample Code**:
+```python
+try:
+    with open('file.txt', 'w', encoding='utf-8') as f:
+        f.write('Safe write')
+except OSError:
+    print("File error")  # Output: None (if successful)
+```
+**Layman’s Explanation**: Pitfalls are like forgetting to close a notebook or overwriting it; use `with` and check your settings.
+
+---
+
+This comprehensive guide covers the theory of file writing and creation in Python and provides 30 interview questions with detailed answers, inline code samples, and layman’s explanations tailored for a 4-year experienced developer in 2025. Let me know if you need further clarification or additional topics!
+
+<xaiArtifact artifact_id="a574834c-09e9-44e9-8031-274f42f94e0e" artifact_version_id="18732c70-0035-4305-ab85-c7be1808108e" title="file_writing_examples.py" contentType="text/python">
+# Example 1: Basic file writing
+with open('file.txt', 'w') as f:
+    f.write('Hello')
+with open('file.txt', 'r') as f:
+    print(f.read())  # Output: Hello
+
+# Example 2: Write CSV
+import csv
+with open('data.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['name', 'age'])
+    writer.writerow(['Alice', 25])
+with open('data.csv', 'r') as f:
+    print(f.read())  # Output: name,age
+                     #         Alice,25
+
+# Example 3: Write JSON
+import json
+data = {"name": "Bob", "age": 30}
+with open('data.json', 'w') as f:
+    json.dump(data, f)
+with open('data.json', 'r') as f:
+    print(f.read())  # Output: {"name": "Bob", "age": 30}
+
+# Example 4: Error handling
+try:
+    with open('file.txt', 'w', encoding='utf-8') as f:
+        f.write('Safe write')
+except OSError:
+    print("File error")  # Output: None (if successful)
+</xaiArtifact>

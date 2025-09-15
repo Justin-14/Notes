@@ -1,0 +1,1019 @@
+### Part 1: Theory of Decorators in Python
+
+#### What are Decorators in Python?
+Decorators in Python are a powerful and advanced feature that allows you to modify or extend the behavior of a function or method without changing its source code. They are essentially functions that wrap another function or method, adding functionality before or after the wrapped function executes. Decorators are a form of metaprogramming, leveraging Python’s first-class function capabilities, and are widely used for tasks like logging, timing, access control, and memoization. Introduced as a core feature in Python 2.4 (via PEP 318), decorators remain highly relevant in 2025, especially in modern frameworks like FastAPI and Flask.
+
+#### Key Components
+1. **Syntax**:
+   - Defined using the `@decorator` syntax above a function or method.
+   - A decorator is a function that takes another function as input, wraps it with additional logic, and returns a new function.
+   - Basic structure:
+     ```python
+     def decorator(func):
+         def wrapper(*args, **kwargs):
+             # Additional logic
+             result = func(*args, **kwargs)
+             # Additional logic
+             return result
+         return wrapper
+
+     @decorator
+     def my_function():
+         pass
+     ```
+   - The `@decorator` syntax is equivalent to: `my_function = decorator(my_function)`.
+
+2. **Function Wrapping**:
+   - The decorator function defines an inner `wrapper` function that calls the original function (`func`) and adds behavior.
+   - The wrapper typically accepts `*args` and `**kwargs` to handle any number of arguments passed to the original function.
+   - Example: Adding logging before and after a function call.
+
+3. **Return Value**:
+   - The wrapper function usually returns the result of the original function but can modify or replace it.
+   - Decorators can also return nothing (`None`) or entirely new values.
+
+4. **Function Metadata**:
+   - By default, the wrapper function replaces the original function’s metadata (e.g., `__name__`, `__doc__`).
+   - Use `functools.wraps` to preserve metadata:
+     ```python
+     from functools import wraps
+     def decorator(func):
+         @wraps(func)
+         def wrapper(*args, **kwargs):
+             return func(*args, **kwargs)
+         return wrapper
+     ```
+
+#### How Decorators Work
+- **Execution Flow**:
+  - When a decorated function is defined, the decorator is called immediately, returning the wrapper function.
+  - When the decorated function is called, the wrapper executes, running any additional logic before/after calling the original function.
+- **Stacking Decorators**:
+  - Multiple decorators can be applied to a single function, executed from bottom to top.
+  - Example: 
+    ```python
+    @decorator1
+    @decorator2
+    def func(): pass
+    # Equivalent to: func = decorator1(decorator2(func))
+    ```
+- **Closure**: Decorators use closures to retain access to variables in the decorator’s scope, enabling stateful decorators (e.g., counters).
+
+#### Key Features
+- **First-Class Functions**: Decorators rely on Python’s ability to treat functions as objects, pass them as arguments, and return them.
+- **Higher-Order Functions**: Decorators are functions that take and return other functions.
+- **Reusability**: A single decorator can be applied to multiple functions, reducing code duplication.
+- **Flexibility**: Decorators can modify inputs, outputs, or add side effects (e.g., logging, timing).
+- **Class Decorators**: Decorators can be applied to classes or defined as classes with `__call__` methods.
+- **Parameterized Decorators**: Decorators that accept arguments use an additional layer of functions:
+  ```python
+  def param_decorator(arg):
+      def decorator(func):
+          def wrapper(*args, **kwargs):
+              print(f"Parameter: {arg}")
+              return func(*args, **kwargs)
+          return wrapper
+      return decorator
+  ```
+
+#### Use Cases
+- **Logging**: Log function calls, arguments, or results (e.g., debugging in Flask/FastAPI).
+- **Timing**: Measure execution time of functions (e.g., performance profiling).
+- **Authentication/Authorization**: Restrict access to functions (e.g., `@login_required` in Flask).
+- **Memoization**: Cache results for performance (e.g., `functools.lru_cache`).
+- **Input Validation**: Check arguments before function execution.
+- **Libraries in 2025**:
+  - **FastAPI**: Decorators like `@app.get` or custom decorators for route validation.
+  - **Flask**: Decorators for routing or authentication (e.g., `@route`, `@login_required`).
+  - **Pydantic**: Decorators for custom validators in data models.
+  - **Pandas/NumPy**: Decorators for preprocessing or logging computations.
+  - **Testing**: Decorators in `pytest` for setup/teardown or marking tests.
+
+#### Advanced Concepts
+- **Type Hints**:
+  - Use `typing` module (e.g., `Callable`) to annotate decorators for type safety.
+  - Example: `from typing import Callable; def decorator(func: Callable) -> Callable: ...`.
+- **Asynchronous Decorators**:
+  - Decorators for `async def` functions, using `await` in the wrapper.
+  - Example: 
+    ```python
+    async def async_decorator(func):
+        async def wrapper(*args, **kwargs):
+            print("Before")
+            result = await func(*args, **kwargs)
+            print("After")
+            return result
+        return wrapper
+    ```
+- **Class Decorators**:
+  - Apply decorators to classes to modify class behavior or add methods.
+  - Example: Adding a class method via a decorator.
+- **Stateful Decorators**:
+  - Use closures to maintain state (e.g., counting function calls).
+  - Example: 
+    ```python
+    def count_calls(func):
+        count = 0
+        def wrapper(*args, **kwargs):
+            nonlocal count
+            count += 1
+            print(f"Call {count}")
+            return func(*args, **kwargs)
+        return wrapper
+    ```
+- **Performance**:
+  - **Time Complexity**: Decorators add O(1) overhead per call, but the wrapped function’s complexity dominates.
+  - Optimize by minimizing wrapper logic or using `functools.lru_cache` for caching.
+- **Decorator Libraries**:
+  - `functools`: Provides `wraps` and `lru_cache`.
+  - `decorator`: Third-party library for simplifying decorator creation.
+- **Integration with Frameworks**:
+  - In FastAPI, decorators define endpoints or middleware (e.g., `@app.get("/items")`).
+  - In Flask, decorators handle routing or authentication.
+  - In Pydantic, `@validator` decorates methods for custom validation.
+
+#### Best Practices
+- Use `@functools.wraps` to preserve the original function’s metadata.
+- Keep decorators simple and focused on a single responsibility (e.g., logging or timing).
+- Use parameterized decorators for configurability (e.g., `@retry(attempts=3)`).
+- Ensure decorators handle `*args` and `**kwargs` for flexibility.
+- Use type hints for clarity in complex decorators.
+- Avoid side effects that alter function behavior unexpectedly.
+- Test decorated functions with unit tests (e.g., `pytest`) to ensure correctness.
+- Use async decorators for async functions in modern applications (e.g., FastAPI in 2025).
+- Document decorators with clear docstrings explaining their purpose and parameters.
+
+#### Layman’s Explanation of Decorators
+A decorator is like wrapping a gift. The gift (function) does its job, but the wrapping (decorator) adds something extra, like a shiny bow or a card (e.g., logging or timing), without changing the gift itself. It’s a way to dress up a function to do more, like adding a “please wait” sign before a task starts.
+
+---
+
+### Part 2: Top 30 Interview Questions for a 4-Year Experienced Python Developer (Focused on Decorators)
+
+Below are 30 interview questions tailored for a Python developer with 4 years of experience, focusing on decorators and related concepts. Each question includes the expected answer, sample code (provided inline as requested), and a layman’s explanation, designed to be relevant for 2025.
+
+#### Question 1
+**Question**: What is a decorator in Python, and why is it used?  
+**Expected Answer**: A decorator is a function that wraps another function to extend or modify its behavior without altering its code. It’s used for tasks like logging, timing, or access control.  
+**Sample Code**:
+```python
+def log(func):
+    def wrapper(*args, **kwargs):
+        print(f"Calling {func.__name__}")
+        return func(*args, **kwargs)
+    return wrapper
+
+@log
+def add(a, b):
+    return a + b
+
+print(add(2, 3))  # Output: Calling add
+                  #         5
+```
+**Layman’s Explanation**: A decorator is like adding a note to a recipe that says “announce the dish before serving it,” without changing the recipe itself.
+
+---
+
+#### Question 2
+**Question**: How do you define a basic decorator in Python?  
+**Expected Answer**: Define a function that takes another function, defines a wrapper to add logic, and returns the wrapper. Use `@` to apply it.  
+**Sample Code**:
+```python
+def my_decorator(func):
+    def wrapper():
+        print("Before")
+        func()
+        print("After")
+    return wrapper
+
+@my_decorator
+def say_hello():
+    print("Hello")
+
+say_hello()  # Output: Before
+             #         Hello
+             #         After
+```
+**Layman’s Explanation**: Defining a decorator is like creating a wrapper that says “do this before and after” a task, like a greeting before and after a message.
+
+---
+
+#### Question 3
+**Question**: Why is `functools.wraps` used in decorators?  
+**Expected Answer**: `functools.wraps` preserves the original function’s metadata (e.g., `__name__`, `__doc__`) in the wrapper, avoiding loss of identity.  
+**Sample Code**:
+```python
+from functools import wraps
+
+def my_decorator(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+
+@my_decorator
+def add(a, b):
+    """Add two numbers."""
+    return a + b
+
+print(add.__name__)  # Output: add
+print(add.__doc__)   # Output: Add two numbers.
+```
+**Layman’s Explanation**: `functools.wraps` is like keeping the original label on a gift box so everyone knows what’s inside, even after wrapping it.
+
+---
+
+#### Question 4
+**Question**: How do you create a parameterized decorator?  
+**Expected Answer**: Use an outer function to accept parameters, returning a decorator that wraps the target function.  
+**Sample Code**:
+```python
+def repeat(n):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for _ in range(n):
+                func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@repeat(3)
+def say_hello():
+    print("Hello")
+
+say_hello()  # Output: Hello
+             #         Hello
+             #         Hello
+```
+**Layman’s Explanation**: A parameterized decorator is like a recipe that says “repeat this dish n times,” letting you customize the wrapping.
+
+---
+
+#### Question 5
+**Question**: How do decorators handle functions with arguments?  
+**Expected Answer**: Use `*args` and `**kwargs` in the wrapper to accept any number of positional and keyword arguments.  
+**Sample Code**:
+```python
+def log(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"Args: {args}, Kwargs: {kwargs}")
+        return func(*args, **kwargs)
+    return wrapper
+
+@log
+def add(a, b):
+    return a + b
+
+print(add(2, b=3))  # Output: Args: (2,), Kwargs: {'b': 3}
+                    #         5
+```
+**Layman’s Explanation**: Using `*args` and `**kwargs` is like giving a chef a bag to catch any ingredients, so the recipe works with anything.
+
+---
+
+#### Question 6
+**Question**: How can you stack multiple decorators on a single function?  
+**Expected Answer**: Apply multiple decorators with `@`, executed from bottom to top, each wrapping the result of the previous.  
+**Sample Code**:
+```python
+def dec1(func):
+    def wrapper(*args):
+        print("Decorator 1")
+        return func(*args)
+    return wrapper
+
+def dec2(func):
+    def wrapper(*args):
+        print("Decorator 2")
+        return func(*args)
+    return wrapper
+
+@dec1
+@dec2
+def say_hello():
+    print("Hello")
+
+say_hello()  # Output: Decorator 1
+             #         Decorator 2
+             #         Hello
+```
+**Layman’s Explanation**: Stacking decorators is like wrapping a gift in multiple layers of paper, each adding its own design, applied in reverse order.
+
+---
+
+#### Question 7
+**Question**: How do you create a decorator for timing a function?  
+**Expected Answer**: Measure the time before and after the function call, calculating the difference.  
+**Sample Code**:
+```python
+import time
+def timer(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        print(f"{func.__name__} took {time.time() - start} seconds")
+        return result
+    return wrapper
+
+@timer
+def slow_func():
+    time.sleep(1)
+    return "Done"
+
+print(slow_func())  # Output: slow_func took 1.00... seconds
+                    #         Done
+```
+**Layman’s Explanation**: A timing decorator is like a stopwatch that starts when a task begins and tells you how long it took when it’s done.
+
+---
+
+#### Question 8
+**Question**: How can you create a decorator for logging?  
+**Expected Answer**: Log function calls, arguments, or results, typically to a console or file, for debugging or monitoring.  
+**Sample Code**:
+```python
+def log(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"Calling {func.__name__} with {args}, {kwargs}")
+        result = func(*args, **kwargs)
+        print(f"Result: {result}")
+        return result
+    return wrapper
+
+@log
+def add(a, b):
+    return a + b
+
+print(add(2, 3))  # Output: Calling add with (2, 3), {}
+                  #         Result: 5
+                  #         5
+```
+**Layman’s Explanation**: A logging decorator is like a diary that notes what you’re cooking, what ingredients you used, and what came out.
+
+---
+
+#### Question 9
+**Question**: How do you create a decorator for authentication?  
+**Expected Answer**: Check user credentials or permissions before allowing the function to execute, common in web frameworks.  
+**Sample Code**:
+```python
+def require_auth(func):
+    @functools.wraps(func)
+    def wrapper(user, *args, **kwargs):
+        if user.get("role") == "admin":
+            return func(user, *args, **kwargs)
+        return "Access denied"
+    return wrapper
+
+@require_auth
+def sensitive_data(user):
+    return "Secret data"
+
+user = {"role": "admin"}
+print(sensitive_data(user))  # Output: Secret data
+user = {"role": "guest"}
+print(sensitive_data(user))  # Output: Access denied
+```
+**Layman’s Explanation**: An authentication decorator is like a bouncer checking your ID before letting you into a VIP room.
+
+---
+
+#### Question 10
+**Question**: How does `functools.lru_cache` work as a decorator?  
+**Expected Answer**: `lru_cache` caches function results for given inputs, improving performance for expensive computations with repeated calls.  
+**Sample Code**:
+```python
+from functools import lru_cache
+
+@lru_cache(maxsize=128)
+def fib(n):
+    if n <= 1:
+        return n
+    return fib(n - 1) + fib(n - 2)
+
+print(fib(10))  # Output: 55
+```
+**Layman’s Explanation**: `lru_cache` is like a chef remembering how to make a dish so they don’t have to redo the work every time you order it.
+
+---
+
+#### Question 11
+**Question**: How can you create an async decorator for async functions?  
+**Expected Answer**: Define a decorator for `async def` functions, using `async def` and `await` in the wrapper, common in FastAPI.  
+**Sample Code**:
+```python
+import asyncio
+from functools import wraps
+
+def async_decorator(func):
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        print("Before async")
+        result = await func(*args, **kwargs)
+        print("After async")
+        return result
+    return wrapper
+
+@async_decorator
+async def async_task():
+    await asyncio.sleep(1)
+    return "Done"
+
+async def main():
+    print(await async_task())
+
+asyncio.run(main())  # Output: Before async
+                    #         Done
+                    #         After async
+```
+**Layman’s Explanation**: An async decorator is like a manager who announces a task, waits for it to finish, and then wraps it up, without stopping other work.
+
+---
+
+#### Question 12
+**Question**: How can you create a class decorator?  
+**Expected Answer**: Define a decorator that takes a class and modifies its behavior, such as adding methods or attributes.  
+**Sample Code**:
+```python
+def add_method(cls):
+    def new_method(self):
+        return "Added method"
+    cls.new_method = new_method
+    return cls
+
+@add_method
+class MyClass:
+    pass
+
+obj = MyClass()
+print(obj.new_method())  # Output: Added method
+```
+**Layman’s Explanation**: A class decorator is like adding a new tool to a toolbox, giving the class an extra feature.
+
+---
+
+#### Question 13
+**Question**: How can you create a stateful decorator?  
+**Expected Answer**: Use a closure to maintain state (e.g., a counter) across function calls.  
+**Sample Code**:
+```python
+def count_calls(func):
+    count = 0
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        nonlocal count
+        count += 1
+        print(f"Call {count}")
+        return func(*args, **kwargs)
+    return wrapper
+
+@count_calls
+def say_hello():
+    print("Hello")
+
+say_hello()  # Output: Call 1
+             #         Hello
+say_hello()  # Output: Call 2
+             #         Hello
+```
+**Layman’s Explanation**: A stateful decorator is like a scoreboard that keeps track of how many times you’ve used a recipe.
+
+---
+
+#### Question 14
+**Question**: How do decorators work with methods in a class?  
+**Expected Answer**: Decorators wrap instance or class methods, passing `self` or `cls` as the first argument in the wrapper.  
+**Sample Code**:
+```python
+def log_method(func):
+    @functools.wraps(func)
+    def wrapper(self, *args, **kwargs):
+        print(f"Calling {func.__name__}")
+        return func(self, *args, **kwargs)
+    return wrapper
+
+class MyClass:
+    @log_method
+    def my_method(self, x):
+        return x * 2
+
+obj = MyClass()
+print(obj.my_method(5))  # Output: Calling my_method
+                        #         10
+```
+**Layman’s Explanation**: Decorating a method is like adding a note to a task a person does, like “log this action” before they do it.
+
+---
+
+#### Question 15
+**Question**: How can you use decorators in FastAPI in 2025?  
+**Expected Answer**: Use decorators like `@app.get` for routing or create custom decorators for middleware or validation.  
+**Sample Code**:
+```python
+from fastapi import FastAPI
+app = FastAPI()
+
+def log_endpoint(func):
+    @functools.wraps(func)
+    async def wrapper(*args, **kwargs):
+        print(f"Calling endpoint {func.__name__}")
+        return await func(*args, **kwargs)
+    return wrapper
+
+@app.get("/items")
+@log_endpoint
+async def get_items():
+    return {"items": [1, 2, 3]}
+
+# Run: uvicorn script:app --reload
+# Test: curl http://127.0.0.1:8000/items
+# Output: Calling endpoint get_items
+#         {"items": [1, 2, 3]}
+```
+**Layman’s Explanation**: In FastAPI, a decorator is like a signpost that directs web requests to a function or adds extra steps, like logging the request.
+
+---
+
+#### Question 16
+**Question**: How can you use decorators with Pydantic in 2025?  
+**Expected Answer**: Use `@validator` or custom decorators to validate or transform Pydantic model fields.  
+**Sample Code**:
+```python
+from pydantic import BaseModel, validator
+class Item(BaseModel):
+    value: int
+    @validator("value")
+    def check_positive(cls, v):
+        if v <= 0:
+            raise ValueError("Must be positive")
+        return v
+
+print(Item(value=5))  # Output: value=5
+```
+**Layman’s Explanation**: In Pydantic, a decorator is like a quality check on a form, ensuring fields like “value” are valid before processing.
+
+---
+
+#### Question 17
+**Question**: How can you use decorators for retry logic?  
+**Expected Answer**: Create a decorator that retries a function on failure, with configurable attempts or delays.  
+**Sample Code**:
+```python
+import time
+def retry(attempts):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for i in range(attempts):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    print(f"Attempt {i + 1} failed: {e}")
+                    time.sleep(1)
+            raise Exception("All attempts failed")
+        return wrapper
+    return decorator
+
+@retry(3)
+def risky_operation():
+    raise ValueError("Error")
+
+try:
+    risky_operation()
+except Exception as e:
+    print(e)  # Output: Attempt 1 failed: Error
+              #         Attempt 2 failed: Error
+              #         Attempt 3 failed: Error
+              #         All attempts failed
+```
+**Layman’s Explanation**: A retry decorator is like trying a recipe multiple times if it fails, like retrying a cake if it burns.
+
+---
+
+#### Question 18
+**Question**: How do decorators affect function performance?  
+**Expected Answer**: Decorators add slight overhead (O(1) per call) due to the wrapper but can optimize with caching (e.g., `lru_cache`).  
+**Sample Code**:
+```python
+from functools import lru_cache
+@lru_cache(maxsize=128)
+def expensive_calc(n):
+    time.sleep(1)
+    return n * n
+
+print(expensive_calc(5))  # Takes 1 second
+print(expensive_calc(5))  # Instant (cached)
+# Output: 25
+#         25
+```
+**Layman’s Explanation**: Decorators are like adding a small step to a task, but caching ones save time by remembering results, like reusing a cooked dish.
+
+---
+
+#### Question 19
+**Question**: How can you debug issues with decorators?  
+**Expected Answer**: Use logging, check wrapper logic, verify metadata with `@wraps`, and test with simple inputs to isolate issues.  
+**Sample Code**:
+```python
+def debug(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"Debug: {func.__name__}({args}, {kwargs})")
+        return func(*args, **kwargs)
+    return wrapper
+
+@debug
+def add(a, b):
+    return a + b
+
+print(add(2, 3))  # Output: Debug: add((2, 3), {})
+                  #         5
+```
+**Layman’s Explanation**: Debugging a decorator is like keeping a log of what’s happening in a kitchen to spot where things go wrong.
+
+---
+
+#### Question 20
+**Question**: How can you use decorators with Flask in 2025?  
+**Expected Answer**: Use decorators like `@route` for routing or custom decorators for authentication or logging.  
+**Sample Code**:
+```python
+from flask import Flask
+app = Flask(__name__)
+
+def log_request(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print("Request received")
+        return func(*args, **kwargs)
+    return wrapper
+
+@app.route("/home")
+@log_request
+def home():
+    return "Welcome"
+
+# Run: app.run()
+# Test: curl http://127.0.0.1:5000/home
+# Output: Request received
+#         Welcome
+```
+**Layman’s Explanation**: In Flask, a decorator is like a doorman who logs visitors before letting them into a webpage.
+
+---
+
+#### Question 21
+**Question**: How can you create a decorator for input validation?  
+**Expected Answer**: Check function arguments in the wrapper, raising exceptions or modifying inputs as needed.  
+**Sample Code**:
+```python
+def validate_positive(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        if any(x <= 0 for x in args):
+            raise ValueError("Arguments must be positive")
+        return func(*args, **kwargs)
+    return wrapper
+
+@validate_positive
+def multiply(a, b):
+    return a * b
+
+print(multiply(2, 3))  # Output: 6
+# print(multiply(-1, 3))  # Raises ValueError
+```
+**Layman’s Explanation**: A validation decorator is like a chef checking ingredients are fresh before cooking, rejecting bad ones.
+
+---
+
+#### Question 22
+**Question**: How do decorators interact with type hints?  
+**Expected Answer**: Use `typing.Callable` to annotate decorators, ensuring type safety with tools like `mypy`.  
+**Sample Code**:
+```python
+from typing import Callable
+def log(func: Callable) -> Callable:
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"Calling {func.__name__}")
+        return func(*args, **kwargs)
+    return wrapper
+
+@log
+def add(a: int, b: int) -> int:
+    return a + b
+
+print(add(2, 3))  # Output: Calling add
+                  #         5
+```
+**Layman’s Explanation**: Type hints in decorators are like labeling a recipe to ensure it works with numbers, not words, for safety.
+
+---
+
+#### Question 23
+**Question**: How can you create a decorator for rate limiting?  
+**Expected Answer**: Track call frequency or timing in the decorator, blocking or delaying calls if limits are exceeded.  
+**Sample Code**:
+```python
+import time
+def rate_limit(seconds):
+    last_called = 0
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            nonlocal last_called
+            now = time.time()
+            if now - last_called < seconds:
+                print("Rate limit exceeded")
+                return None
+            last_called = now
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@rate_limit(1)
+def action():
+    print("Action performed")
+
+action()  # Output: Action performed
+action()  # Output: Rate limit exceeded
+```
+**Layman’s Explanation**: A rate-limiting decorator is like a gatekeeper who says “wait a second” if you try to enter too soon.
+
+---
+
+#### Question 24
+**Question**: How can you use decorators for memoization without `lru_cache`?  
+**Expected Answer**: Store results in a cache dictionary within the decorator, reusing them for repeated inputs.  
+**Sample Code**:
+```python
+def memoize(func):
+    cache = {}
+    @functools.wraps(func)
+    def wrapper(*args):
+        if args in cache:
+            return cache[args]
+        result = func(*args)
+        cache[args] = result
+        return result
+    return wrapper
+
+@memoize
+def fib(n):
+    if n <= 1:
+        return n
+    return fib(n - 1) + fib(n - 2)
+
+print(fib(10))  # Output: 55
+```
+**Layman’s Explanation**: A memoization decorator is like a chef saving a dish so they don’t have to cook it again for the same order.
+
+---
+
+#### Question 25
+**Question**: How do decorators work with static or class methods?  
+**Expected Answer**: Use `@staticmethod` or `@classmethod` with decorators, ensuring the wrapper handles `cls` or no `self`.  
+**Sample Code**:
+```python
+def log(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"Calling {func.__name__}")
+        return func(*args, **kwargs)
+    return wrapper
+
+class MyClass:
+    @classmethod
+    @log
+    def my_class_method(cls):
+        return f"Class: {cls.__name__}"
+
+print(MyClass.my_class_method())  # Output: Calling my_class_method
+                                  #         Class: MyClass
+```
+**Layman’s Explanation**: Decorating class methods is like adding a note to a team’s task, logging what the team does as a group.
+
+---
+
+#### Question 26
+**Question**: How can you test decorated functions?  
+**Expected Answer**: Use `pytest` or `unittest` to test the function’s behavior, including decorator side effects, with various inputs.  
+**Sample Code**:
+```python
+import unittest
+def log(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print("Logged")
+        return func(*args, **kwargs)
+    return wrapper
+
+@log
+def add(a, b):
+    return a + b
+
+class TestAdd(unittest.TestCase):
+    def test_add(self):
+        self.assertEqual(add(2, 3), 5)
+
+if __name__ == "__main__":
+    unittest.main(argv=[''], exit=False)  # Output: Logged
+                                          #         OK
+```
+**Layman’s Explanation**: Testing decorated functions is like taste-testing a dish with extra garnish to ensure it still tastes right.
+
+---
+
+#### Question 27
+**Question**: How can you create a decorator for error handling?  
+**Expected Answer**: Catch exceptions in the wrapper, returning a default value or logging the error.  
+**Sample Code**:
+```python
+def handle_error(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            print(f"Error: {e}")
+            return None
+    return wrapper
+
+@handle_error
+def divide(a, b):
+    return a / b
+
+print(divide(10, 0))  # Output: Error: division by zero
+                      #         None
+```
+**Layman’s Explanation**: An error-handling decorator is like a safety net that catches mistakes, like a chef fixing a burnt dish.
+
+---
+
+#### Question 28
+**Question**: How can you use decorators for profiling in 2025?  
+**Expected Answer**: Track function calls, execution time, or resource usage, often with libraries like `cProfile`.  
+**Sample Code**:
+```python
+import time
+def profile(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        print(f"{func.__name__} took {time.time() - start} seconds")
+        return result
+    return wrapper
+
+@profile
+def compute():
+    time.sleep(1)
+    return "Done"
+
+print(compute())  # Output: compute took 1.00... seconds
+                  #         Done
+```
+**Layman’s Explanation**: A profiling decorator is like a timer that tracks how long a task takes, helping you see if it’s too slow.
+
+---
+
+#### Question 29
+**Question**: How can you combine decorators with other Python features like `match`?  
+**Expected Answer**: Use decorators with `match` statements to handle patterned inputs or outputs in the wrapper.  
+**Sample Code**:
+```python
+def check_input(func):
+    @functools.wraps(func)
+    def wrapper(x):
+        match x:
+            case int():
+                return func(x)
+            case _:
+                return "Invalid input"
+    return wrapper
+
+@check_input
+def square(x):
+    return x * x
+
+print(square(5))     # Output: 25
+print(square("abc")) # Output: Invalid input
+```
+**Layman’s Explanation**: Combining decorators with `match` is like a chef checking if the ingredient is a number before cooking, rejecting anything else.
+
+---
+
+#### Question 30
+**Question**: What are common pitfalls with decorators, and how can you avoid them?  
+**Expected Answer**: Pitfalls include losing metadata, incorrect argument handling, or complex logic. Avoid by using `@wraps`, handling `*args`/`**kwargs`, and keeping decorators simple.  
+**Sample Code**:
+```python
+from functools import wraps
+# Bad: No wraps
+def bad_decorator(func):
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+
+# Good: With wraps
+def good_decorator(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+
+@good_decorator
+def add(a, b):
+    """Add two numbers."""
+    return a + b
+
+print(add.__name__)  # Output: add
+print(add.__doc__)   # Output: Add two numbers.
+```
+**Layman’s Explanation**: Pitfalls are like wrapping a gift but losing the tag. Using `@wraps` keeps the tag, and simple wrapping avoids confusion.
+
+---
+
+This comprehensive guide covers the theory of decorators in Python and provides 30 interview questions with detailed answers, inline code samples, and layman’s explanations tailored for a 4-year experienced developer in 2025. Let me know if you need further clarification or additional topics!
+
+<xaiArtifact artifact_id="d5f5eea7-3846-41ec-8a0f-bc006c16c500" artifact_version_id="f5186d90-84bc-4e24-bce6-dacea68b190f" title="decorator_examples.py" contentType="text/python">
+from functools import wraps
+import time
+
+# Example 1: Basic decorator
+def log(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"Calling {func.__name__} with {args}, {kwargs}")
+        return func(*args, **kwargs)
+    return wrapper
+
+@log
+def add(a, b):
+    return a + b
+
+print(add(2, 3))  # Output: Calling add with (2, 3), {}
+                  #         5
+
+# Example 2: Parameterized decorator
+def repeat(n):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for _ in range(n):
+                func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@repeat(2)
+def say_hello():
+    print("Hello")
+
+say_hello()  # Output: Hello
+             #         Hello
+
+# Example 3: Timing decorator
+def timer(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        print(f"{func.__name__} took {time.time() - start} seconds")
+        return result
+    return wrapper
+
+@timer
+def slow_func():
+    time.sleep(1)
+    return "Done"
+
+print(slow_func())  # Output: slow_func took 1.00... seconds
+                    #         Done
+
+# Example 4: Async decorator
+import asyncio
+
+def async_decorator(func):
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        print("Before async")
+        result = await func(*args, **kwargs)
+        print("After async")
+        return result
+    return wrapper
+
+@async_decorator
+async def async_task():
+    await asyncio.sleep(1)
+    return "Done"
+
+async def main():
+    print(await async_task())
+
+asyncio.run(main())  # Output: Before async
+                    #         Done
+                    #         After async
+</xaiArtifact>
