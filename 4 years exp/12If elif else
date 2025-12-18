@@ -1,0 +1,538 @@
+# Python Conditionals (`if/elif/else`) — Interview Guide (30 Questions)
+
+This guide covers flow control in Python, moving from basic conditional logic to architectural patterns like Dispatch Dictionaries, Structural Pattern Matching (Python 3.10+), and reducing Cyclomatic Complexity in backend systems.
+
+---
+
+## SECTION 1 — THEORY QUESTIONS (20 TOTAL)
+
+### Easy Level (Questions 1–6)
+
+#### 1. What is the syntax for the Ternary Operator (Conditional Expression) in Python?
+
+* **Expected Answer**: `value_if_true if condition else value_if_false`.
+* **Clear Explanation**: Unlike C-style languages that use `condition ? a : b`, Python reads more like English.
+* **Common Mistakes**: Trying to use `? :` syntax or forgetting the `else` part (it is mandatory in an expression).
+* **Sample Code**:
+```python
+age = 20
+status = "Adult" if age >= 18 else "Minor"
+
+```
+
+
+
+#### 2. What is the difference between a chain of `if` vs `elif`?
+
+* **Expected Answer**:
+* **`if` / `if**`: Multiple independent checks. All conditions are evaluated. Multiple blocks can execute.
+* **`if` / `elif**`: Mutually exclusive checks. Once one condition matches, the rest are skipped. Only one block executes.
+
+
+* **Why Interviewers Ask This**: To verify you understand control flow cost. Using multiple `if`s when `elif` was intended causes performance waste and logic bugs.
+* **Sample Code**:
+```python
+x = 10
+# Independent (Both print)
+if x > 5: print("Big")
+if x > 8: print("Very Big")
+
+# Exclusive (Only first prints)
+if x > 5: print("Big")
+elif x > 8: print("Very Big")
+
+```
+
+
+
+#### 3. What defines "Truthiness" in a conditional check?
+
+* **Expected Answer**: In Python, an `if` statement checks if the value is "Truthy". It does not require a boolean `True`.
+* **Falsy Values**: `None`, `False`, `0`, `0.0`, `''` (empty string), `[]`, `{}`, `set()`.
+* **Truthy Values**: Everything else.
+* **Sample Code**:
+```python
+users = []
+if users:
+    print("Users exist") # Won't run
+else:
+    print("No users")    # Runs
+
+```
+
+
+
+#### 4. The `pass` statement: When and why?
+
+* **Expected Answer**: `pass` is a null operation (no-op). It is used when a statement is syntactically required but no code needs to be executed.
+* **Use Cases**: Empty `if` blocks (stubs), empty classes, or ignoring specific exceptions.
+* **Sample Code**:
+```python
+if x < 0:
+    pass # TODO: Handle negative logic later
+else:
+    print(x)
+
+```
+
+
+
+#### 5. How do you check if a variable is NOT None?
+
+* **Expected Answer**: `if x is not None:`.
+* **Critical Distinction**: Do not use `if x:` if `0` or `False` are valid values for `x`.
+* **Reasoning**: `if x:` evaluates Truthiness. If `x` is `0`, it fails. `if x is not None:` strictly checks for existence.
+* **Sample Code**:
+```python
+score = 0
+if score:
+    print("Has score") # False (0 is Falsy)
+if score is not None:
+    print("Score exists") # True
+
+```
+
+
+
+#### 6. Can you put an `if` statement on one line?
+
+* **Expected Answer**: Yes, for simple statements: `if condition: statement`.
+* **Style Guide**: PEP 8 generally discourages this for complex logic, but it is valid syntax.
+* **Sample Code**:
+```python
+if x > 10: print("High")
+
+```
+
+
+
+---
+
+### Medium Level (Questions 7–20)
+
+#### 7. The Walrus Operator (`:=`) in Conditionals.
+
+* **Question**: How does `if (n := len(data)) > 10:` work?
+* **Expected Answer**: It assigns the value `len(data)` to variable `n` **and** returns that value to be compared against `10` immediately.
+* **Benefit**: It allows reusing the calculated value inside the `if` block without recalculating it.
+* **Sample Code**:
+```python
+data = "hello world"
+if (n := len(data)) > 5:
+    print(f"String is long: {n} chars") # n is available here
+
+```
+
+
+
+#### 8. `Match-Case` (Python 3.10+): Python's Switch Statement.
+
+* **Question**: Explain the `match` statement introduced in Python 3.10.
+* **Expected Answer**: It is Python's implementation of Structural Pattern Matching. It is more powerful than a simple C-style switch. It can match types, structures, and apply guards.
+* **Syntax**: Uses `match variable:` and `case pattern:`.
+* **Sample Code**:
+```python
+status = 404
+match status:
+    case 200: print("OK")
+    case 400 | 404: print("Error") # Or logic
+    case _: print("Unknown")       # Default
+
+```
+
+
+
+#### 9. Short-Circuit Evaluation (`and` / `or`).
+
+* **Question**: In `if a() and b():`, when does `b()` run?
+* **Expected Answer**: `b()` runs **only if** `a()` returns True.
+* **Reasoning**: Python uses short-circuiting.
+* `and`: If first operand is False, stop (Result is False).
+* `or`: If first operand is True, stop (Result is True).
+
+
+* **Safe Coding**: `if obj is not None and obj.attribute > 0:` is safe because if `obj` is None, the second part is never touched (preventing AttributeError).
+
+#### 10. `if` vs `try/except` (LBYL vs EAFP).
+
+* **Question**: Python philosophy prefers EAFP (Easier to Ask Forgiveness than Permission). Explain this in the context of `if`.
+* **Expected Answer**:
+* **LBYL (Look Before You Leap)**: Using `if key in dict:` before accessing.
+* **EAFP**: Just accessing `dict[key]` and catching `KeyError`.
+
+
+* **Trade-off**: EAFP is generally faster (happy path has no checks) and avoids race conditions in concurrent environments (checking file exists vs opening it).
+* **Why Interviewers Ask This**: Senior developer mindset check.
+
+#### 11. Chained Comparison Optimization.
+
+* **Question**: How does Python evaluate `if 0 < x < 100:`?
+* **Expected Answer**: It translates to `if (0 < x) and (x < 100)`, but `x` is evaluated only once.
+* **Comparison**: In other languages, you might need `x > 0 && x < 100`. Python's syntax is cleaner and mathematically intuitive.
+
+#### 12. Guard Clauses vs Nested Ifs.
+
+* **Question**: Refactor a deeply nested if-block. What is a "Guard Clause"?
+* **Expected Answer**: Invert the conditions to return early.
+* **Before**:
+```python
+if valid:
+    if user:
+        save()
+
+```
+
+
+* **After (Guard Clause)**:
+```python
+if not valid: return
+if not user: return
+save()
+
+```
+
+
+* **Why**: Reduces indentation levels (Cyclomatic Complexity) and makes logic linear.
+
+#### 13. Dispatch Dictionary Pattern.
+
+* **Question**: You have a chain of 20 `if/elif` statements checking a command string. How do you optimize this?
+* **Expected Answer**: Use a **Dictionary** mapping keys to functions (Command Pattern).
+* **Benefit**: O(1) lookup instead of O(N) linear checks. Code is cleaner and easier to extend.
+* **Sample Code**:
+```python
+actions = {
+    'start': start_func,
+    'stop': stop_func
+}
+# Instead of many elifs:
+if cmd in actions: actions[cmd]()
+
+```
+
+
+
+#### 14. What determines Truthiness in custom objects?
+
+* **Question**: If you create `class A: pass`, what is `bool(A())`? How do you change it?
+* **Expected Answer**: Default is `True`. To change it, implement `__bool__` (or `__len__` if `__bool__` is missing).
+* **Logic**: Python calls `obj.__bool__()`. If that returns `False`, the object is treated as false in `if` statements.
+
+#### 15. The `all()` and `any()` functions.
+
+* **Question**: How do you replace `if cond1 and cond2 and cond3:` with a cleaner syntax for dynamic lists of conditions?
+* **Expected Answer**: Use `if all([cond1, cond2, cond3]):`.
+* **Nuance**: `all()` returns True only if *all* elements are Truthy. `any()` returns True if *at least one* is Truthy.
+* **Performance**: Both short-circuit.
+
+#### 16. `match` statement Guards.
+
+* **Question**: In Python 3.10+, can you add an `if` condition inside a `case`?
+* **Expected Answer**: Yes, this is called a **Guard**.
+* **Syntax**: `case pattern if condition:`.
+* **Sample Code**:
+```python
+match point:
+    case (x, y) if x == y:
+        print("On diagonal")
+
+```
+
+
+
+#### 17. Variable Scope in `if` blocks.
+
+* **Question**: If you define `x = 10` inside an `if` block, is it accessible outside?
+* **Expected Answer**: **Yes**.
+* **Distinction**: Python does not have block-level scope (unlike C++/Java). It has function-level scope. Variables defined inside `if` leak to the rest of the function.
+* **Danger**: If the `if` block doesn't run, accessing `x` raises `UnboundLocalError`. Always initialize before the `if`.
+
+#### 18. Comparing Identity vs Equality in Conditionals.
+
+* **Question**: Why use `if x is None` instead of `if x == None`?
+* **Expected Answer**:
+1. **Speed**: `is` compares memory pointers (instant). `==` calls `__eq__` (potentially slow code execution).
+2. **Safety**: A class can override `__eq__` to always return True (or something weird). `is None` cannot be tricked.
+
+
+
+#### 19. Using `assert` as a Conditional.
+
+* **Question**: Why shouldn't you use `assert` for business logic checks (like `if user.is_admin`)?
+* **Expected Answer**: `assert` statements are removed when Python is run with the optimization flag (`-O`).
+* **Result**: In production, your security check `assert user.is_admin` might vanish, allowing unauthorized access. Always use `if` for logic control.
+
+#### 20. De Morgan's Laws in Conditionals.
+
+* **Question**: Simplify `if not (A or B):`.
+* **Expected Answer**: `if (not A) and (not B):`.
+* **Why**: Distributing the `not` flips the operator. This often makes negative logic easier to read.
+
+---
+
+## SECTION 2 — CODING QUESTIONS (10 TOTAL)
+
+### Easy Level (Questions 1–3)
+
+#### 1. Safe Division Check
+
+**Question**: Write a function that accepts two numbers and divides them. If the denominator is 0, return `None`. Use a simple `if`.
+
+* **Solution**:
+```python
+def safe_divide(a, b):
+    if b == 0:
+        return None
+    return a / b
+
+# Usage
+print(safe_divide(10, 2)) # 5.0
+print(safe_divide(10, 0)) # None
+
+```
+
+
+* **Complexity**: O(1).
+* **Common Mistake**: catching `ZeroDivisionError` is also valid (EAFP), but `if` is cheaper here.
+
+#### 2. Grade Calculator (Elif Chain)
+
+**Question**: Convert a score (0-100) to a letter grade: 90+ A, 80+ B, 70+ C, 60+ D, else F.
+
+* **Solution**:
+```python
+def get_grade(score: int) -> str:
+    if score >= 90:
+        return 'A'
+    elif score >= 80:
+        return 'B'
+    elif score >= 70:
+        return 'C'
+    elif score >= 60:
+        return 'D'
+    else:
+        return 'F'
+
+```
+
+
+* **Why Interviewers Ask This**: To see if you order the logic correctly (descending). If you checked `> 60` first, everyone gets a D.
+
+#### 3. Leap Year Logic
+
+**Question**: Write a function to check if a year is a leap year.
+Rules: Divisible by 4, UNLESS divisible by 100, UNLESS divisible by 400.
+
+* **Solution**:
+```python
+def is_leap(year: int) -> bool:
+    if year % 400 == 0:
+        return True
+    if year % 100 == 0:
+        return False
+    if year % 4 == 0:
+        return True
+    return False
+
+# One-liner version:
+# return (year % 400 == 0) or (year % 4 == 0 and year % 100 != 0)
+
+```
+
+
+* **Logic**: Order matters: most specific exclusion (400) first.
+
+---
+
+### Medium Level (Questions 4–10)
+
+#### 4. The Dispatch Dictionary (Calculator)
+
+**Question**: Implement a calculator that takes `(a, b, op)`. `op` is a string like 'add', 'sub', 'mul'. Use a dictionary instead of `if/elif`.
+
+* **Solution**:
+```python
+import operator
+
+def calculate(a, b, op):
+    # Map strings to functions
+    ops = {
+        'add': operator.add,
+        'sub': operator.sub,
+        'mul': operator.mul,
+        'div': operator.truediv
+    }
+
+    # .get() handles invalid operations safely
+    func = ops.get(op)
+
+    if func:
+        return func(a, b)
+    else:
+        return "Invalid Operation"
+
+# Usage
+print(calculate(10, 5, 'add')) # 15
+
+```
+
+
+* **Why**: This pattern scales. Adding 'pow' requires just one line in the dict, not touching the logic flow.
+
+#### 5. Match Case with Structure (Data Parsing)
+
+**Question**: You receive a command as a tuple. It can be `("quit",)`, `("move", x, y)`, or `("shoot", target)`. Use Python 3.10 `match`.
+
+* **Solution**:
+```python
+def process_command(cmd):
+    match cmd:
+        case ("quit",):
+            print("Quitting")
+        case ("move", x, y) if isinstance(x, int) and isinstance(y, int):
+            print(f"Moving to {x}, {y}")
+        case ("shoot", target):
+            print(f"Shooting {target}")
+        case _:
+            print("Unknown command")
+
+# Usage
+process_command(("move", 10, 20))
+
+```
+
+
+* **Feature**: Notice the pattern unpacking `(x, y)` directly in the case statement.
+
+#### 6. FizzBuzz (Optimized Concatenation)
+
+**Question**: Print numbers 1 to 20. If divisible by 3 "Fizz", by 5 "Buzz", by both "FizzBuzz". Minimize modulo checks.
+
+* **Solution**:
+```python
+def fizzbuzz(n):
+    for i in range(1, n + 1):
+        output = ""
+        if i % 3 == 0:
+            output += "Fizz"
+        if i % 5 == 0:
+            output += "Buzz"
+
+        # If output is empty, print number, else print string
+        print(output or i)
+
+fizzbuzz(15)
+
+```
+
+
+* **Trick**: `output or i`. If `output` is `""` (Falsy), it prints `i`. This avoids a final `else` block or a specific `% 15` check.
+
+#### 7. Validating Nested Data (Guard Clauses)
+
+**Question**: Validate a user dictionary `{'name': 'A', 'meta': {'age': 20}}`. Return False if any key missing. Use Guard Clauses (no nested ifs).
+
+* **Solution**:
+```python
+def validate_user(user):
+    if not isinstance(user, dict):
+        return False
+
+    if 'name' not in user:
+        return False
+
+    if 'meta' not in user:
+        return False
+
+    # Accessing meta safely now because we guarded above
+    if 'age' not in user['meta']:
+        return False
+
+    return True
+
+```
+
+
+* **Refactoring**: Keeps code flat (readability) vs the "Arrow pattern" of nested ifs.
+
+#### 8. Ternary Logic for Defaults
+
+**Question**: Write a function that formats a name. If `middle_name` is provided, return "First Middle Last". If not, return "First Last". Use ternary operators or boolean logic.
+
+* **Solution**:
+```python
+def format_name(first, last, middle=None):
+    # 1. Ternary approach
+    # mid_str = f" {middle}" if middle else ""
+    # return f"{first}{mid_str} {last}"
+
+    # 2. List filtering approach (Cleaner for many parts)
+    parts = [first, middle, last]
+    # Filter out None or Empty strings, then join
+    return " ".join(p for p in parts if p)
+
+# Usage
+print(format_name("John", "Doe"))          # "John Doe"
+print(format_name("John", "Doe", "Paul"))  # "John Paul Doe"
+
+```
+
+
+* **Note**: The list filtering approach scales better if you add titles, suffixes, etc.
+
+#### 9. Complex Boolean Logic (De Morgan's)
+
+**Question**: You have a system that processes orders if: The user is logged in AND (the user is admin OR the order is free). Write the `if` statement.
+
+* **Solution**:
+```python
+def process_order(user, order):
+    is_logged_in = user.get('logged_in')
+    is_admin = user.get('is_admin')
+    is_free = order.get('price') == 0
+
+    # Direct translation
+    if is_logged_in and (is_admin or is_free):
+        return "Processed"
+    return "Denied"
+
+```
+
+
+* **Why**: Testing precedence. `and` binds tighter than `or`. The parentheses are critical here.
+
+#### 10. State Machine Transition (Conditionals)
+
+**Question**: Implement a simple state transition function `next_state(current, event)`.
+States: IDLE, ACTIVE, ERROR.
+Transitions:
+IDLE + 'start' -> ACTIVE
+ACTIVE + 'fail' -> ERROR
+ACTIVE + 'stop' -> IDLE
+Any other -> current state.
+
+* **Solution**:
+```python
+def next_state(current, event):
+    # Tuple matching is great for state machines
+    # (current_state, event)
+    match (current, event):
+        case ("IDLE", "start"):
+            return "ACTIVE"
+        case ("ACTIVE", "fail"):
+            return "ERROR"
+        case ("ACTIVE", "stop"):
+            return "IDLE"
+        case _:
+            # Default: no transition
+            return current
+
+# Usage
+state = "IDLE"
+state = next_state(state, "start") # ACTIVE
+state = next_state(state, "fail")  # ERROR
+
+```
+
+
+* **Real App Usage**: Order processing systems (Pending -> Paid -> Shipped).
